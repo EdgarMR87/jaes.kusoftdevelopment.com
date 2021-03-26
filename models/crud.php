@@ -757,8 +757,7 @@ class Datos extends Conexion{
 	#-------------------------------------
 
 
-	public static function iniciarSevicioModel($datosModel, $tabla){
-
+	public static function iniciarServicioModel($datosModel, $tabla){
 		$stmt = Conexion::conectar()->prepare("UPDATE $tabla SET fecha_inicio_partida_os = :fecha_inicio_partida_os, 
 											comentarios_os = :comentarios_os, estado_partida_os = :estado_partida_os 
 												WHERE id_partida_os = :id_partida_os");	
@@ -782,18 +781,10 @@ class Datos extends Conexion{
 		$insert->bindParam(":fecha_m", $fecha_inicio, PDO::PARAM_STR);
 		$insert->bindParam(":tipo_m", $tipo_m, PDO::PARAM_STR);
 
-        $asignarUser = Conexion::conectar()->prepare("INSERT INTO usuario_partida_os(id_partida_os, id_usuario_r, 
-                id_supervisor_a, fecha_asignacion) VALUES (:id_partida_os, :id_usuario_r, 
-                :id_supervisor_a, :fecha_asignacion)");
-        $asignarUser->bindParam(":id_usuario_r", $datosModel["usuarios"], PDO::PARAM_INT);
-		$asignarUser->bindParam(":id_partida_os", $datosModel["id_partida_os"], PDO::PARAM_INT);
-		$asignarUser->bindParam(":id_supervisor_a", $id_usuario_creacion, PDO::PARAM_INT);
-		$asignarUser->bindParam(":fecha_asignacion", $fecha_inicio, PDO::PARAM_STR);
-
 		if($stmt->execute()){
 				
 			if($insert->execute()){
-                $asignarUser->execute();
+               
 				return "success";
 			}
 			else{
@@ -806,9 +797,30 @@ class Datos extends Conexion{
 			return $arr;
 		}
 		$stmt->close();
-        $asignarUser->close();
+     
 		$insert->close();
 	}
+
+    public static function asigarUsuariosIniciarServicioModel($datosModel, $tabla){
+        $asignarUser = Conexion::conectar()->prepare("INSERT INTO $tabla(id_partida_os, id_usuario_r, 
+                                        id_supervisor_a, fecha_asignacion) VALUES (:id_partida_os, :id_usuario_r, 
+                                        :id_supervisor_a, :fecha_asignacion)");
+        session_start();
+        date_default_timezone_set('America/Mexico_City');
+        $fecha_inicio = date("Y-m-d H:m:s");
+        $id_usuario_creacion = $_SESSION["id_usuario"];
+        $asignarUser->bindParam(":id_usuario_r", $datosModel["usuario"], PDO::PARAM_INT);
+		$asignarUser->bindParam(":id_partida_os", $datosModel["id_partida_os"], PDO::PARAM_INT);
+		$asignarUser->bindParam(":id_supervisor_a", $id_usuario_creacion, PDO::PARAM_INT);
+		$asignarUser->bindParam(":fecha_asignacion", $fecha_inicio, PDO::PARAM_STR);
+        if($asignarUser->execute()){
+            return "success";
+        }else{
+            $arr = $asignarUser->errorInfo();
+            return $arr;
+        }
+        $asignarUser->close();
+    }
 
 
 	public static function obtenerPartidaOSFinalizarModel($datosModel, $tabla){
@@ -879,8 +891,7 @@ class Datos extends Conexion{
 	}
 
 
-
-	public function obtenerUsuariosAsignadosModel($tabla, $datosModel){
+	public static function obtenerUsuariosAsignadosModel($tabla, $datosModel){
 		$stmt = Conexion::conectar()->prepare("SELECT CONCAT(u.ape_pat_u, ' ', u.ape_mat_u, ' ' , u.nombre_u)as usuarioCompleto, 
 												pos.codigo_partida_os, fecha_asignacion, sa.descripcion_serv 
 												FROM $tabla ups
@@ -920,16 +931,6 @@ class Datos extends Conexion{
 		}
 		$obtenerPorcentaje->close();
 	}
-
-
-
-
-
-
-
-	
-
-
 }
 
 ?>
