@@ -542,12 +542,12 @@ public static function editarServicioAtrController(){
 		#El constructor foreach proporciona un modo sencillo de iterar sobre arrays. foreach funciona sólo sobre arrays y objetos, y emitirá un error al intentar usarlo con una variable de un tipo diferente de datos o una variable no inicializada.
 		echo"<option value='0' selected disabled>Selecciona una Unidad ... </option>";
 		foreach($respuesta as $row => $item){
-				echo"<option value='". $item['num_orden']."'>".$item['id_unidad_servicio']."</option>";
+				echo"<option value='". $item['num_orden']."' data-os='". $item['num_orden']."'>".$item['id_unidad_servicio']."</option>";
 		}
     }
 
 
-	  #ACTUALIZAR SERVICIO ATR
+	#ACTUALIZAR SERVICIO ATR
 	#------------------------------------
 	public function obtenerPartidaOSController(){
 		require_once "./models/crud.php";
@@ -595,40 +595,47 @@ public static function editarServicioAtrController(){
 		}
 	}
 
+    
+    #ACTUALIZAR SERVICIO ATR
+	#------------------------------------
+	public function obtenerPartidaOSFinalizarController(){
+		require_once "./models/crud.php";
+		if(isset($_POST["id_partida_os"])){
+			$datosController = array( "num_orden_partida_os"=>$_POST["id_partida_os"],
+							          "codigo_partida_os"=>$_POST["comentarios_os"]);
+			$respuesta = Datos::obtenerPartidaOSFinalizarModel($datosController, "partidas_os");
+			if($respuesta == "success"){
+                echo '<script>
+						alert("Se INICIO el servicio correctamente");
+						setTimeout("location.href ='."'index.php?action=OrdenesServicio/iniciarServicio'".'"'.', 1000);
+					</script>';
+            } else {
+				echo "<p class='error-acceso'>". $respuesta[2]."</p>";
+			}
+		}
 
+		}
 
-
-	
-
-	
-	
-	
-
-	
-
-
-
-
-
-	
-
-	
-
-
-	
-	
-	
-
-	
-
-	
-	
+ #INICIAMOS EL SERVICIO ENVIANDO COMENTARIOS DE INCIO E INDICANDO UN USUARIO A REALIZAR LA ACTIVIDAD
+	#------------------------------------
+	public function finalizarServicioController(){
+		require_once "./models/crud.php";
+		if(isset($_POST["id_partida_os_f"])){
+			$datosController = array( "id_partida_os"=>$_POST["id_partida_os_f"],
+							          "comentario_final"=>$_POST["observacion_final_os_f"]);
+			$respuesta = Datos::finalizarSevicioModel($datosController, "partidas_os");
+			if($respuesta == "success"){
+                echo '<script>
+						alert("Se FINALIZO el servicio correctamente");
+						setTimeout("location.href ='."'index.php?action=OrdenesServicio/finalizarServicio'".'"'.', 1000);
+					</script>';
+            } else {
+				echo "<p class='error-acceso'>". $respuesta[2]."</p>";
+			}
+		}
+	}
     
 
-
-
+    
 }
-
-
-
 ?>
