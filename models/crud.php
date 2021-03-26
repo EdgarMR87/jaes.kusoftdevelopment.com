@@ -688,12 +688,15 @@ class Datos extends Conexion{
 		$stmt = Conexion::conectar()->prepare("INSERT INTO $tabla (consec_partida_os, codigo_partida_os, observaciones_os, 
                 num_orden_partida_os, fecha_creacion_partida_os) VALUES (:consec_partida_os, :codigo_partida_os, :observaciones_os, 
 				:num_orden_partida_os, :fecha_creacion_partida_os)");	
+        session_start();
+        date_default_timezone_set('America/Mexico_City');
+        $fecha_creacion = date("Y-m-d H:m:s");
 		#bindParam() Vincula una variable de PHP a un parámetro de sustitución con nombre o de signo de interrogación correspondiente de la sentencia SQL que fue usada para preparar la sentencia.
 		$stmt->bindParam(":consec_partida_os", $datosModel["consec_partida_os"], PDO::PARAM_INT);
         $stmt->bindParam(":codigo_partida_os", $datosModel["codigo_partida_os"], PDO::PARAM_STR);
 		$stmt->bindParam(":observaciones_os", $datosModel["observaciones_os"], PDO::PARAM_STR);
         $stmt->bindParam(":num_orden_partida_os", $datosModel["num_orden_partida_os"], PDO::PARAM_INT);
-        $stmt->bindParam(":fecha_creacion_partida_os", $datosModel["fecha_creacion_partida_os"], PDO::PARAM_STR);
+        $stmt->bindParam(":fecha_creacion_partida_os", $fecha_creacion, PDO::PARAM_STR);
 		if($stmt->execute()){
 			return "success";
 		} else {
@@ -891,7 +894,7 @@ class Datos extends Conexion{
 		$stmt->close();
 	}  
 
-	public function obtenerSupervisorAsignadosModel($tabla, $datosModel){
+	public static function obtenerSupervisorAsignadosModel($tabla, $datosModel){
 		$stmt = Conexion::conectar()->prepare("SELECT CONCAT(u.ape_pat_u, ' ', u.ape_mat_u, ' ' , u.nombre_u)as supervisor 
 												FROM $tabla
 												LEFT JOIN usuarios u ON u.id_usuario = id_supervisor_a
@@ -917,6 +920,12 @@ class Datos extends Conexion{
 		}
 		$obtenerPorcentaje->close();
 	}
+
+
+
+
+
+
 
 	
 
