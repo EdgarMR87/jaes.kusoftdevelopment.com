@@ -400,7 +400,96 @@ public static function editarServicioAtrController(){
 		}
 	}
 
+	public static function vistaOSAtrTablaController(){
+        require_once "./models/crud.php";
+		$respuesta = Datos::vistaOSAtrTablaModel("ordenServicio");
+		#El constructor foreach proporciona un modo sencillo de iterar sobre arrays. foreach funciona sólo sobre arrays y objetos, y emitirá un error al intentar usarlo con una variable de un tipo diferente de datos o una variable no inicializada.
+        return $respuesta;
+    }
 
+
+
+	#BORRAR ORDEN DE SERVICIO
+	#------------------------------------
+	public function borrarOSAtrController(){
+        require_once "./models/crud.php";
+		if(isset($_GET["id_os_borrar"])){
+			$datosController = $_GET["id_os_borrar"];
+			$respuesta = Datos::borrarOSAtrModel($datosController, "ordenServicio");
+			if($respuesta == "success"){
+                echo "<script>alert('Se borro la OS exitosamente');
+                location.href = 'index.php?action=OrdenesServicio/listadoOS';
+                </script>";
+			}
+		}
+	}
+	
+	#VISTA DE UNIDADES PARA CARGARLOS A UNA NUEVA ORDEN DE SERVICIO
+	#------------------------------------
+	public static function vistaUnidadesSelectController(){
+		require_once "./models/crud.php";
+		$respuesta = Datos::vistaUnidadesModel("unidades");
+		#El constructor foreach proporciona un modo sencillo de iterar sobre arrays. foreach funciona sólo sobre arrays y objetos, y emitirá un error al intentar usarlo con una variable de un tipo diferente de datos o una variable no inicializada.
+		echo"<option value='0' selected disabled> Selecciona una unidad ... </option>";
+		foreach($respuesta as $row => $item){
+				echo"<option value='". $item['id_unidad']."'>".$item['num_unidad']."</option>";
+		}
+	}
+	
+
+	#VISTA DE UNIDADES PARA CARGARLOS A UNA NUEVA ORDEN DE SERVICIO
+	#------------------------------------
+	public static function vistaServiciosAtrSelectController(){
+		require_once "./models/crud.php";
+		$respuesta = Datos::vistaServiciosAtrSelectModel("servicios_atr");
+		#El constructor foreach proporciona un modo sencillo de iterar sobre arrays. foreach funciona sólo sobre arrays y objetos, y emitirá un error al intentar usarlo con una variable de un tipo diferente de datos o una variable no inicializada.
+		echo"<option value='0' selected disabled> Selecciona un servicio ... </option>";
+		foreach($respuesta as $row => $item){
+				echo"<option value='". $item['codigo_atr_serv']."' data-name='". $item['descripcion_serv']."'>".$item['codigo_atr_serv']."</option>";
+		}
+	}
+
+
+	 #REGISTRO DE SERVICIOS
+	#------------------------------------
+	public static function registroOSAtrController(){
+		require_once "./models/crud.php";
+		if(isset($_POST["num_orden"])){
+			$datosController = array( "num_orden"=>$_POST["num_orden"], 
+								      "id_unidad_servicio"=>$_POST["id_unidad_servicio"],
+                                    "operador"=>strtoupper($_POST["operador"]),
+									"captura"=>strtoupper($_POST["captura"]),
+									"fecha_orden"=>$_POST["fecha_orden"],
+									"kilometraje"=>$_POST["kilometraje"],
+									"servicio"=>strtoupper($_POST["servicio"]),
+									"tipo_servicio"=>strtoupper($_POST["tipo_servicio"]));
+			$respuesta = Datos::registroOSAtrModel($datosController, "ordenServicio");
+			$partidas = $_POST["partidas"];
+			$observacionesPartidas = $_POST["observacionesPartidas"];
+			if($respuesta == "success"){
+				$i =0;
+				foreach($partidas as $partida){
+					$datosController2 = array("consec_partida_os" => ($i+1),
+											"codigo_partida_os" => $partida,
+											"observaciones_os" => $observacionesPartidas[$i],
+											"num_orden_partida_os" => $_POST["num_orden"]);
+					$respuesta2 = Datos::registroPartidaOSModel($datosController2, "partidas_os");
+					$i++;
+				}
+				echo '<script>
+                        alert("Se inserto la OS correctamente");
+                        setTimeout("location.href ='."'index.php?action=OrdenesServicio/listadoOS'".'"'.', 1000);
+                    </script>';
+      
+			}else{
+				echo "<p class='error-acceso'>".$respuesta[2]."</p>";
+			}
+		}
+	}
+	
+
+	
+	
     
 
 
