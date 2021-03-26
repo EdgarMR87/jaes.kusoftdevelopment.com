@@ -437,7 +437,7 @@ public static function editarServicioAtrController(){
 	}
 	
 
-	#VISTA DE UNIDADES PARA CARGARLOS A UNA NUEVA ORDEN DE SERVICIO
+	#VISTA DE SERVICIOS ATR PARA CARGARLOS A UNA NUEVA ORDEN DE SERVICIO
 	#------------------------------------
 	public static function vistaServiciosAtrSelectController(){
 		require_once "./models/crud.php";
@@ -450,7 +450,7 @@ public static function editarServicioAtrController(){
 	}
 
 
-	 #REGISTRO DE SERVICIOS
+	 #REGISTRO DE OS Y PARTIDAS
 	#------------------------------------
 	public static function registroOSAtrController(){
 		require_once "./models/crud.php";
@@ -486,6 +486,139 @@ public static function editarServicioAtrController(){
 			}
 		}
 	}
+
+	  #EDITAR OS
+	  public static function editarOSAtrController(){
+        require_once "./models/crud.php";
+        $datosController = $_GET["id_os_editar"];
+        $respuesta = Datos::editarOSAtrModel($datosController, "ordenServicio");
+        return $respuesta;
+    }
+
+
+	#VISTA PARA OBTENER LAS UNIDADES Y VALIDAR LA QUE SE NECESITA SELECCIONAR
+	#------------------------------------
+	public static function vistaUnidadesSelectedController($id_unidad){
+		require_once "./models/crud.php";
+		$respuesta = Datos::vistaUnidadesModel("unidades");
+		#El constructor foreach proporciona un modo sencillo de iterar sobre arrays. foreach funciona sólo sobre arrays y objetos, y emitirá un error al intentar usarlo con una variable de un tipo diferente de datos o una variable no inicializada.
+		foreach($respuesta as $row => $item){
+			if($id_unidad ==  $item['id_unidad'])
+				echo"<option value='". $item['id_unidad']."' SELECTED>".$item['num_unidad']."</option>";
+			else
+				echo"<option value='". $item['id_unidad']."'>".$item['num_unidad']."</option>";
+		}
+	}
+
+	#OBTENEMOS LOS VALORES ENUM DEL CAMPO SERVICIO DE LA TABLA ORDEN DE SERVICIO
+	public static function obtenerServiciosOSController(){
+        require_once "./models/crud.php";
+		$respuesta = Datos::obtenerServiciosOSModel("servicio", "ordenServicio");
+		#El constructor foreach proporciona un modo sencillo de iterar sobre arrays. foreach funciona sólo sobre arrays y objetos, y emitirá un error al intentar usarlo con una variable de un tipo diferente de datos o una variable no inicializada.
+        return $respuesta;
+    }
+
+	#OBTENEMOS LOS VALORES ENUM DEL CAMPO TIPO_SERVICIO DE LA TABLA ORDEN DE SERVICIO
+	public static function obtenerTipoServOSController(){
+        require_once "./models/crud.php";
+		$respuesta = Datos::obtenerTipoServOSModel("tipo_servicio", "ordenServicio");
+		#El constructor foreach proporciona un modo sencillo de iterar sobre arrays. foreach funciona sólo sobre arrays y objetos, y emitirá un error al intentar usarlo con una variable de un tipo diferente de datos o una variable no inicializada.
+        return $respuesta;
+    }
+
+	#OBTENEMOS LAS PARTIDAS DE LA ORDEN DE SERVICIO, INDICAMOS EL NUM_ORDEN Y LA TABLA
+	public static function editarPartidasOSController(){
+        require_once "./models/crud.php";
+		$datosController = $_GET["id_os_editar"];		
+		$respuesta = Datos::obtenerPartidasOSModel($datosController, "partidas_os");
+		#El constructor foreach proporciona un modo sencillo de iterar sobre arrays. foreach funciona sólo sobre arrays y objetos, y emitirá un error al intentar usarlo con una variable de un tipo diferente de datos o una variable no inicializada.
+        return $respuesta;
+    }
+
+
+	public static function obtenerOSPendientesController(){
+        require_once "./models/crud.php";
+		$respuesta = Datos::obtenerOSPendientesModel("ordenServicio");
+		#El constructor foreach proporciona un modo sencillo de iterar sobre arrays. foreach funciona sólo sobre arrays y objetos, y emitirá un error al intentar usarlo con una variable de un tipo diferente de datos o una variable no inicializada.
+		echo"<option value='0' selected disabled>Selecciona una Unidad ... </option>";
+		foreach($respuesta as $row => $item){
+				echo"<option value='". $item['num_orden']."'>".$item['id_unidad_servicio']."</option>";
+		}
+    }
+
+
+	  #ACTUALIZAR SERVICIO ATR
+	#------------------------------------
+	public function obtenerPartidaOSController(){
+		require_once "./models/crud.php";
+		if(isset($_POST["id_unidad_editar"])){
+			$datosController = array( "num_orden_partida_os"=>$_POST["num_orden_partida_os"],
+							          "codigo_partida_os"=>$_POST["codigo_partida_os"]);
+			$respuesta = Datos::obtenerPartidaOSModel($datosController, "partidas_os");
+			if($respuesta == "success"){
+				echo "<span class='registro-actualizado'>Actualizacion Correcta</span>";
+                echo '<script> setTimeout("location.href ='."'index.php?action=Unidades/listadoUnidades'".'"'.', 1000);</script>';
+            } else {
+				echo "<p class='error-acceso'>". $respuesta[2]."</p>";
+			}
+		}
+	}
+
+	#CARGAMOS LOS TRABJADORES NUMERO - APELLIDOS Y NOMBRES PARA INICIAR SERVICIO
+	public static function obtenerTrabajadorController(){
+        require_once "./models/crud.php";
+		$respuesta = Datos::vistaTrabajadorAtrModel("usuarios");
+		#El constructor foreach proporciona un modo sencillo de iterar sobre arrays. foreach funciona sólo sobre arrays y objetos, y emitirá un error al intentar usarlo con una variable de un tipo diferente de datos o una variable no inicializada.
+		echo"<option value='0' selected disabled>Selecciona una trabajador ... </option>";
+		foreach($respuesta as $row => $item){
+				echo"<option value='". $item['id_usuario']."'>".$item['usuario']." - ".$item['ape_pat_u']. " " . $item['ape_mat_u']. " " . $item['nombre_u']."</option>";
+		}
+    }
+
+
+	 #INICIAMOS EL SERVICIO ENVIANDO COMENTARIOS DE INCIO E INDICANDO UN USUARIO A REALIZAR LA ACTIVIDAD
+	#------------------------------------
+	public function iniciarServicioController(){
+		require_once "./models/crud.php";
+		if(isset($_POST["id_partida_os"])){
+			$datosController = array( "id_partida_os"=>$_POST["id_partida_os"],
+							          "comentarios_os"=>$_POST["comentarios_os"]);
+			$respuesta = Datos::iniciarSevicioModel($datosController, "partidas_os");
+			if($respuesta == "success"){
+                echo '<script>
+						alert("Se INICIO el servicio correctamente");
+						setTimeout("location.href ='."'index.php?action=OrdenesServicio/iniciarServicio'".'"'.', 1000);
+					</script>';
+            } else {
+				echo "<p class='error-acceso'>". $respuesta[2]."</p>";
+			}
+		}
+	}
+
+
+
+
+	
+
+	
+	
+	
+
+	
+
+
+
+
+
+	
+
+	
+
+
+	
+	
+	
+
 	
 
 	
