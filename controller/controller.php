@@ -635,7 +635,52 @@ public static function editarServicioAtrController(){
 		}
 	}
     
+    #INICIAMOS EL SERVICIO DESDE EL DETALLE DE SERVICIOS CON UNA MODAL DONDE SOLO SE PIDE LOS COMENTARIOS INCIALES.
+    # Y LOS USUARIOS A REALIZAR LA ACTIVIDAD
+    public function iniciarServicioModalController(){
+		require_once "./models/crud.php";
+		if(isset($_POST["id_partida_os"])){
+			$datosController = array( "id_partida_os"=>$_POST["id_partida_os"],
+							          "comentarios_os"=>$_POST["comentarios_os"]);
+			$respuesta = Datos::iniciarServicioModel($datosController, "partidas_os");
+            $usuariosAgisnados = $_POST["usuariosAsignados"];
+            if($respuesta == "success"){
+                foreach($usuariosAgisnados as $usuarioAsignado){
+                    $datosController2 = array("id_partida_os"=> $_POST["id_partida_os"],
+                                                "usuario" => $usuarioAsignado);                    
+                    $respuesta2 = Datos::asigarUsuariosIniciarServicioModel($datosController2, "usuario_partida_os");
+                }               
+                echo '<script>
+						alert("Se INICIO el servicio correctamente");
+						setTimeout("location.href ='."'index.php?action=OrdenesServicio/listadoOS'".'"'.', 500);
+					</script>';
+            } else {
+				echo "<p class='error-acceso'>". $respuesta[2]."</p>";
+			}
+		}
+	}
 
+
+    #OBTENER LOS USUARIOS QUE HAN REALIZADO DICHA ACTIVIDAD
+	#OBTENEMOS LOS VALORES ENUM DEL CAMPO TIPO_SERVICIO DE LA TABLA ORDEN DE SERVICIO
+	public static function obtenerUsuariosAsignadosController($id_partida_servicio){
+        require_once "./models/crud.php";     
+		$respuesta = Datos::obtenerUsuariosAsignadosModel("usuario_partida_os", $id_partida_servicio);
+		#El constructor foreach proporciona un modo sencillo de iterar sobre arrays. foreach funciona sólo sobre arrays y objetos, y emitirá un error al intentar usarlo con una variable de un tipo diferente de datos o una variable no inicializada.
+        return $respuesta;
+    }
+
+    
+    public static function obtenerSupervisorAsignadosController($id_partida_servicio){
+        require_once "./models/crud.php";       
+		$respuesta = Datos::obtenerSupervisorAsignadosModel("usuario_partida_os", $id_partida_servicio);
+		#El constructor foreach proporciona un modo sencillo de iterar sobre arrays. foreach funciona sólo sobre arrays y objetos, y emitirá un error al intentar usarlo con una variable de un tipo diferente de datos o una variable no inicializada.
+        return $respuesta;
+    }
+
+    
+
+    
     
 }
 ?>
