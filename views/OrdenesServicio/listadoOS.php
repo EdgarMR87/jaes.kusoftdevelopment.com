@@ -1,4 +1,10 @@
 <script>
+
+function clickactionEliminar( b ){
+    document.getElementById('id_os_borrar').value = b.id; 
+}
+
+
 $(document).ready(function(){
 	$('#capturo').toggle();
 	$('#atiempo').toggle();
@@ -29,6 +35,7 @@ $(document).ready(function(){
 			</tr>
 		</thead>
 		<tbody>
+
 			<?php
               ini_set('display_errors', '1');
               ini_set('error_reporting', E_ALL);
@@ -47,14 +54,40 @@ $(document).ready(function(){
                         <td>'.$item["servicio_tiempo"].'</td>
                         <td>'.$item["fecha_creacion"].'</td>
                         <td>'.$item["nombre_completo"].'</td>
-                        <td>'.$item["estado"].'</td>
+                        <td class='."'".$item["estado"]."'".'>'.$item["estado"].'</td>
                         <td>'.$item["avance_porcentaje"].'</td>
-                        <td><a href="index.php?action=OrdenesServicio/detalleOS&id_os_editar='.$item["num_orden"].'"><img src="/views/img/editar.png" class="img-25"></img></a></td>
-                        <td><a href="index.php?action=OrdenesServicio/listadoOS&id_os_borrar='.$item["num_orden"].'"><img src="/views/img/eliminar.png" class="img25"></img></a></td>
+                        <td><a href="index.php?action=OrdenesServicio/editarOS&id_os_editar='.$item["num_orden"].'"><img src="/views/img/editar.png" class="img-25"></img></a></td>
+                        <td><a href="#openModalEliminar" onclick="clickactionEliminar(this)" id="'.$item["num_orden"].'"><img src="/views/img/eliminar.png" class="img25"></img></a></td>
                     </tr>';
-            }
-			$vistaUsuario -> borrarOSAtrController();
+            }			
 			?>
 		</tbody>
 	</table>
+    <form action="" method="post">
+    <!-- MODAL PARA FINALIZAR SERVICIO -->
+    <div id="openModalEliminar" class="modalDialog">
+    	    <div>
+                <a href="#close" title="Close" class="close">X</a>
+                <input type="hidden" name="id_os_borrar" id="id_os_borrar">
+                <h1>ELIMINAR OS Y PARTIDAS</h1>
+                <table>
+                    <tr>
+                        <td> 
+                            <p>¿Deseas Eliminar las partidas de la OS ?</p>
+                        </td>
+                        <td>
+                            <input class="btn-registrar" type="submit" value="ELIMINAR">
+                        </td>  
+                    </tr>
+                </table>
+	        </div>
+        </div>
+        <!-- TERMINA EL MODAL PARA FINALIZAR SERVICIO -->
+        <?php
+        $vistaUsuario = new MvcController();
+        $vistaUsuario -> borrarOSAtrController();
+        ?>
+    </form>
 </div>
+
+ 
