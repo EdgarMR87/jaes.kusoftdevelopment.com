@@ -781,11 +781,14 @@ class Datos extends Conexion{
 		$insert->bindParam(":fecha_m", $fecha_inicio, PDO::PARAM_STR);
 		$insert->bindParam(":tipo_m", $tipo_m, PDO::PARAM_STR);
 
+        $iniciarOS = Conexion::conectar()->prepare("UPDATE ordenServicio set estado='ENPROCESO' WHERE avance_porcentaje BETWEEN  0 AND 99");
+       
 		if($stmt->execute()){
 				
 			if($insert->execute()){
                
 				return "success";
+                $iniciarOS->execute();
 			}
 			else{
 				$arr = $insert->errorInfo();
@@ -916,13 +919,12 @@ class Datos extends Conexion{
 		$stmt->close();
 	}  
 
-
-	public static function actualizarProcentajeGral($num_orden_partida_os){
+	public static function actualizarPorcentajeGral($num_orden_partida_os){
 		$obtenerPorcentaje = Conexion::conectar()->prepare("UPDATE ordenServicio SET avance_porcentaje = (SELECT (COUNT(id_partida_os)*100) / 
 									(SELECT COUNT(id_partida_os) FROM partidas_os WHERE num_orden_partida_os = :num_orden_partida_os) 
 									FROM partidas_os WHERE estado_partida_os = 'TERMINADO' AND num_orden_partida_os = :num_orden_partida_os)
 									WHERE num_orden = :num_orden_partida_os");
-		$obtenerPorcentaje->bindParam(":num_orden_partida_os", $num_orden_partida_os, PDO::PARAM_INT);
+        $obtenerPorcentaje->bindParam(":num_orden_partida_os", $num_orden_partida_os, PDO::PARAM_INT);
 		if($obtenerPorcentaje->execute()){
 			return "success";
 	 	}else{
@@ -931,6 +933,38 @@ class Datos extends Conexion{
 		}
 		$obtenerPorcentaje->close();
 	}
+
+    #METODO PARA VALIDAR SI YA SE TERMINO AL 100% UNA ORDEN DE SERVICIO ACTUALIZAMOS SU ESTATUS.
+    public  static function cerrarOSModel($num_orden_partida_os){
+        $obtenerPorcentaje = Conexion::conectar()->prepare("UPDATE ordenServicio SET estado = 'TERMINADO'
+                                                            WHERE  num_orden = :num_orden_partida_os AND avance_porcentaje = 100"); 
+        $obtenerPorcentaje->bindParam(":num_orden_partida_os", $num_orden_partida_os, PDO::PARAM_INT);
+        if($obtenerPorcentaje->execute()){
+            return "success";
+        }else{
+            $arr = $obtenerPorcentaje->errorInfo();
+            return $arr;
+        }
+
+    }
+
+    #METODO PARA VALIDAR SI YA SE TERMINO AL MENOS UN SERVICIO Y CAMBIAR ESTADO A ENPROCESO
+    public  static function empezarOSModel($num_orden_partida_os){
+        $obtenerPorcentaje = Conexion::conectar()->prepare("UPDATE ordenServicio SET estado = 'ENPROCESO'
+                                                            WHERE  num_orden = :num_orden_partida_os"); 
+        $obtenerPorcentaje->bindParam(":num_orden_partida_os", $num_orden_partida_os, PDO::PARAM_INT);
+        if($obtenerPorcentaje->execute()){
+            return "success";
+        }else{
+            $arr = $obtenerPorcentaje->errorInfo();
+            return $arr;
+        }
+    }
+
+
+
+
 }
+
 
 ?>
