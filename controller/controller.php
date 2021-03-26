@@ -413,16 +413,12 @@ public static function editarServicioAtrController(){
 	#------------------------------------
 	public function borrarOSAtrController(){
         require_once "./models/crud.php";
-		if(isset($_GET["id_os_borrar"])){
-			$datosController = $_GET["id_os_borrar"];
-			$respuesta = Datos::borrarOSAtrModel($datosController, "ordenServicio");
-			if($respuesta == "success"){
-                echo "<script>alert('Se borro la OS exitosamente');
-                location.href = 'index.php?action=OrdenesServicio/listadoOS';
-                </script>";
-			}
-		}
-	}
+		if(isset($_POST["id_os_borrar"])){
+			$datosController = $_POST["id_os_borrar"];
+			$respuesta2 = Datos::borrarPartidasOSAtrModel($datosController, "partidas_os");
+            $respuesta3 = Datos::borrarOSAtrModel($datosController, "ordenServicio");
+        }
+    }
 	
 	#VISTA DE UNIDADES PARA CARGARLOS A UNA NUEVA ORDEN DE SERVICIO
 	#------------------------------------
@@ -583,11 +579,12 @@ public static function editarServicioAtrController(){
 		if(isset($_POST["id_partida_os"])){
 			$datosController = array( "id_partida_os"=>$_POST["id_partida_os"],
 							          "comentarios_os"=>$_POST["comentarios_os"]);
-			$respuesta = Datos::iniciarSevicioModel($datosController, "partidas_os");
+			$respuesta = Datos::iniciarServicioModel($datosController, "partidas_os");
 			if($respuesta == "success"){
+                $respuesta2 = Datos::actualizarProcentajeGral($_POST["num_orden"], "ordenServicio");
                 echo '<script>
 						alert("Se INICIO el servicio correctamente");
-						setTimeout("location.href ='."'index.php?action=OrdenesServicio/iniciarServicio'".'"'.', 1000);
+						setTimeout("location.href ='."'index.php?action=OrdenesServicio/iniciarServicio'".'"'.', 200);
 					</script>';
             } else {
 				echo "<p class='error-acceso'>". $respuesta[2]."</p>";
@@ -639,20 +636,21 @@ public static function editarServicioAtrController(){
     # Y LOS USUARIOS A REALIZAR LA ACTIVIDAD
     public function iniciarServicioModalController(){
 		require_once "./models/crud.php";
-		if(isset($_POST["id_partida_os"])){
+		if(isset($_POST["num_orden_iniciar"])){
 			$datosController = array( "id_partida_os"=>$_POST["id_partida_os"],
 							          "comentarios_os"=>$_POST["comentarios_os"]);
 			$respuesta = Datos::iniciarServicioModel($datosController, "partidas_os");
             $usuariosAgisnados = $_POST["usuariosAsignados"];
-            if($respuesta == "success"){
+            if($respuesta == "success"){                
                 foreach($usuariosAgisnados as $usuarioAsignado){
                     $datosController2 = array("id_partida_os"=> $_POST["id_partida_os"],
                                                 "usuario" => $usuarioAsignado);                    
                     $respuesta2 = Datos::asigarUsuariosIniciarServicioModel($datosController2, "usuario_partida_os");
+                    $respuesta3 = Datos::empezarOSModel($_POST["num_orden_iniciar"]);
                 }               
                 echo '<script>
 						alert("Se INICIO el servicio correctamente");
-						setTimeout("location.href ='."'index.php?action=OrdenesServicio/listadoOS'".'"'.', 500);
+						setTimeout("location.href ='."'index.php?action=OrdenesServicio/listadoOS'".'"'.', 200);
 					</script>';
             } else {
 				echo "<p class='error-acceso'>". $respuesta[2]."</p>";
@@ -678,9 +676,32 @@ public static function editarServicioAtrController(){
         return $respuesta;
     }
 
-    
 
-    
-    
+    public function finalizarServicioModalController(){
+		require_once "./models/crud.php";
+		if(isset($_POST["num_orden_finalizar"])){
+			$datosController = array( "id_partida_os"=>$_POST["id_partida_os_f"],
+							          "comentario_final"=>$_POST["observacion_final_os_f"]);
+			$respuesta = Datos::finalizarSevicioModel($datosController, "partidas_os");
+			if($respuesta == "success"){
+                $respuesta2 = Datos::actualizarPorcentajeGral($_POST["num_orden_finalizar"]);
+                if($respuesta2 == "success" )
+                    $respuesta3 = Datos::cerrarOSModel($_POST["num_orden_finalizar"]);
+                else{
+                    echo "<p class='error-acceso'>". $respuesta2[2]."</p>";
+                }
+                echo '<script>
+						alert("Se FINALIZO el servicio correctamente");
+						setTimeout("location.href ='."'index.php?action=OrdenesServicio/listadoOS'".'"'.', 200);
+					</script>';
+            } else {
+				echo "<p class='error-acceso'>". $respuesta[2]."</p>";
+			}
+		}
+	}
+
+
+
+
 }
 ?>
