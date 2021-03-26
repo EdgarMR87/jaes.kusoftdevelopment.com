@@ -1,0 +1,12 @@
+[08-Mar-2021 23:00:11 UTC] PHP Fatal error:  Uncaught Error: Class 'MvcController' not found in /home/kusoftde/jaes.kusoftdevelopment.com/views/modules/Usuarios/usuarios.php:29
+Stack trace:
+#0 {main}
+  thrown in /home/kusoftde/jaes.kusoftdevelopment.com/views/modules/Usuarios/usuarios.php on line 29
+[08-Mar-2021 23:00:22 UTC] PHP Fatal error:  Uncaught Error: Class 'MvcController' not found in /home/kusoftde/jaes.kusoftdevelopment.com/views/modules/Usuarios/usuarios.php:29
+Stack trace:
+#0 {main}
+  thrown in /home/kusoftde/jaes.kusoftdevelopment.com/views/modules/Usuarios/usuarios.php on line 29
+[08-Mar-2021 23:29:08 UTC] PHP Fatal error:  Uncaught Error: Class 'MvcController' not found in /home/kusoftde/jaes.kusoftdevelopment.com/views/modules/Usuarios/registro.php:13
+Stack trace:
+#0 {main}
+  thrown in /home/kusoftde/jaes.kusoftdevelopment.com/views/modules/Usuarios/registro.php on line 13
