@@ -1,3 +1,36 @@
+<script>//EVENTO DEL BOTON AGREGAR PARTIDA 
+function clickaction( b ){
+    document.getElementById('id_partida_os').value = b.id; 
+}
+
+$(document).ready(function(){
+
+$("#agregar-user").click(function(){
+    var id_usuario = $("#usuarios").val();
+    var nombre_usuario = $("#usuarios option:selected").text();
+    var htmlTags = '<tr>'+
+        '<td>' + id_usuario  + '<input type="hidden" name="usuariosAsignados[]" value="' + id_usuario + '"></td>'+
+        '<td>' + nombre_usuario +'</td>'+
+        '<td><a class="borrar"><img src="/views/img/eliminar.png" class="img25"></img></a></td>'+
+       '</tr>';
+   $('#tabla-user-pre tbody').append(htmlTags);
+});
+
+//EVENTO DEL BOTON ELIMINAR FILA
+$(document).on('click', '.borrar', function (event) {
+    event.preventDefault();
+    $(this).closest('tr').remove(); //ELIMINAS FILA
+    actualizarFilas(); //REORDENAMOS LOS NUMEROS DE CONSECUTIVO
+});
+
+//EVENTO CUANDO DEN CLICK EN UN PENDIENTE Y OBTENER SU IDA
+
+});
+</script>
+
+
+
+
 <?PHP
     echo "<script> window.document.title = 'DETALLE ORDEN SERVICIO'</script>";
 ?>
@@ -12,11 +45,11 @@
             <tr>
                 <td class="titulo"><p class="derecha">Orden de Servicio : </p></td>
                 <td class=input>
-                    <input type="number" value="<?php echo $datos_OS['num_orden']; ?>" name="num_orden" required>
+                    <input type="number" value="<?php echo $datos_OS['num_orden']; ?>" name="num_orden" disabled>
                 </td>
                 <td class="titulo"><p class="derecha">Unidad : </p></td>
                 <td class=input>
-                    <select name="id_unidad_servicio" id="id_unidad_servicio">
+                    <select name="id_unidad_servicio" id="id_unidad_servicio" disabled>
                         <?php 
                         $vistaUsuario -> vistaUnidadesSelectedController($datos_OS['id_unidad_servicio']);
                         ?>
@@ -26,11 +59,11 @@
             <tr>
                 <td class="titulo"><p class="derecha">Operador : </p></td>
                 <td class=input>
-                    <input type="text" value="<?php echo $datos_OS['operador']; ?>" name="operador" required>
+                    <input type="text" value="<?php echo $datos_OS['operador']; ?>" name="operador" disabled>
                 </td>
                 <td class="titulo"><p class="derecha">Capturo : </p></td>
                 <td class=input>
-                    <input type="text" value="<?php echo $datos_OS['captura']; ?>" name="captura" required>
+                    <input type="text" value="<?php echo $datos_OS['captura']; ?>" name="captura" disabled>
                 </td>
             </tr>
             <tr> 
@@ -40,7 +73,7 @@
                 </td>
                 <td class="titulo"><p class="derecha">Kilometraje : </p></td>
                 <td class=input>
-                    <input type="number" value="<?php echo $datos_OS['kilometraje']; ?>" name="kilometraje" required>
+                    <input type="number" value="<?php echo $datos_OS['kilometraje']; ?>" name="kilometraje" disabled>
                 </td>
             </tr>
             <tr>
@@ -50,7 +83,7 @@
                        $array_serv = $vistaUsuario -> obtenerServiciosOSController();
                        $array_tipo_serv = $vistaUsuario -> obtenerTipoServOSController();
                         ?>
-                    <select name="servicio" id="servicio" >
+                    <select name="servicio" id="servicio" disabled>
                         <?php 
                         foreach($array_serv as $valor => $servicio){
                             if($servicio == $datos_OS['servicio'])
@@ -63,7 +96,7 @@
                 </td>
                 <td class="titulo"><p class="derecha">Tipo de Servicio : </p></td>
                 <td class=input>
-                    <select name="tipo_servicio" id="tipo_servicio">
+                    <select name="tipo_servicio" id="tipo_servicio" disabled>
                     <?php 
                         foreach($array_tipo_serv as $valor => $tipo_servicio){
                             if($tipo_servicio == $datos_OS['tipo_servicio'])
@@ -86,6 +119,7 @@
             <th class="listado-th">Fecha Inicio</th>
             <th class="listado-th">Fecha Termino </th>
             <th class="listado-th">Estado</th>
+            <th class="listado-th">Accion</th>
             <th class="listado-th">Asignado a</th>
         </thead>
         <tbody>
@@ -117,8 +151,19 @@
                    ."</td>
                    <td class='". $campo['estado_partida_os']."'>".
                         $campo['estado_partida_os']
-                    ."</td>
-                    <td><a href='index.php?action=OrdenesServicio/usuariosAsignados&id_partida_os=".$campo['id_partida_os']."&OS=".$campo['num_orden_partida_os']."'>".
+                    ."</td>";
+                    switch($campo['estado_partida_os']){
+                        case "PENDIENTE";
+                         echo   "<td><a  onclick=clickaction(this) href='#openModalIniciar' id='". $campo['id_partida_os'] ."'><img class='ico-partida' src='/views/img/iniciar.png'></a></td>";
+                        break;
+                        case "ENPROCESO";
+                        echo   "<td><img class='ico-partida' src='/views/img/stop.png'></td>";
+                        break;
+                        case "TERMINADO";
+                        echo   "<td><img class='ico-partida' src='/views/img/listo.png'></td>";                       
+                        break;
+                    }
+            echo    "<td><a href='index.php?action=OrdenesServicio/usuariosAsignados&id_partida_os=".$campo['id_partida_os']."&OS=".$campo['num_orden_partida_os']."'>".
                     👥
                    ."</a></td>
                 </tr>";
@@ -127,4 +172,46 @@
         </tbody>
     </table>
     <input class="btn-actualizar" type="submit" value="Actualizar">
+    
+
+<div id="openModalIniciar" class="modalDialog">
+	<div>
+		<a href="#close" title="Close" class="close">X</a>
+        <h1>INICIAR SERVICIO </h1>
+        <table>
+            <input type="hidden" name="id_partida_os" id="id_partida_os">
+            <tr>
+                <td class="titulo"><p class="derecha">Comentarios : </p></td>
+                <td class="input" colspan="2">
+                    <input id="comentarios_os" type="text" name="comentarios_os">
+                </td>
+            </tr>
+            <tr>
+                <td class="titulo"><p class="derecha">Asignar a : </p></td>
+                <td><select name="usuarios" id="usuarios">
+                    <?php
+                        $vistaUsuario = new MvcController();
+                        $vistaUsuario -> obtenerTrabajadorController();   
+                    ?>
+                </td></select>
+                <td>
+                    <input class="btn-agregar-serv" type="button" value="Añadir" name="agregar-user" id="agregar-user">
+                </td>
+            </tr>
+        </table>
+        <table class="listado-previo" id="tabla-user-pre">
+            <thead>
+                <th class="listado-th">Id Usuario</th>
+                <th class="listado-th">Usuario - Nombre Completo</th>
+                <th class="listado-th">Eliminar</th>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <input class="btn-registrar" type="submit" value="INICIAR">
+	</div>
+</div>
 </form>
+<?php
+    $vistaUsuario -> iniciarServicioModalController();//AGREGAMOS LA VARIABLE DE INCIAR SERVICIO.
+?>
