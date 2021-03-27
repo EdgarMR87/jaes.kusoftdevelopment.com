@@ -1,5 +1,8 @@
 <script>
+
 $(document).ready(function(){
+
+    //DETECTAMOS CUANDO SE SELECCIONA UNA UNIDAD DEL SELECT Y AGREGAMOS LA OS AL INPUT 
 	$('#num_orden_finalizar').change(function(){
         var num_orden = $('#num_orden_finalizar').val();
 		var estado_partida_os = "ENPROCESO";
@@ -20,6 +23,7 @@ $(document).ready(function(){
 	    return false;   
     });
 
+    //DETECTA CUANDO SELECCIONAMOS EL SERVICIO DEL SELECT Y AGREGAMOS LOS COMENTARIOS DE LA OS Y LAS OBSERVACIONES INICIALES
     $('#id_partida_os_f').change(function(){
 		$('#observaciones_os_f').val();
 		$('#comentarios_os_f').val();
@@ -28,13 +32,13 @@ $(document).ready(function(){
 		$('#observaciones_os_f').val(observaciones);
 		$('#comentarios_os_f').val(comentarios);
 	});
+
 });
+
 </script>
 
-
-
 <?php
-    echo "<script> window.document.title = 'FINALIZAR SERVICIO'</script>";
+    echo "<script> window.document.title = 'FINALIZAR SERVICIO'</script>"; // TITULO DE LA VENTANA
     $vistaUsuario = new MvcController();
     $fila = $vistaUsuario -> obtenerPartidaOSFinalizarController();
     $vistaUsuario -> finalizarServicioController();            
@@ -45,7 +49,9 @@ $(document).ready(function(){
     <form method="post" class="form-alta-serv">
         <table class="tabla-alta-serv"> 
             <tr>
-                <td class="titulo"><p class="derecha">Unidad de Servicio : </p></td>
+                <td class="titulo">
+                    <p class="derecha">Unidad de Servicio : </p>
+                </td>
                 <td class=input>
                     <select name="num_orden_finalizar" id="num_orden_finalizar">
                         <?php
@@ -54,25 +60,43 @@ $(document).ready(function(){
                         ?>
                     </select>
                 </td>
-                <td class="titulo"><p class="derecha">Orden de Servicio : </p></td>
-                <td class="input"><input id="orden_servicio" type="text" name="orden_servicio" disabled></td>
+                <td class="titulo">
+                    <p class="derecha">Orden de Servicio : </p>
+                </td>
+                <td class="input">
+                    <input id="orden_servicio" type="text" name="orden_servicio" disabled>
+                </td>
             </tr>
             <tr>
-                <td class="titulo"><p class="derecha">Codigo Servicio : </p></td>
+                <td class="titulo">
+                    <p class="derecha">Codigo Servicio : </p>
+                </td>
                 <td class=input>
                     <select name="id_partida_os_f" id="id_partida_os_f" required>
                     </select>
                 </td>
-                <td class="titulo"><p class="derecha">Observaciones Finales: </p></td>
-                <td class="input"><input id="observacion_final_os_f" type="text" name="observacion_final_os_f"></td>
+                <td class="titulo">
+                    <p class="derecha">Observaciones Finales: </p>
+                </td>
+                <td class="input">
+                    <input id="observacion_final_os_f" type="text" name="observacion_final_os_f">
+                </td>
             </tr>
             <tr>
-                <td class="titulo"><p class="derecha">Observaciones : </p></td>
-                <td class="input"><input id="observaciones_os_f" type="text" name="observaciones_os" disabled></td>
-                <td class="titulo"><p class="derecha">Comentarios : </p></td>
-                <td class="input"><input id="comentarios_os_f" type="text" name="comentarios_os" disabled></td>
+                <td class="titulo">
+                    <p class="derecha">Observaciones Iniciales: </p>
+                </td>
+                <td class="input">
+                    <input id="observaciones_os_f" type="text" name="observaciones_os" disabled>
+                </td>
+                <td class="titulo">
+                    <p class="derecha">Comentarios : </p>
+                </td>
+                <td class="input">
+                    <input id="comentarios_os_f" type="text" name="comentarios_os" disabled>
+                </td>
             </tr>
-            <input class="btn-registrar" type="submit" value="FINALIZAR"> 
-        </table>           
+        </table> 
+        <input class="btn-registrar" type="submit" value="FINALIZAR">           
     </form>
 </div>
