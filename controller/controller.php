@@ -30,7 +30,7 @@ class MvcController{
     #ENLACES JAES
 	#-------------------------------------
 	public function enlacesPaginasAtrController(){
-		if(isset( $_GET['action'])){
+		if(!empty( $_GET['action'])){
 			$enlaces = $_GET['action'];
 		} else {
 			$enlaces = "index";
@@ -53,9 +53,10 @@ class MvcController{
 									  "puesto"=>$_POST["puesto"]);
 			$respuesta = Datos::registroUsuarioModel($datosController, "usuarios");
 			if($respuesta == "success"){
-				echo "<span class='registro-ok'>Registro Exitoso </span>";
+				return $respuesta;
 			}else{
-				echo "<p class='error-acceso'>".$respuesta[2]."</p>";
+                $valor = $respuesta[2];
+                return $valor;
 			}
 		}
 	}
@@ -98,8 +99,8 @@ class MvcController{
 					<td>'.$item["ape_mat_u"].'</td>
 					<td>'.$item["usuario"].'</td>
 					<td>'.$item["contrasena"].'</td>
-					<td>'.$item["id_dpto_u"].'</td>
-					<td>'.$item["id_puesto_u"].'</td>
+					<td>'.$item["nombre_dpto"].'</td>
+					<td>'.$item["nombre_puesto"].'</td>
 					<td>'.$item["estado_u"].'</td>
 					<td>'.$item["fecha_creacion_usuario"].'</td>
 					<td><a href="index.php?action=Usuarios/editar&id_usuario_m='.$item["id_usuario"].'"><img src="/views/img/editar.png" class="img-25"></img></a></td>
@@ -184,8 +185,8 @@ class MvcController{
 	public static function registroDepartamentoController(){
 		require_once "./models/crud.php";
 		if(isset($_POST["nombre_dpto"])){
-			$datosController = array( "nombre_dpto"=>$_POST["nombre_dpto"], 
-								      "descripcion_dpto"=>$_POST["descripcion_dpto"]);
+			$datosController = array( "nombre_dpto"=>strtoupper($_POST["nombre_dpto"]), 
+								      "descripcion_dpto"=>strtoupper($_POST["descripcion_dpto"]));
 			$respuesta = Datos::registroDepartamentoModel($datosController, "departamento");
 			if($respuesta == "success"){
 				header("location:index.php?action=dpto_ok");
@@ -228,7 +229,7 @@ class MvcController{
 	#------------------------------------
 	public static function vistaDepartamentosTablaController(){
         require_once "./models/crud.php";
-		$respuesta = Datos::vistaGeneralModel("departamento");
+		$respuesta = Datos::vistaGeneralTablaModel("departamento");
 		#El constructor foreach proporciona un modo sencillo de iterar sobre arrays. foreach funciona sólo sobre arrays y objetos, y emitirá un error al intentar usarlo con una variable de un tipo diferente de datos o una variable no inicializada.
 		foreach($respuesta as $row => $item){
 			echo'<tr>
@@ -253,6 +254,84 @@ class MvcController{
 			}
 		}
 	}
+
+
+
+    #VISTA DE DEPARTAMENTOS SELECT CON SELECCION
+	#------------------------------------
+	public static function vistaPuestosSelectedController($id_dpto, $id_puesto){
+		require_once "./models/crud.php";
+		$respuesta = Datos::vistaPuestoIDModel("puesto", $id_dpto);
+		#El constructor foreach proporciona un modo sencillo de iterar sobre arrays. foreach funciona sólo sobre arrays y objetos, y emitirá un error al intentar usarlo con una variable de un tipo diferente de datos o una variable no inicializada.
+		foreach($respuesta as $row => $item){
+			if($id_puesto ==  $item['id_puesto'])
+				echo"<option value='". $item['id_puesto']."' SELECTED>".$item['nombre_puesto']."</option>";
+			else
+				echo"<option value='". $item['id_puesto']."'>".$item['nombre_puesto']."</option>";
+		}
+	}
+
+    
+    
+    #VISTA DE PUESTOS TABLA
+	#------------------------------------
+	    public static function vistaPuestoTablaController(){
+        require_once "./models/crud.php";
+		$respuesta = Datos::vistaPuestoTablaModel("puesto");
+		#El constructor foreach proporciona un modo sencillo de iterar sobre arrays. foreach funciona sólo sobre arrays y objetos, y emitirá un error al intentar usarlo con una variable de un tipo diferente de datos o una variable no inicializada.
+		foreach($respuesta as $row => $item){
+			echo'<tr>
+					<td>'.$item["id_puesto"].'</td>
+					<td>'.$item["nombre_puesto"].'</td>
+					<td>'.$item["descripcion_puesto"].'</td>
+                    <td>'.$item["nombre_dpto"].'</td>
+                    <td>'.$item["fecha_creacion_puesto"].'</td>
+					<td><a href="index.php?action=Puestos/editarPuesto&id_puesto_editar='.$item["id_puesto"].'"><img src="/views/img/editar.png" class="img-25"></img></a></td>
+					<td><a href="index.php?action=Puestos/listadoPuesto&id_puesto_borrar='.$item["id_puesto"].'"><img src="/views/img/eliminar.png" class="img25"></img></a></td>
+				</tr>';
+			}
+	}
+
+    #BORRAR PUESTO
+	#------------------------------------
+	public function borrarPuestoController(){
+        require_once "./models/crud.php";
+		if(isset($_GET["id_puesto_borrar"])){
+			$datosController = $_GET["id_puesto_Borrar"];
+			$respuesta = Datos::borrarPuestoModel($datosController, "puesto");
+			if($respuesta == "success"){
+				header("location:index.php?action=Puestos/listadoPuesto");
+			}
+		}
+	}
+
+    #EDITAR PUESTO
+	#------------------------------------
+	public function editarPuestoController(){
+		require_once "./models/crud.php";
+		$datosController = $_GET["id_puesto_editar"];
+		$respuesta = Datos::editarPuestoModel($datosController, "puesto");
+		return $respuesta;
+	}
+
+    #REGISTRO DE DEPARTAMENTO
+	#------------------------------------
+	public static function registroPuestoController(){
+		require_once "./models/crud.php";
+		if(isset($_POST["nombre_puesto"])){
+			$datosController = array( "nombre_puesto"=>strtoupper($_POST["nombre_puesto"]), 
+                                        "descripcion_puesto"=> strtoupper($_POST["descripcion_puesto"]),
+                                        "id_departamento_puesto"=>$_POST["id_departamento_puesto"]);
+			$respuesta = Datos::registroPuestoModel($datosController, "puesto");
+			if($respuesta == "success"){
+				header("location:index.php?action=puesto_ok");
+			}else{
+				echo "<p class='error-acceso'>".$respuesta[2]."</p>";
+			}
+		}
+	}
+    
+    
 
     public static function vistaServiciosAtrTablaController(){
         require_once "./models/crud.php";
@@ -417,6 +496,10 @@ public static function editarServicioAtrController(){
 			$datosController = $_POST["id_os_borrar"];
 			$respuesta2 = Datos::borrarPartidasOSAtrModel($datosController, "partidas_os");
             $respuesta3 = Datos::borrarOSAtrModel($datosController, "ordenServicio");
+            echo '<script>
+                alert("Se ELIMINO la OS  y sus partidas correctamente");
+                setTimeout("location.href ='."'index.php?action=OrdenesServicio/listadoOS'".'"'.', 200);
+            </script>';
         }
     }
 	
@@ -474,7 +557,7 @@ public static function editarServicioAtrController(){
 				}
 				echo '<script>
                         alert("Se inserto la OS correctamente");
-                        setTimeout("location.href ='."'index.php?action=OrdenesServicio/listadoOS'".'"'.', 1000);
+                        setTimeout("location.href ='."'index.php?action=OrdenesServicio/listadoOS'".'"'.', 200);
                     </script>';
       
 			}else{
@@ -553,7 +636,7 @@ public static function editarServicioAtrController(){
 			$respuesta = Datos::obtenerPartidaOSModel($datosController, "partidas_os");
 			if($respuesta == "success"){
 				echo "<span class='registro-actualizado'>Actualizacion Correcta</span>";
-                echo '<script> setTimeout("location.href ='."'index.php?action=Unidades/listadoUnidades'".'"'.', 1000);</script>';
+                echo '<script> setTimeout("location.href ='."'index.php?action=Unidades/listadoUnidades'".'"'.', 200);</script>';
             } else {
 				echo "<p class='error-acceso'>". $respuesta[2]."</p>";
 			}
@@ -580,17 +663,25 @@ public static function editarServicioAtrController(){
 			$datosController = array( "id_partida_os"=>$_POST["id_partida_os"],
 							          "comentarios_os"=>$_POST["comentarios_os"]);
 			$respuesta = Datos::iniciarServicioModel($datosController, "partidas_os");
-			if($respuesta == "success"){
-                $respuesta2 = Datos::actualizarProcentajeGral($_POST["num_orden"], "ordenServicio");
+            $usuariosAgisnados = $_POST["usuariosAsignados"];
+
+
+			 if($respuesta == "success"){                
+                foreach($usuariosAgisnados as $usuarioAsignado){
+                    $datosController2 = array("id_partida_os"=> $_POST["id_partida_os"],
+                                                "usuario" => $usuarioAsignado);                    
+                    $respuesta2 = Datos::asigarUsuariosIniciarServicioModel($datosController2, "usuario_partida_os");
+                    $respuesta3 = Datos::empezarOSModel($_POST["orden_servicio_a"]);
+                }               
                 echo '<script>
 						alert("Se INICIO el servicio correctamente");
-						setTimeout("location.href ='."'index.php?action=OrdenesServicio/iniciarServicio'".'"'.', 200);
+						setTimeout("location.href ='."'index.php?action=OrdenesServicio/listadoOS'".'"'.', 200);
 					</script>';
             } else {
 				echo "<p class='error-acceso'>". $respuesta[2]."</p>";
 			}
 		}
-	}
+    }
 
     
     #ACTUALIZAR SERVICIO ATR
@@ -604,7 +695,7 @@ public static function editarServicioAtrController(){
 			if($respuesta == "success"){
                 echo '<script>
 						alert("Se INICIO el servicio correctamente");
-						setTimeout("location.href ='."'index.php?action=OrdenesServicio/iniciarServicio'".'"'.', 1000);
+						setTimeout("location.href ='."'index.php?action=OrdenesServicio/iniciarServicio'".'"'.', 200);
 					</script>';
             } else {
 				echo "<p class='error-acceso'>". $respuesta[2]."</p>";
@@ -613,23 +704,29 @@ public static function editarServicioAtrController(){
 
 		}
 
- #INICIAMOS EL SERVICIO ENVIANDO COMENTARIOS DE INCIO E INDICANDO UN USUARIO A REALIZAR LA ACTIVIDAD
+    #FINALIZAMOS EL SERVICIO ENVIANDO COMENTARIOS DE FINALIZAR Y ACTUALIZAMOS EL ESTATUS DE PROGRESO
 	#------------------------------------
 	public function finalizarServicioController(){
-		require_once "./models/crud.php";
-		if(isset($_POST["id_partida_os_f"])){
+        require_once "./models/crud.php";
+		if(isset($_POST["num_orden_finalizar"])){
 			$datosController = array( "id_partida_os"=>$_POST["id_partida_os_f"],
 							          "comentario_final"=>$_POST["observacion_final_os_f"]);
 			$respuesta = Datos::finalizarSevicioModel($datosController, "partidas_os");
 			if($respuesta == "success"){
+                $respuesta2 = Datos::actualizarPorcentajeGral($_POST["num_orden_finalizar"]);
+                if($respuesta2 == "success" )
+                    $respuesta3 = Datos::cerrarOSModel($_POST["num_orden_finalizar"]);
+                else{
+                    echo "<p class='error-acceso'>". $respuesta2[2]."</p>";
+                }
                 echo '<script>
 						alert("Se FINALIZO el servicio correctamente");
-						setTimeout("location.href ='."'index.php?action=OrdenesServicio/finalizarServicio'".'"'.', 1000);
+						setTimeout("location.href ='."'index.php?action=OrdenesServicio/listadoOS'".'"'.', 200);
 					</script>';
             } else {
 				echo "<p class='error-acceso'>". $respuesta[2]."</p>";
 			}
-		}
+		}	
 	}
     
     #INICIAMOS EL SERVICIO DESDE EL DETALLE DE SERVICIOS CON UNA MODAL DONDE SOLO SE PIDE LOS COMENTARIOS INCIALES.
@@ -650,8 +747,8 @@ public static function editarServicioAtrController(){
                 }               
                 echo '<script>
 						alert("Se INICIO el servicio correctamente");
-						setTimeout("location.href ='."'index.php?action=OrdenesServicio/listadoOS'".'"'.', 200);
-					</script>';
+						location.href = "index.php?action=OrdenesServicio/detalleOS&id_os_editar='.$_POST["num_orden_iniciar"].'";
+						</script>';
             } else {
 				echo "<p class='error-acceso'>". $respuesta[2]."</p>";
 			}
@@ -692,7 +789,7 @@ public static function editarServicioAtrController(){
                 }
                 echo '<script>
 						alert("Se FINALIZO el servicio correctamente");
-						setTimeout("location.href ='."'index.php?action=OrdenesServicio/listadoOS'".'"'.', 200);
+						location.href = "index.php?action=OrdenesServicio/detalleOS&id_os_editar='.$_POST["num_orden_finalizar"].'";
 					</script>';
             } else {
 				echo "<p class='error-acceso'>". $respuesta[2]."</p>";
@@ -700,6 +797,67 @@ public static function editarServicioAtrController(){
 		}
 	}
 
+    #OBTENER LAS OS DE EN PROCESO PARA POSTERIORMENTE OBTENER LAS PARTIDAS EN PROCESO Y PODER ASIGNAR UN(OS) USUARIO(S) AL SERVICIO
+    public static function obtenerOSEnProcesoController(){
+        require_once "./models/crud.php";
+		$respuesta = Datos::obtenerOSEnProcesoModel("ordenServicio");
+		#El constructor foreach proporciona un modo sencillo de iterar sobre arrays. foreach funciona sólo sobre arrays y objetos, y emitirá un error al intentar usarlo con una variable de un tipo diferente de datos o una variable no inicializada.
+		echo"<option value='0' selected disabled>Selecciona una Unidad ... </option>";
+		foreach($respuesta as $row => $item){
+				echo"<option value='". $item['num_orden']."' data-os='". $item['num_orden']."'>".$item['id_unidad_servicio']."</option>";
+		}
+    }
+
+    #ASIGNAR USUARIOS DESDE LA VENTANA ASIGNAR USUARIOS
+    public function asignarUsuariosServicioController(){
+		require_once "./models/crud.php";
+		if(isset($_POST["id_partida_os_asignar"])){
+            $usuariosAgisnados = $_POST["usuariosAsignados"]; 
+            foreach($usuariosAgisnados as $usuarioAsignado){
+                    $datosController2 = array("id_partida_os"=> $_POST["id_partida_os_asignar"],
+                                                "usuario" => $usuarioAsignado);                    
+                    $respuesta2 = Datos::asigarUsuariosIniciarServicioModel($datosController2, "usuario_partida_os");
+            }               
+            echo '<script>
+			    	alert("Asignacion Correcta");
+					setTimeout("location.href ='."'index.php?action=OrdenesServicio/asignarUsuarios'".'"'.', 200);
+				</script>';
+        } else {
+			echo "<p class='error-acceso'>". $respuesta[2]."</p>";
+		}
+	}
+
+    #VITA DE LA LISTA DE SERVICIOS EN PROCESO
+    public static function vistaPartidasEnProcesoController(){
+        require_once "./models/crud.php";
+		$respuesta = Datos::vistaPartidasEnProcesoAtrTablaModel("ordenServicio");
+		#El constructor foreach proporciona un modo sencillo de iterar sobre arrays. foreach funciona sólo sobre arrays y objetos, y emitirá un error al intentar usarlo con una variable de un tipo diferente de datos o una variable no inicializada.
+        return $respuesta;
+    }
+
+    #ASIGNAR USUARIOS DESDE LA VENTA DE LISTADO DE SERVICIOS EN PROCESO
+    public function asignarUsuariosServicioListadoController(){
+		require_once "./models/crud.php";
+		if(isset($_POST["id_partida_os_asignar"])){
+            $usuariosAgisnados = $_POST["usuariosAsignados"]; 
+            foreach($usuariosAgisnados as $usuarioAsignado){
+                    $datosController2 = array("id_partida_os"=> $_POST["id_partida_os_asignar"],
+                                                "usuario" => $usuarioAsignado);                    
+                    $respuesta2 = Datos::asigarUsuariosIniciarServicioModel($datosController2, "usuario_partida_os");
+            }               
+            echo '<script>
+			    	alert("Asignacion Correcta");
+					setTimeout("location.href ='."'index.php?action=OrdenesServicio/listadoServiciosEnProceso'".'"'.', 200);
+				</script>';
+        } else {
+			echo "<p class='error-acceso'>". $respuesta[2]."</p>";
+		}
+	}
+    
+
+    
+
+    
 
 
 
