@@ -5,13 +5,13 @@
 		    <tr>
                 <td class="derecha"><p>Nombre : </p></td>
                 <td>
-	                <input type="text" placeholder="Nombre del Puesto" name="nombre_puesto" required>
+	                <input class="mayusculas" type="text" placeholder="Nombre del Puesto" name="nombre_puesto" required>
                 </td>
             </tr>
             <tr>
                 <td class="derecha"><p>Descripción: </p></td>
                 <td>
-                    <input type="text" placeholder="Descripcion del Puesto" name="descripcion_puesto">
+                    <input class="mayusculas" type="text" placeholder="Descripcion del Puesto" name="descripcion_puesto">
                 </td>
             </tr>
 		    <tr>
@@ -32,16 +32,6 @@
 
 $registro = new MvcController();
 $registro -> registroPuestoController();
-
-if(isset($_GET["action"])){
-
-	if($_GET["action"] == "puesto_ok"){
-
-		echo "<span class='registro-ok'>Registro Exitoso</span>";
-	
-	}
-
-}
 
 ?>
 </div>
