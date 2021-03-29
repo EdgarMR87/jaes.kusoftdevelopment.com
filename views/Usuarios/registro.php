@@ -1,4 +1,31 @@
+<script>
 
+    function pregunta(){
+        swal({
+            title: "Registro Exitoso!",
+            text: "Redireccionando en 2 segundos...",
+            type: "success",
+            timer: 2000,
+            showConfirmButton: false
+        }, function(){
+            window.location = "index.php?action=Usuarios/registro";
+            });
+    } 
+
+    function errorRegistro(texto){
+        swal({
+            title: texto,
+            text: "Revisa que no se dupliquen los valores",
+            type: "error",
+            timer: 2000,
+            showConfirmButton: false
+        }, function(){
+            window.location = "index.php?action=Usuarios/registro";
+        });
+    }
+
+
+</script>
 
 <?php 
 	ob_start();  
@@ -75,16 +102,16 @@
 <?php
 
 $registro = new MvcController();
-$registro -> registroUsuarioController();
+$resultado = $registro -> registroUsuarioController();
+$error = str_replace("'", "", $resultado);
 
-if(isset($_GET["action"])){
-
-	if($_GET["action"] == "Usuarios/registrook"){
-
-		echo "<span class='registro-ok'>Registro Exitoso</span>";	
-	}
-
-}
+if(isset($resultado)){
+    if($resultado == "success"){
+        echo "<script>pregunta();</script>";
+    }else{
+        echo "<script>errorRegistro('".$error."');</script>";
+    }
+}else{}
 
 ?>
 </div>

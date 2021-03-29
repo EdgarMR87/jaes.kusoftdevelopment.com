@@ -1,9 +1,32 @@
-
+<script>
+    	$(document).ready(function(){
+    $("#buscarTabla").keyup(function(){
+            _this = this;
+            // Show only matching TR, hide rest of them
+            $.each($("#tabla-listado tbody tr"), function() {
+                if($(this).text().toLowerCase().indexOf($(_this).val().toLowerCase()) === -1)
+                $(this).hide();
+                else
+                $(this).show();
+            });
+        });
+        });
+</script>
 
 <div class="tablas-listado" id="contenido">
 <h1>Listado Usuarios</h1>
 
-	<table class="tabla-listado">
+<table class="tabla-alta">
+		<tr>
+            <td class="derecha"><p>Buscar : </p></td>
+            <td>
+                <input type="search" name="buscarTabla" id="buscarTabla">
+			</td>
+		</tr>
+</table>
+
+
+	<table class="tabla-listado" id="tabla-listado">
 		
 		<thead>
 			
@@ -46,19 +69,3 @@
 
 	</table>
 </div>
-
-<?php
-
-if(isset($_GET["action"])){
-
-	if($_GET["action"] == "cambio"){
-
-		echo "Cambio Exitoso";
-	
-	}
-
-}
-
-?>
-
-
