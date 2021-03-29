@@ -1,7 +1,6 @@
 <script>
 
 $(document).ready(function(){
-
     //DETECTAMOS CUANDO SE SELECCIONA UNA UNIDAD DEL SELECT Y AGREGAMOS LA OS AL INPUT 
 	$('#num_orden_finalizar').change(function(){
         var num_orden = $('#num_orden_finalizar').val();

@@ -43,7 +43,7 @@ $(document).on('click', '.borrar', function (event) {
     echo "<script> window.document.title = 'DETALLE ORDEN SERVICIO'</script>";
 ?>
 <div class="tablas-listado" id="contenido">
-    <h1>ORDEN DE SERVICIO : <?php echO $_GET['id_os_detalle']; ?></h1>
+    <h1>DETALLES DE LA ORDEN DE SERVICIO : <?php echO $_GET['id_os_editar']; ?></h1>
         <form method="post" class="form-alta-serv">
             <table class="tabla-alta-serv">
                 <?php 
@@ -121,7 +121,8 @@ $(document).on('click', '.borrar', function (event) {
                 <thead>
                     <th class="listado-th">Consec.</th>
                     <th class="listado-th">Codigo</th>
-                    <th class="listado-th">Comentarios</th>
+                    <th class="listado-th">Comentarios Iniciales</th>
+                    <th class="listado-th">Comentarios Finales</th>
                     <th class="listado-th">Observaciones</th>
                     <th class="listado-th">Fecha Creación</th>
                     <th class="listado-th">Fecha Inicio</th>
@@ -144,6 +145,9 @@ $(document).on('click', '.borrar', function (event) {
                        ."</td>
                        <td>".
                             $campo['comentarios_os']
+                        ."</td>
+                        <td>".
+                            $campo['comentario_final']
                         ."</td>
                        <td>".
                             $campo['observaciones_os']

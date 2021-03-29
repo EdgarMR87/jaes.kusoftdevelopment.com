@@ -2,8 +2,8 @@
 
 function clickactionEliminar( b ){
     document.getElementById('id_os_borrar').value = b.id; 
+    document.getElementById('os').innerHTML = b.id + "?";
 }
-
 
 $(document).ready(function(){
 	$('#capturo').toggle();
@@ -66,17 +66,19 @@ $(document).ready(function(){
     <form action="" method="post">
     <!-- MODAL PARA FINALIZAR SERVICIO -->
     <div id="openModalEliminar" class="modalDialog">
-    	    <div>
+    	    <div class="preguntar">
                 <a href="#close" title="Close" class="close">X</a>
                 <input type="hidden" name="id_os_borrar" id="id_os_borrar">
                 <h1>ELIMINAR OS Y PARTIDAS</h1>
                 <table>
                     <tr>
                         <td> 
-                            <p>¿Deseas Eliminar las partidas de la OS ?</p>
+                            <div class="en-linea">
+                                <p>¿Deseas Eliminar las partidas de la OS : &nbsp;<h2 id="os"></h2></p>
+                            </div>
                         </td>
                         <td>
-                            <input class="btn-registrar" type="submit" value="ELIMINAR">
+                            <input class="btn-eliminar" type="submit" value="ELIMINAR">
                         </td>  
                     </tr>
                 </table>

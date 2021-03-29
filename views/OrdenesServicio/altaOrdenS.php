@@ -2,7 +2,7 @@
 
 
 function ventanaNueva(documento){	
-  var ventana =	window.open(documento,'Alta Servicio','width=600, height=400');
+  var ventana =	window.open(documento,'Alta Servicio','width=800, height=600');
   ventana.onload = function() {
         // Ya se cargó la página y se puede asignar el evento final
         ventana.onunload = function() {
@@ -92,7 +92,12 @@ $(document).on('click', '.borrar', function (event) {
                 </td>
                 <td class="titulo"><p class="derecha">Capturo : </p></td>
                 <td class=input>
-                    <input type="text" placeholder="Capturó" name="captura" required>
+                    <select name="captura" id="captura" required> 
+                        <option value="" selected disabled>Selecciona un capturista...</option>
+                        <option value="ERICK">ERICK</option>
+                        <option value="ARMAC">ARMAC</option>
+                        <option value="JAIR">JAIR</option>
+                    </select>
                 </td>
             </tr>
             <tr> 
@@ -160,8 +165,9 @@ $(document).on('click', '.borrar', function (event) {
 </form>
 </div>
 <?php
-ini_set('display_errors', '1');
-ini_set('error_reporting', E_ALL);
+
+/*ini_set('display_errors', '1');
+ini_set('error_reporting', E_ALL);*/
 
 $registro = new MvcController();
 

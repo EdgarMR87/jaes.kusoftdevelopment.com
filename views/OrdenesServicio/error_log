@@ -77,3 +77,4 @@ Stack trace:
   thrown in /home/kusoftde/jaes.kusoftdevelopment.com/views/modules/OrdenesServicio/obtenerServiciosOS.php on line 17
 [20-Mar-2021 17:04:02 UTC] PHP Notice:  Undefined index: id_partida_os in /home/kusoftde/jaes.kusoftdevelopment.com/views/modules/OrdenesServicio/obtenerServiciosOS.php on line 23
 [20-Mar-2021 17:04:02 UTC] PHP Notice:  Undefined index: id_partida_os in /home/kusoftde/jaes.kusoftdevelopment.com/views/modules/OrdenesServicio/obtenerServiciosOS.php on line 23
+[27-Mar-2021 17:36:47 UTC] PHP Notice:  Undefined index: num_orden in /home/kusoftde/jaes.kusoftdevelopment.com/views/modules/OrdenesServicio/obtenerServiciosOS.php on line 20

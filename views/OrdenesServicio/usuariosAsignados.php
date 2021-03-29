@@ -45,6 +45,6 @@
     </table>
     </form>
     <center>
-    <a href="index.php?action=OrdenesServicio/detalleOS&id_os_editar= <?php echo $_GET['OS']; ?>"><img class='ico-partida' src='/views/img/regresar.png'></a>
+    <a href="index.php?action=OrdenesServicio/detalleOS&id_os_editar=<?php echo $_GET['OS']; ?>"><img class='ico-partida' src='/views/img/regresar.png'></a>
     </center>
 </div>
