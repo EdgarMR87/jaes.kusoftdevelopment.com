@@ -13,6 +13,7 @@
     color: #279112;
     padding: 10px;
     cursor: pointer;
+    width: 100%;
 }
 
 .btn-modal{
@@ -70,6 +71,25 @@
     -webkit-animation: fadeIn ease 1s;
 }
 
+
+.btn-eliminar{
+    border: 2px solid #971a1a;
+    font-size: 18px;
+    background: transparent;
+    color: #971a1a;
+    padding: 10px;
+    cursor: pointer;
+    margin-left: 50px;
+    width: 100%;
+}
+
+.btn-eliminar:hover{
+    border: 2px solid #971a1a;
+    background: #971a1a;
+    color: white;
+}
+
+
 .tabla-listado{
     border-collapse: separate;
     border-spacing: 0px 10px;
@@ -104,6 +124,9 @@ section{
     height: 25px;
 }
 
+.en-linea{
+    display: flex;
+}
 
 
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400&display=swap');
@@ -179,11 +202,11 @@ section{
 			margin:5px;
 		}
 
-		section form input[type="submit"]{
+		/*section form input[type="submit"]{
 			position:relative;
 			margin:20px auto;
 			width: 100%;
-		}
+		}*/
 
 		section form select{
 			display: inline-block;
@@ -205,6 +228,7 @@ section{
     color: #df602e;
     padding: 10px;
     cursor: pointer;
+    width: 100%;
 }
 
 
@@ -281,6 +305,7 @@ textarea{
 	color: #971a1a;
 	border: 2px solid #971a1a;
 	cursor: pointer;
+    width: 100%;
 }
 
 .btn-agregar-serv:hover{
@@ -358,7 +383,7 @@ textarea{
 }
 
 .ENPROCESO{
-    background-color: #dfbf2e;
+    background-color: #f3e40b;
     color: white;
 }
 
@@ -410,6 +435,8 @@ textarea{
 	opacity:1;
 	pointer-events: auto;
 }
+
+
 .modalDialog > div {
 	width: 800px;
 	position: relative;
@@ -420,10 +447,12 @@ textarea{
 	background: -moz-linear-gradient(#fff, #999);
 	background: -webkit-linear-gradient(#fff, #999);
 	background: -o-linear-gradient(#fff, #999);
-  -webkit-transition: opacity 400ms ease-in;
--moz-transition: opacity 400ms ease-in;
-transition: opacity 400ms ease-in;
+    -webkit-transition: opacity 400ms ease-in;
+    -moz-transition: opacity 400ms ease-in;
+    transition: opacity 400ms ease-in;
 }
+
+
 .close {
 	background: #606061;
 	color: #FFFFFF;
@@ -442,7 +471,27 @@ transition: opacity 400ms ease-in;
 	-webkit-box-shadow: 1px 1px 3px #000;
 	box-shadow: 1px 1px 3px #000;
 }
+
+
 .close:hover { background: #00d9ff; }
+
+
+.modalDialog > div.preguntar {
+	width: 600px;
+	position: relative;
+	margin: 10% auto;
+	padding: 5px 20px 13px 20px;
+	border-radius: 10px;
+	background: #fff;
+	background: -moz-linear-gradient(#fff, #999);
+	background: -webkit-linear-gradient(#fff, #999);
+	background: -o-linear-gradient(#fff, #999);
+    -webkit-transition: opacity 400ms ease-in;
+    -moz-transition: opacity 400ms ease-in;
+    transition: opacity 400ms ease-in;
+}
+
+
 
 .tablas-listado h2{
     font-size: medium;
@@ -671,5 +720,127 @@ transition: opacity 400ms ease-in;
     .listado-previo#tabla-iniciar-servicio   td:nth-of-type(6):before { content: "Estado : "; }
 
 
+
+}
+
+
+@media (min-device-width:769px) and (max-device-width:1024px){
+
+    .tablas-listado {
+        width: 100%;
+        margin-top: 5%;
+        margin-left: 2%;
+        position: absolute;
+    }
+
+    .tabla-alta-serv {
+        width: 930px;
+    }
+
+    .form-alta-serv {
+        width: 100%;
+        margin-bottom: 0px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    section form input {
+        display: inline-block;
+        padding: 7px;
+        width: 90%;
+        margin: 3px;
+        font-size: 12px;
+    }
+
+    section form select {
+        display: inline-block;
+        padding: 10px;
+        width: 95%;
+        margin: 5px;
+        font-size: 12px;
+    }
+
+    .tabla-listado {
+        border-collapse: separate;
+        border-spacing: 0px 10px;
+        margin: auto;
+        font-size: 10px;
+        width: 96%;
+        margin-left: 3%;
+    }
+
+    .listado-previo {
+        margin-left: -2%;
+    }
+
+    .img-header {
+        width: 40px;
+        height: 40px;
+    }
+
+    .nav li a {
+        text-decoration: none;
+        display: inline-block;
+        padding: 5px 10px;
+        width: 40px;
+    }
+
+    .nav {
+        float: right;
+        margin-right: -3px;
+        margin-top: 80px;
+    }
+
+    .nav li:hover {
+        background:#43434352;
+        width: 57px;
+        margin-right: -18px;
+        cursor: pointer;
+    }
+
+    .listado-submenu {
+        width: 210px;
+        height: 250px;
+        float: left;
+        background: #ffff;
+        border-radius: 5px;
+        margin-left: 15px;
+        margin-bottom: 20px;
+    }
+
+    .submenu-usuarios {
+        width: 95%;
+        margin-top: 4%;
+        margin-left: 1%;
+    }
+
+    .listado-submenu a {
+        font-size: 15px;
+    }
+
+    .listado-submenu img {
+        width: 100px;
+        height: 100px;
+        margin-top: 35px;
+        margin-bottom: 35px;
+    }
+
+    .listado-previo#tabla-user-pre{
+        margin: auto;
+    }
+
+    .listado-previo#tabla-servicios-pre{
+        margin-left: 3%;
+        font-size: 12px;
+        width: 95%;
+    }
+
+    .footer img {
+        width: 33px;
+        height: 30px;
+        float: left;
+        margin-left: 5%;
+        margin-bottom: 10px;
+    }
 
 }
