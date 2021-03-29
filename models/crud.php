@@ -3,6 +3,7 @@
 #EXTENSIÓN DE CLASES: Los objetos pueden ser extendidos, y pueden heredar propiedades y métodos. Para definir una clase como extensión, debo definir una clase padre, y se utiliza dentro de una clase hija.
 
 require_once "conexion.php";
+date_default_timezone_set('America/Mexico_City');
 
 
 class Datos extends Conexion{
@@ -41,7 +42,7 @@ class Datos extends Conexion{
 
 		else{
 
-			return "error";
+            return $stmt->errorInfo();
 
 		}
 
@@ -69,6 +70,24 @@ class Datos extends Conexion{
 
 	public static function vistaGeneralModel($tabla){
 
+		$stmt = Conexion::conectar()->prepare("SELECT id_usuario, nombre_u, ape_pat_u, ape_mat_u, usuario, contrasena, id_dpto_u,
+                                id_puesto_u, estado_u, fecha_creacion_usuario, nombre_dpto, nombre_puesto FROM $tabla
+                                LEFT JOIN departamento ON id_departamento = id_dpto_u
+                                LEFT JOIN puesto ON id_puesto = id_puesto_u");	
+		$stmt->execute();
+
+		#fetchAll(): Obtiene todas las filas de un conjunto de resultados asociado al objeto PDOStatement. 
+		return $stmt->fetchAll();
+
+		$stmt->close();
+
+	}
+
+    #VISTA USUARIOS
+	#-------------------------------------
+
+	public static function vistaGeneralTablaModel($tabla){
+
 		$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla");	
 		$stmt->execute();
 
@@ -78,6 +97,8 @@ class Datos extends Conexion{
 		$stmt->close();
 
 	}
+
+
 
 	#EDITAR USUARIO
 	#-------------------------------------
@@ -140,7 +161,8 @@ class Datos extends Conexion{
 		$stmt = Conexion::conectar()->prepare("INSERT INTO $tabla (nombre_dpto, descripcion_dpto, fecha_creacion_dpto) VALUES (:nombre_dpto,:descripcion_dpto,:fecha_creacion_dpto)");	
 
 		#bindParam() Vincula una variable de PHP a un parámetro de sustitución con nombre o de signo de interrogación correspondiente de la sentencia SQL que fue usada para preparar la sentencia.
-		$fecha_creacion_dpto = date("Y-m-d H:m:s");
+        date_default_timezone_set('America/Mexico_City');
+        $fecha_creacion_dpto = date("Y-m-d H:m:s");
 		$stmt->bindParam(":nombre_dpto", $datosModel["nombre_dpto"], PDO::PARAM_STR);
 		$stmt->bindParam(":descripcion_dpto", $datosModel["descripcion_dpto"], PDO::PARAM_STR);
 		$stmt->bindParam(":fecha_creacion_dpto", $fecha_creacion_dpto, PDO::PARAM_STR);
@@ -160,7 +182,7 @@ class Datos extends Conexion{
 	#-------------------------------------
 
 	public static function vistaDepartamentosModel($tabla){
-		$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla");	
+		$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla ORDER BY nombre_dpto ASC");	
 		$stmt->execute();
 		#fetchAll(): Obtiene todas las filas de un conjunto de resultados asociado al objeto PDOStatement. 
 		return $stmt->fetchAll();
@@ -205,7 +227,8 @@ class Datos extends Conexion{
 		$stmt = Conexion::conectar()->prepare("INSERT INTO $tabla (nombre_puesto, descripcion_puesto, id_departamento_puesto, fecha_creacion_puesto)
 												 VALUES (:nombre_puesto,:descripcion_puesto,:id_departamento_puesto,:fecha_creacion_puesto)");	
 		#bindParam() Vincula una variable de PHP a un parámetro de sustitución con nombre o de signo de interrogación correspondiente de la sentencia SQL que fue usada para preparar la sentencia.
-		$fecha_creacion_puesto = date("Y-m-d H:m:s");
+        date_default_timezone_set('America/Mexico_City');
+        $fecha_creacion_puesto = date("Y-m-d H:m:s");
 		$stmt->bindParam(":nombre_puesto", $datosModel["nombre_puesto"], PDO::PARAM_STR);
 		$stmt->bindParam(":descripcion_puesto", $datosModel["descripcion_puesto"], PDO::PARAM_STR);
 		$stmt->bindParam(":id_departamento_puesto", $datosModel["id_departamento_puesto"], PDO::PARAM_INT);
@@ -220,7 +243,7 @@ class Datos extends Conexion{
 
 	#BORRAR DEPARTAMENTO
 	#------------------------------------
-	public function borrarDepartamentoModel($datosModel, $tabla){
+	public static function borrarDepartamentoModel($datosModel, $tabla){
 
 		$stmt = Conexion::conectar()->prepare("DELETE FROM $tabla WHERE id_departamento = :id_departamento");
 		$stmt->bindParam(":id_departamento", $datosModel, PDO::PARAM_INT);
@@ -235,7 +258,7 @@ class Datos extends Conexion{
 
 	#BORRAR PUESTO	
 	#------------------------------------
-	public function borrarPuestoModel($datosModel, $tabla){
+	public static function borrarPuestoModel($datosModel, $tabla){
 
 		$stmt = Conexion::conectar()->prepare("DELETE FROM $tabla WHERE id_puesto = :id_puesto");
 		$stmt->bindParam(":id_puesto", $datosModel, PDO::PARAM_INT);
@@ -265,7 +288,7 @@ class Datos extends Conexion{
     #EDITAR PUESTO
 	#-------------------------------------
 
-	public function editarPuestoModel($datosModel, $tabla){
+	public static function editarPuestoModel($datosModel, $tabla){
 
 		$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla WHERE id_puesto = :id_puesto");
 		$stmt->bindParam(":id_puesto", $datosModel, PDO::PARAM_INT);	
@@ -479,15 +502,17 @@ class Datos extends Conexion{
     #VISTA OS PENDIENTES
 	#-------------------------------------
 	public static function obtenerOSPendientesModel($tabla){
-		$stmt = Conexion::conectar()->prepare("SELECT num_orden, id_unidad_servicio FROM $tabla WHERE estado = 'PENDIENTE' ORDER BY fecha_orden ASC");	
+		$stmt = Conexion::conectar()->prepare("SELECT num_orden, id_unidad_servicio FROM $tabla WHERE estado = 'PENDIENTE' OR estado = 'ENPROCESO' ORDER BY fecha_orden ASC");	
 		$stmt->execute();
 		#fetchAll(): Obtiene todas las filas de un conjunto de resultados asociado al objeto PDOStatement. 
 		return $stmt->fetchAll();
 		$stmt->close();
 	}
 
+     #VISTA OS EN PROCESO
+	#-------------------------------------
 	public static function obtenerOSEnProcesoModel($tabla){
-		$stmt = Conexion::conectar()->prepare("SELECT num_orden FROM $tabla WHERE estado = 'ENPROCESO' ORDER BY fecha_orden ASC");	
+		$stmt = Conexion::conectar()->prepare("SELECT num_orden, id_unidad_servicio FROM $tabla WHERE estado = 'ENPROCESO' ORDER BY fecha_orden ASC");	
 		$stmt->execute();
 		#fetchAll(): Obtiene todas las filas de un conjunto de resultados asociado al objeto PDOStatement. 
 		return $stmt->fetchAll();
@@ -961,7 +986,20 @@ class Datos extends Conexion{
         }
     }
 
+    #VISTA ORDEN DE SERVICIO ATR TABLA
+	#-------------------------------------
 
+	public static function vistaPartidasEnProcesoAtrTablaModel($tabla){
+		$stmt = Conexion::conectar()->prepare("SELECT num_orden, id_unidad_servicio, comentarios_os, 
+                comentario_final, observaciones_os, fecha_creacion_partida_os, fecha_inicio_partida_os, id_partida_os, num_orden_partida_os
+                FROM $tabla 
+                LEFT JOIN partidas_os ON num_orden = num_orden_partida_os WHERE estado_partida_os = 'ENPROCESO'");	
+		$stmt->execute();
+		#fetchAll(): Obtiene todas las filas de un conjunto de resultados asociado al objeto PDOStatement. 
+		return $stmt->fetchAll();
+
+		$stmt->close();
+	}
 
 
 }

@@ -3,81 +3,70 @@
 class Paginas{
 	
 	public static function enlacesPaginasModel($enlaces){
-
-		if($enlaces == "Usuarios/usuarios" || $enlaces == "Usuarios/registro" || $enlaces == "Usuarios/editar"){
-
-			$module =  "views/modules/".$enlaces.".php";
-
-		}	else if($enlaces == "Puestos/listadoPuesto" || $enlaces == "Puestos/registro_puesto" ||
-        $enlaces == "Puestos/editarPuesto"){
-
-			$module =  "views/modules/".$enlaces.".php";
-
-		}	else if($enlaces == "Departamentos/listadoDpto" || $enlaces == "Departamentos/registro_dpto" 
+        session_start();
+        if( $_SESSION["autentificado"] == "SI"){
+		    if($enlaces == "Usuarios/usuarios" || $enlaces == "Usuarios/registro" || $enlaces == "Usuarios/editar"){
+			    $module =  "views/modules/".$enlaces.".php";
+    		}else if($enlaces == "Puestos/listadoPuesto" || $enlaces == "Puestos/registro_puesto" ||
+            $enlaces == "Puestos/editarPuesto"){                    
+			    $module =  "views/modules/".$enlaces.".php";
+		    }else if($enlaces == "Departamentos/listadoDpto" || $enlaces == "Departamentos/registro_dpto" 
             || $enlaces == "Departamentos/editarDpto"){
 
 			$module =  "views/modules/".$enlaces.".php";
 
-		}  else  if($enlaces == "dpto_ok"){
+		    }  else  if($enlaces == "dpto_ok"){
 
 			$module =  "views/modules/Departamentos/registro_dpto.php";
 
-		}else if($enlaces == "puesto_ok"){
+    		}else if($enlaces == "puesto_ok"){
 
 			$module =  "views/modules/Puestos/registro_puesto.php";
 
-        }else if($enlaces == "Usuarios/registrook"){
+            }else if($enlaces == "Usuarios/registrook"){
 
             $module =  "views/modules/Usuarios/registro.php";
 
-        }else if($enlaces == "index"){
+            }else if($enlaces == "index"){
 
 			$module =  "views/modules/Usuarios/ingresar.php";
 
-		}else if($enlaces == "ok"){
+	    	}else if($enlaces == "ok"){
 
-			$module =  "views/modules/Usuarios/Usuarios.php";
-		
-		}
-
-		else if($enlaces == "fallo"){
-
+			$module =  "views/modules/Usuarios/Usuarios.php";	
+    		} else if($enlaces == "fallo"){
 			$module =  "views/modules/Usuarios/ingresar.php";
-		
-		}
-
-		else if($enlaces == "cambio"){
-
+		    }  else if($enlaces == "cambio"){
 			$module =  "views/modules/Usuarios/usuarios.php";
 		
-		}
-	    else if($enlaces == "salir"){
+		    }
+	        else if($enlaces == "salir"){
 
 			$module =  "views/modules/salir.php";
 		
-		}
-
-		else{
-
-			$module =  "views/modules/index.php";
-
-		}
-		
-		return $module;
-
-	}
+		    }
+		    return $module;
+	    }else{
+            $module =  "views/modules/Usuarios/ingresar.php";
+            return $module;
+        }
+    }
 }
 
     class PaginasAtr{
 	
         public static function enlacesPaginasAtrModel($enlaces){
+
+            session_start();
+            if( $_SESSION["autentificado"] == "SI"){
     
             if($enlaces == "OrdenesServicio/altaOrdenS" || $enlaces == "OrdenesServicio/listadoOS" || 
                 $enlaces == "Unidades/listadoUnidades" || $enlaces == "Unidades/altaUnidad" || $enlaces == "Unidades/editarUnidad"
 				|| $enlaces == "ServiciosAtr/altaServicioAtr" || $enlaces == "ServiciosAtr/listadoServiciosAtr"
                 || $enlaces == "ServiciosAtr/editarServicioAtr" || $enlaces == "OrdenesServicio/detalleOS"
 				|| $enlaces == "OrdenesServicio/iniciarServicio" || $enlaces == "OrdenesServicio/finalizarServicio"
-				|| $enlaces == "OrdenesServicio/usuariosAsignados"){
+				|| $enlaces == "OrdenesServicio/usuariosAsignados" || $enlaces == "OrdenesServicio/editarOS"
+                || $enlaces == "OrdenesServicio/asignarUsuarios" || $enlaces == "OrdenesServicio/listadoServiciosEnProceso"){
     
                 $module =  "views/modules/".$enlaces.".php";
     			//VALIDAMOS SI SE DIO DE ALTA OK LA UNIDAD
@@ -98,8 +87,7 @@ class Paginas{
     
                 
             }else if($enlaces == "index"){
-    
-    
+                $module =  "views/modules/Usuarios/ingresar.php";   
             }else if($enlaces == "ok"){
             
                 $module =  "views/modules/ServiciosAtr/listadoUnidades.php";
@@ -107,7 +95,7 @@ class Paginas{
             }
     
             else if($enlaces == "fallo"){
-    
+                $module =  "views/modules/Usuarios/ingresar.php";
                 
             
             }
@@ -126,14 +114,16 @@ class Paginas{
     
             else{
     
-                
+                $module =  "index.php";
     
             }
             
             return $module;
-    
+        }else{
+            $module =  "views/modules/Usuarios/ingresar.php";
+            return $module;
         }
-    
+    }
 }
 
 
