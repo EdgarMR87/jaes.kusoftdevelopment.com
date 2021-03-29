@@ -5,13 +5,13 @@
 		<tr>
             <td class="derecha"><p>Nombre : </p></td>
             <td>
-                <input type="text" placeholder="Nombre del departamento" name="nombre_dpto" required>
+                <input class="mayusculas" type="text" placeholder="Nombre del departamento" name="nombre_dpto" required>
             </td>
         </tr>
         <tr>
             <td class="derecha"><p>Descripción  : </p></td>
             <td>
-                <input type="text" placeholder="Descripcion del departamento" name="descripcion_dpto">
+                <input class="mayusculas" type="text" placeholder="Descripcion del departamento" name="descripcion_dpto">
             </td>
         </tr>
         </table>

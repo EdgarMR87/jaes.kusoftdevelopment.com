@@ -22,12 +22,3 @@
 		</tbody>
 	</table>
 </div>
-<?php
-    if(isset($_GET["action"])){
-	    if($_GET["action"] == "cambio_dpto"){
-            echo "Cambio Exitoso";
-	    }
-    }
-?>
-
-
