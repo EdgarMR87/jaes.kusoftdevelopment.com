@@ -54,7 +54,9 @@ class Datos extends Conexion{
 	#-------------------------------------
 	public static function ingresoUsuarioModel($datosModel, $tabla){
 
-		$stmt = Conexion::conectar()->prepare("SELECT id_usuario, password, estado_u, id_dpto_u FROM $tabla WHERE usuario = :usuario");	
+		$stmt = Conexion::conectar()->prepare("SELECT CONCAT(nombre_u,' ',ape_pat_u,' ',ape_mat_u)AS nombreCompleto, 
+												id_usuario, password, estado_u, id_dpto_u
+                                                 FROM $tabla WHERE usuario = :usuario");	
 		$stmt->bindParam(":usuario", $datosModel["usuario_r"], PDO::PARAM_STR);
 		$stmt->execute();
 
