@@ -8,12 +8,13 @@
 	<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert-dev.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css" />
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.all.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.css">
 	<link rel="shortcut icon" href="views/img/jaeslogo.png" type="image/png">
 	<title><?=$page_title?></title>
 	<script>
-  
+
   	$(document).ready(function(){
 
       $("#departamento").on('change', function(){
@@ -88,11 +89,36 @@ $('#li-servicios').click(function(event){
 
 });
 
-
-
 </script>
+
 </head>
 
+<script>
+
+function registroOK(url){
+    swal({
+        title: "Registro Exitoso",
+        text: "Redireccionando en 2 segundos .....",
+        type: "success",
+        timer: 2000,
+        },
+        function(){
+            window.location = url;
+    });
+}
+
+function borrarOk(link){
+    swal({
+        title: "Se elimino el registro Exitosamente!",
+        text: "Redireccionando en 2 segundos...",
+        type: "success",
+        timer: 2000
+    }).then(() => {
+        window.location.href = link;
+    })
+}
+
+</script>
 <body>
 <section>
 <?php 
