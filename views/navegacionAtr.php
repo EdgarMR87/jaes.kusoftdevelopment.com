@@ -1,3 +1,35 @@
+<script>
+
+    function salir(){
+        swal({
+            title: "¿Deseas Cerrar Sesión?",
+            text: "Estás por salir del sistema.",
+            type: "warning",
+            showCancelButton: true,
+            cancelButtonText: "Cancelar",
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Continuar",
+            closeOnConfirm: false
+        }).then(function(result) {
+                if (result.value) {
+                    swal({
+                        title: "Adios",
+                        text: "Saliendo del sistema .....",
+                        type: "success",
+                    }).then(function(result) {
+                            if(result.value){
+                                location.href = "index.php?action=exit";
+                            }
+                        });
+                }else{
+                    swal("No se ha cerrado sesión","Sigamos trabajando.","error");
+                    delay(2000);
+                }
+        });
+    }
+
+</script>
+
 <div id="header">
 	<ul class="nav">
 		<li>
@@ -16,7 +48,7 @@
             </a>            
         </li>
         <li>
-            <a href="index.php?action=salir">
+            <a onclick="salir(); return false;" >
                 <img class="img-header" src="/views/img/Salir.png">
             </a>
         </li>
@@ -47,6 +79,18 @@
 		<a href="index.php?action=OrdenesServicio/finalizarServicio">
 			<img src="/views/img/Terminar.png">
 			<p>Finalizar Servicio</p>
+		</a>
+	</div>
+    <div class="listado-submenu">
+		<a href="index.php?action=OrdenesServicio/asignarUsuarios">
+			<img src="/views/img/asignarUsuarios.png">
+			<p>Asignar Usuario</p>
+		</a>
+	</div>
+    <div class="listado-submenu">
+		<a href="index.php?action=OrdenesServicio/listadoServiciosEnProceso">
+			<img src="/views/img/asignarUsuarios.png">
+			<p>Servicio En Proceso</p>
 		</a>
 	</div>
 
