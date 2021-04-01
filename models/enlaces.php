@@ -41,7 +41,6 @@ class Paginas{
 		
 		    }
 	        else if($enlaces == "salir"){
-
 			$module =  "views/modules/salir.php";
 		
 		    }
@@ -56,75 +55,41 @@ class Paginas{
     class PaginasAtr{
 	
         public static function enlacesPaginasAtrModel($enlaces){
-
             session_start();
             if( $_SESSION["autentificado"] == "SI"){
     
-            if($enlaces == "OrdenesServicio/altaOrdenS" || $enlaces == "OrdenesServicio/listadoOS" || 
-                $enlaces == "Unidades/listadoUnidades" || $enlaces == "Unidades/altaUnidad" || $enlaces == "Unidades/editarUnidad"
-				|| $enlaces == "ServiciosAtr/altaServicioAtr" || $enlaces == "ServiciosAtr/listadoServiciosAtr"
-                || $enlaces == "ServiciosAtr/editarServicioAtr" || $enlaces == "OrdenesServicio/detalleOS"
-				|| $enlaces == "OrdenesServicio/iniciarServicio" || $enlaces == "OrdenesServicio/finalizarServicio"
-				|| $enlaces == "OrdenesServicio/usuariosAsignados" || $enlaces == "OrdenesServicio/editarOS"
-                || $enlaces == "OrdenesServicio/asignarUsuarios" || $enlaces == "OrdenesServicio/listadoServiciosEnProceso"){
-    
-                $module =  "views/modules/".$enlaces.".php";
-    			//VALIDAMOS SI SE DIO DE ALTA OK LA UNIDAD
-            }	else if($enlaces == "Unidades/altaUnidadOk"){
-				
-				$module =  "views/modules/Unidades/altaUnidad.php";
-                
-    			//VALIDAMOS CUANDO SE REALIZA UN CAMBIO OK A LAS UNIDADES
-            }	else if($enlaces == "Unidades/cambiok"){
-
-				$module =  "views/modules/Unidades/listadoUnidades.php";
-    
-            }  else  if($enlaces == "ServiciosAtr/altaServicioAtrok"){
-
-				$module =  "views/modules/ServiciosAtr/altaServicioAtr.php";
-            //VALIDAMOS SI SE DIO DE ALTA LA ORDEN DE SERVICIO
-            }else if($enlaces == ""){
-    
-                
-            }else if($enlaces == "index"){
-                $module =  "views/modules/Usuarios/ingresar.php";   
-            }else if($enlaces == "ok"){
-            
-                $module =  "views/modules/ServiciosAtr/listadoUnidades.php";
-            
-            }
-    
-            else if($enlaces == "fallo"){
+                if($enlaces == "OrdenesServicio/altaOrdenS" || $enlaces == "OrdenesServicio/listadoOS" || 
+                    $enlaces == "Unidades/listadoUnidades" || $enlaces == "Unidades/altaUnidad" || $enlaces == "Unidades/editarUnidad"
+	    			|| $enlaces == "ServiciosAtr/altaServicioAtr" || $enlaces == "ServiciosAtr/listadoServiciosAtr"
+                    || $enlaces == "ServiciosAtr/editarServicioAtr" || $enlaces == "OrdenesServicio/detalleOS"
+			    	|| $enlaces == "OrdenesServicio/iniciarServicio" || $enlaces == "OrdenesServicio/finalizarServicio"
+				    || $enlaces == "OrdenesServicio/usuariosAsignados" || $enlaces == "OrdenesServicio/editarOS"
+                    || $enlaces == "OrdenesServicio/asignarUsuarios" || $enlaces == "OrdenesServicio/listadoServiciosEnProceso"){
+                                $module =  "views/modules/".$enlaces.".php";
+                } else if($enlaces == "Unidades/altaUnidadOk"){				
+        				$module =  "views/modules/Unidades/altaUnidad.php";                
+    	        } else if($enlaces == "Unidades/cambiok"){
+				        $module =  "views/modules/Unidades/listadoUnidades.php";    
+                }  else  if($enlaces == "ServiciosAtr/altaServicioAtrok"){
+        				$module =  "views/modules/ServiciosAtr/altaServicioAtr.php";
+                }else if($enlaces == "index"){
+                        $module =  "views/modules/Usuarios/ingresar.php";   
+                }else if($enlaces == "ok"){
+                        $module =  "views/modules/ServiciosAtr/listadoUnidades.php";
+                }else if($enlaces == "fallo"){
+                        $module =  "views/modules/Usuarios/ingresar.php";
+                } else if($enlaces == "exit"){
+                        $module =  "views/modules/salir.php";
+			    } else{
+                        $module =  "index.php";    
+                }
+                return $module;
+            }else{
                 $module =  "views/modules/Usuarios/ingresar.php";
-                
-            
+                return $module;
             }
-    
-            else if($enlaces == "cambio"){
-    
-                
-            
-            }
-            else if($enlaces == "salir"){
-
-				$module =  "views/modules/salir.php";
-			
-			}
-	
-    
-            else{
-    
-                $module =  "index.php";
-    
-            }
-            
-            return $module;
-        }else{
-            $module =  "views/modules/Usuarios/ingresar.php";
-            return $module;
         }
     }
-}
 
 
 ?>
