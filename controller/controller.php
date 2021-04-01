@@ -71,15 +71,14 @@ class MvcController{
 
 			$respuesta = Datos::ingresoUsuarioModel($datosController, "usuarios");
 
-			if(password_verify($_POST["contrasena"], $respuesta["password"])){
-				
-					session_start();
-					$_SESSION["id_usuario"] = $respuesta["id_usuario"];
-                    $_SESSION["id_departamento"] = $respuesta["id_dpto_u"];
-					header("location:index.php?action=ok");
+			if(password_verify($_POST["contrasena"], $respuesta["password"])){				
+				session_start();
+				$_SESSION["id_usuario"] = $respuesta["id_usuario"];
+                $_SESSION["nombreCompleto"] = $respuesta["nombreCompleto"];
+                $_SESSION["id_departamento"] = $respuesta["id_dpto_u"];
+                return "success";
 			} else{
-					
-					header("location:index.php?action=fallo");			
+				return "error";		
 			}
 		}
 	}	
@@ -314,7 +313,7 @@ class MvcController{
 		return $respuesta;
 	}
 
-    #REGISTRO DE DEPARTAMENTO
+    #REGISTRO DE PUESTO
 	#------------------------------------
 	public static function registroPuestoController(){
 		require_once "./models/crud.php";
@@ -324,11 +323,34 @@ class MvcController{
                                         "id_departamento_puesto"=>$_POST["id_departamento_puesto"]);
 			$respuesta = Datos::registroPuestoModel($datosController, "puesto");
 			if($respuesta == "success"){
-				header("location:index.php?action=puesto_ok");
+				return $respuesta;
 			}else{
-				echo "<p class='error-acceso'>".$respuesta[2]."</p>";
+                $valor = $respuesta[2];
+                return $valor;
 			}
 		}
+	}
+
+    #ACTUALIZAR PUESTO
+	#------------------------------------
+	public function actualizarPuestoController(){
+        require_once "./models/crud.php";
+		if(isset($_POST["id_puesto_modif"])){
+			$datosController = array( "id_puesto_modif"=>$_POST["id_puesto_modif"],
+							          "nombre_puesto_modif"=>$_POST["nombre_puesto_modif"],
+                                      "descripcion_puesto_modif"=>$_POST["descripcion_puesto_modif"],
+				                      "id_departamento_puesto_modif"=>$_POST["id_departamento_puesto_modif"]);
+			
+			$respuesta = Datos::actualizarPuestoModel($datosController, "puesto");
+			if($respuesta == "success"){
+                return $respuesta;
+			}else{
+                $valor = $respuesta[2];
+                return $valor;
+			}
+
+		}
+	
 	}
     
     
@@ -350,12 +372,11 @@ class MvcController{
 								      "descripcion_serv"=>strtoupper($_POST["descripcion_serv"]),
                                     "comentarios_serv"=>strtoupper($_POST["comentarios_serv"]));
 			$respuesta = Datos::registroServicioAtrModel($datosController, "servicios_atr");
+            $link = "index.php?action=ServiciosAtr/listadoServiciosAtr";
 			if($respuesta == "success"){
-                echo '<script>
-                        alert("Se inserto el servicio correctamente");
-                        setTimeout("location.href ='."'index.php?action=ServiciosAtr/listadoServiciosAtr'".'"'.', 1000);
-                    </script>';
-      
+                echo "<script>
+                        registroOK('".$link."');
+                    </script>";
 			}else{
 				echo "<p class='error-acceso'>".$respuesta[2]."</p>";
 			}
@@ -392,18 +413,29 @@ public static function editarServicioAtrController(){
 		}
 	}
     
-
     #BORRAR USUARIO
 	#------------------------------------
 	public function borrarServicioAtrController(){
         require_once "./models/crud.php";
-		if(isset($_GET["id_servicio_Borrar"])){
-			$datosController = $_GET["id_servicio_Borrar"];
+		if(isset($_POST["id_servicio_borrar"])){
+			$datosController = $_POST["id_servicio_borrar"];
 			$respuesta = Datos::borrarServicioAtrModel($datosController, "servicios_atr");
+            $link = "index.php?action=ServiciosAtr/listadoServiciosAtr";
 			if($respuesta == "success"){
-                echo "<script>alert('Se borro exitosamente el servicio');
-                location.href = 'index.php?action=ServiciosAtr/listadoServiciosAtr';
-                </script>";
+                echo '<script>
+                var x = document.getElementById("openModalEliminar");
+                x.style.display = "none";             
+                borrarOk('."'".$link."'".');
+                </script>';
+                
+			}else{
+                $valor = $respuesta[2];
+                $error = str_replace("'", "", $valor);
+                echo '<script>
+                        var x = document.getElementById("openModalEliminar");
+                        x.style.display = "none";              
+                        errorRegistro('."'".$error."','".$link."'".');
+                </script>';
 			}
 		}
 	}
