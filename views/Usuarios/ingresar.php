@@ -1,3 +1,20 @@
+<script>
+function bienvenida(usuario){
+    swal({
+        title: "Acceso Exitoso!",
+        text: "Bienvenido : " + usuario,
+        type: "success",
+        closeOnClickOutside: false,
+        closeOnEsc: false,
+        allowOutsideClick: false
+    }).then(function(result) {
+        if(result.value){
+            window.location.href = "index.php?action=ok";
+        }else{}
+    });
+}
+</script>
+
 <?php 
 echo "<script> window.document.title = 'ACCESO JAES'</script>";
 ?>
@@ -34,7 +51,14 @@ echo "<script> window.document.title = 'ACCESO JAES'</script>";
 require_once "controllers/controller.php";
 
 $ingreso = new MvcController();
-$ingreso -> ingresoUsuarioController();
-
+$respuesta = $ingreso -> ingresoUsuarioController();
+$nombreCompleto = $_SESSION["nombreCompleto"]; 
+if(isset($respuesta)){
+    if($respuesta == "success"){
+        echo "<script>
+                    bienvenida('". $nombreCompleto ."');
+            </script>";
+    }
+}
 
 ?>
