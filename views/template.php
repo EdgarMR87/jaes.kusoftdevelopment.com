@@ -12,7 +12,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.all.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.33.1/sweetalert2.css">
 	<link rel="shortcut icon" href="views/img/jaeslogo.png" type="image/png">
-	<title><?=$page_title?></title>
+    <script type="text/javascript" src="/views/modules/sweetalerts.js"></script>
 	<script>
 
   	$(document).ready(function(){
@@ -93,32 +93,7 @@ $('#li-servicios').click(function(event){
 
 </head>
 
-<script>
 
-function registroOK(url){
-    swal({
-        title: "Registro Exitoso",
-        text: "Redireccionando en 2 segundos .....",
-        type: "success",
-        timer: 2000,
-        },
-        function(){
-            window.location = url;
-    });
-}
-
-function borrarOk(link){
-    swal({
-        title: "Se elimino el registro Exitosamente!",
-        text: "Redireccionando en 2 segundos...",
-        type: "success",
-        timer: 2000
-    }).then(() => {
-        window.location.href = link;
-    })
-}
-
-</script>
 <body>
 <section>
 <?php 
@@ -128,8 +103,8 @@ session_start();
 if(isset($_SESSION["id_departamento"])){
     switch($_SESSION["id_departamento"]){
         case "10":
-	        if(isset($_SESSION["id_usuario"]))
-		        $_SESSION["autentificado"] = "SI";           
+	        if(isset($_SESSION["id_usuario"]))    
+            $_SESSION["autentificado"] = "SI"; 
 		    include "views/modules/navegacionAtr.php";
 		    $mvc = new MvcController();
 		    $mvc -> enlacesPaginasAtrController();
@@ -138,7 +113,7 @@ if(isset($_SESSION["id_departamento"])){
 	    break;
 	    case "1":
 		    if(isset($_SESSION["id_usuario"]))
-		        $_SESSION["autentificado"] = "SI";
+            $_SESSION["autentificado"] = "SI";
 	        include "views/modules/navegacion.php"; 
 	    	$mvc = new MvcController();
 		    $mvc -> enlacesPaginasController();
