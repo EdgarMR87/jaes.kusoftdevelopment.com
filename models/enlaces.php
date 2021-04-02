@@ -28,11 +28,9 @@ class Paginas{
             $module =  "views/modules/Usuarios/registro.php";
 
             }else if($enlaces == "index"){
-
 			$module =  "views/modules/Usuarios/ingresar.php";
 
 	    	}else if($enlaces == "ok"){
-
 			$module =  "views/modules/Usuarios/Usuarios.php";	
     		} else if($enlaces == "fallo"){
 			$module =  "views/modules/Usuarios/ingresar.php";
@@ -75,7 +73,7 @@ class Paginas{
                 }else if($enlaces == "index"){
                         $module =  "views/modules/Usuarios/ingresar.php";   
                 }else if($enlaces == "ok"){
-                        $module =  "views/modules/ServiciosAtr/listadoUnidades.php";
+                        $module =  "views/modules/OrdenesServicio/listadoOS";
                 }else if($enlaces == "fallo"){
                         $module =  "views/modules/Usuarios/ingresar.php";
                 } else if($enlaces == "exit"){
