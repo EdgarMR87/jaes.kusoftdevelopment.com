@@ -24,14 +24,4 @@
 $registro = new MvcController();
 $registro -> registroUnidadController();
 
-if(isset($_GET["action"])){
-
-	if($_GET["action"] == "Unidades/altaUnidadOk"){
-
-		echo "<span class='registro-ok'>Registro de Unidad Exitoso</span>";
-	
-	}
-
-}
-
 ?>
