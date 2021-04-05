@@ -2,9 +2,20 @@
 function clickaction( b ){
     document.getElementById('id_partida_os').value = b.id; 
     document.getElementById('num_orden_iniciar').value = b.dataset.os; 
-    
+    $('#usuarios').val();
+    var id_dpto_serv = b.dataset.dptoserv;
 
+    $.ajax({
+            type: 'POST',
+            url: '/views/modules/OrdenesServicio/obtenerTrabajador',
+            data: {'id_dpto_serv' : id_dpto_serv},
+            dataType: "html",
+            success: function(resp){
+                $('#usuarios').html(resp);
+            }
+        });
 }
+
 
 function clickactionFinalizar(b){
     document.getElementById('id_partida_os_f').value = b.id;
@@ -166,7 +177,7 @@ $(document).on('click', '.borrar', function (event) {
                         ."</td>";
                         switch($campo['estado_partida_os']){
                             case "PENDIENTE";
-                             echo   "<td><a onclick=clickaction(this) href='#openModalIniciar' id='". $campo['id_partida_os'] ."' data-os='". $campo['num_orden_partida_os']."'><img class='ico-partida' src='/views/img/iniciar.png'></a></td>";
+                             echo   "<td><a onclick=clickaction(this) href='#openModalIniciar' id='". $campo['id_partida_os'] ."' data-os='". $campo['num_orden_partida_os']."' data-dptoserv='". $campo['id_dpto_serv'] ."'><img class='ico-partida' src='/views/img/iniciar.png'></a></td>";
                             break;
                             case "ENPROCESO";
                             echo   "<td><a onclick=clickactionFinalizar(this) href='#openModalFinalizar' id='". $campo['id_partida_os'] ."' data-os='". $campo['num_orden_partida_os']."'><img class='ico-partida' src='/views/img/stop.png'></td>";
