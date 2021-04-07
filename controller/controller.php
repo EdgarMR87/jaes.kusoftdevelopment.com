@@ -64,6 +64,7 @@ class MvcController{
 	#INGRESO DE USUARIOS
 	#------------------------------------
     public static function ingresoUsuarioController(){
+    
 		require_once "./models/crud.php";
 		if(isset($_POST["usuario_r"])){
 			$datosController = array( "usuario_r"=>$_POST["usuario_r"], 
@@ -71,8 +72,8 @@ class MvcController{
 
 			$respuesta = Datos::ingresoUsuarioModel($datosController, "usuarios");
 
-			if(password_verify($_POST["contrasena"], $respuesta["password"])){				
-				session_start();
+			if(password_verify($_POST["contrasena"], $respuesta["password"])){	
+                session_start();	
 				$_SESSION["id_usuario"] = $respuesta["id_usuario"];
                 $_SESSION["nombreCompleto"] = $respuesta["nombreCompleto"];
                 $_SESSION["id_departamento"] = $respuesta["id_dpto_u"];
@@ -160,7 +161,8 @@ class MvcController{
 		require_once "./models/crud.php";
 		$respuesta = Datos::vistaDepartamentosModel("departamento");
 		#El constructor foreach proporciona un modo sencillo de iterar sobre arrays. foreach funciona sólo sobre arrays y objetos, y emitirá un error al intentar usarlo con una variable de un tipo diferente de datos o una variable no inicializada.
-		foreach($respuesta as $row => $item){
+		echo"<option value='0' disabled selected>Selecciona el departamento que realizará el servicio ... </option>";
+        foreach($respuesta as $row => $item){
 		echo"<option value='". $item['id_departamento']."'>".$item['nombre_dpto']."</option>";
 		}
 	}
@@ -370,7 +372,8 @@ class MvcController{
 		if(isset($_POST["codigo_atr_serv"])){
 			$datosController = array( "codigo_atr_serv"=>$_POST["codigo_atr_serv"], 
 								      "descripcion_serv"=>strtoupper($_POST["descripcion_serv"]),
-                                    "comentarios_serv"=>strtoupper($_POST["comentarios_serv"]));
+                                    "comentarios_serv"=>strtoupper($_POST["comentarios_serv"]),
+                                    "id_dpto_serv"=>$_POST["id_dpto_serv"]);
 			$respuesta = Datos::registroServicioAtrModel($datosController, "servicios_atr");
             $link = "index.php?action=ServiciosAtr/listadoServiciosAtr";
 			if($respuesta == "success"){
@@ -404,9 +407,11 @@ public static function editarServicioAtrController(){
 									  "estado_serv_editar"=>$_POST["estado_serv_editar"],
 									  "id_servicio_editar"=>$_POST["id_servicio_editar"]);
 			$respuesta = Datos::actualizarServicioAtrModel($datosController, "servicios_atr");
+            $link = "index.php?action=ServiciosAtr/listadoServiciosAtr";
 			if($respuesta == "success"){
-				echo "<span class='registro-actualizado'>Actualizacion Correcta</span>";
-                echo '<script> setTimeout("location.href ='."'index.php?action=ServiciosAtr/listadoServiciosAtr'".'"'.', 1000);</script>';
+                echo "<script>
+                        actualizarOK('".$link."');
+                    </script>";
             } else {
 				echo "<p class='error-acceso'>". var_dump($respuesta)."</p>";
 			}
@@ -427,7 +432,6 @@ public static function editarServicioAtrController(){
                 x.style.display = "none";             
                 borrarOk('."'".$link."'".');
                 </script>';
-                
 			}else{
                 $valor = $respuesta[2];
                 $error = str_replace("'", "", $valor);
@@ -448,17 +452,28 @@ public static function editarServicioAtrController(){
     }
 
     
-#BORRAR DEPARTAMENTO
+    #BORRAR UNIDAD
 	#------------------------------------
 	public function borrarUnidadController(){
         require_once "./models/crud.php";
-		if(isset($_GET["id_unidad_borrar"])){
-			$datosController = $_GET["id_unidad_borrar"];
+		if(isset($_POST["id_unidad_borrar"])){
+			$datosController = $_POST["id_unidad_borrar"];
 			$respuesta = Datos::borrarUnidadesModel($datosController, "unidades");
+            $link = "index.php?action=Unidades/listadoUnidades";
 			if($respuesta == "success"){
-                echo "<script>alert('Se borro la unidad exitosamente');
-                location.href = 'index.php?action=Unidades/listadoUnidades';
-                </script>";
+                echo '<script>
+                var x = document.getElementById("openModalEliminar");
+                x.style.display = "none";             
+                borrarOk('."'".$link."'".');
+                </script>';
+			}else{
+                $valor = $respuesta[2];
+                $error = str_replace("'", "", $valor);
+                echo '<script>
+                        var x = document.getElementById("openModalEliminar");
+                        x.style.display = "none";              
+                        errorRegistro('."'".$error."','".$link."'".');
+                </script>';
 			}
 		}
 	}
@@ -471,14 +486,17 @@ public static function editarServicioAtrController(){
 			$datosController = array( "num_unidad"=>$_POST["num_unidad"], 
 								      "modelo"=>$_POST["modelo"]);
 			$respuesta = Datos::registroUnidadModel($datosController, "unidades");
+            $link = "index.php?action=Unidades/altaUnidad";
 			if($respuesta == "success"){
-                echo '<script>
-                        alert("Se inserto la unidad correctamente");
-                        setTimeout("location.href ='."'index.php?action=Unidades/listadoUnidades'".'"'.', 1000);
-                    </script>';
-      
+                echo "<script>
+                        registroOK('".$link."');
+                    </script>";
 			}else{
-				echo "<p class='error-acceso'>".$respuesta[2]."</p>";
+                $valor = $respuesta[2];
+                $error = str_replace("'", "", $valor);
+                echo '<script>
+                        errorRegistro('."'".$error."','".$link."'".');
+                </script>';
 			}
 		}
 	}
@@ -862,7 +880,7 @@ public static function editarServicioAtrController(){
     #VITA DE LA LISTA DE SERVICIOS EN PROCESO
     public static function vistaPartidasEnProcesoController(){
         require_once "./models/crud.php";
-		$respuesta = Datos::vistaPartidasEnProcesoAtrTablaModel("ordenServicio");
+		$respuesta = Datos::vistaPartidasEnProcesoAtrTablaModel("partidas_os");
 		#El constructor foreach proporciona un modo sencillo de iterar sobre arrays. foreach funciona sólo sobre arrays y objetos, y emitirá un error al intentar usarlo con una variable de un tipo diferente de datos o una variable no inicializada.
         return $respuesta;
     }
@@ -886,7 +904,6 @@ public static function editarServicioAtrController(){
 		}
 	}
     
-
     
 
     
