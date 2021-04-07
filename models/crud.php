@@ -997,7 +997,7 @@ class Datos extends Conexion{
 
 	public static function vistaPartidasEnProcesoAtrTablaModel($tabla){
 		$stmt = Conexion::conectar()->prepare("SELECT num_orden_partida_os, id_unidad_servicio, descripcion_serv, comentarios_os, 
-                comentario_final, observaciones_os, fecha_creacion_partida_os, fecha_inicio_partida_os, id_partida_os
+                comentario_final, observaciones_os, fecha_creacion_partida_os, fecha_inicio_partida_os, id_partida_os, id_dpto_serv
                 FROM $tabla 
                 LEFT JOIN ordenServicio ON num_orden = num_orden_partida_os 
                 LEFT JOIN servicios_atr ON codigo_partida_os = codigo_atr_serv
