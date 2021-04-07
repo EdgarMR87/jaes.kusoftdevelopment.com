@@ -37,6 +37,7 @@ $(document).ready(function(){
         <thead>
             <th class="listado-th">OS</th>
             <th class="listado-th">Unidad</th>
+            <th class="listado-th">Servicio</th>
             <th class="listado-th">Comentario Inicial</th>
             <th class="listado-th">Comentario Final</th>
             <th class="listado-th">Observaciones</th>
@@ -54,10 +55,13 @@ $(document).ready(function(){
                 foreach($respuesta as $row => $campo){
                 echo "<tr> 
                     <td>".
-                        $campo['num_orden']
+                        $campo[0]
                     ."</td>
                     <td>".
                         $campo['id_unidad_servicio']
+                    ."</td>
+                    <td>".
+                        $campo['descripcion_serv']
                     ."</td>
                     <td>".
                         $campo['comentarios_os']
