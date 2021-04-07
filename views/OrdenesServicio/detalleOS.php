@@ -1,4 +1,21 @@
-<script>//EVENTO DEL BOTON AGREGAR PARTIDA 
+<script>
+//EVENTO PARA ABRIR MODAL Y ASIGNAR USUARIOS 
+function clickactionAsignar( b ){
+    document.getElementById('id_partida_os_asignar').value = b.id;
+    var id_dpto_serv = b.dataset.dptoserv;
+    $.ajax({
+        type: 'POST',
+        url: '/views/modules/OrdenesServicio/obtenerTrabajador',
+        data: {'id_dpto_serv' : id_dpto_serv},
+        dataType: "html",
+        success: function(resp){
+            $('#usuariosAsignar').html(resp);
+        }
+    });
+}
+
+
+//EVENTO DEL BOTON AGREGAR PARTIDA 
 function clickaction( b ){
     document.getElementById('id_partida_os').value = b.id; 
     document.getElementById('num_orden_iniciar').value = b.dataset.os; 
@@ -23,6 +40,20 @@ function clickactionFinalizar(b){
 }
 
 $(document).ready(function(){
+
+    //AGREGAR USUARIOS A LA TABLA ASIGNAR 
+    
+    $("#agregar-user-asignar").click(function(){
+        var id_usuario = $("#usuariosAsignar").val();
+        var nombre_usuario = $("#usuariosAsignar option:selected").text();
+        var htmlTags = '<tr>'+
+            '<td>' + id_usuario  + '<input type="hidden" name="usuariosAsignados[]" value="' + id_usuario + '"></td>'+
+            '<td>' + nombre_usuario +'</td>'+
+            '<td><a class="borrar"><img src="/views/img/eliminar.png" class="img25"></img></a></td>'+
+            '</tr>';
+        $('#tabla-user-pre-asignar tbody').append(htmlTags);
+    });
+
 
 $("#agregar-user").click(function(){
     var id_usuario = $("#usuarios").val();
@@ -140,7 +171,8 @@ $(document).on('click', '.borrar', function (event) {
                     <th class="listado-th">Fecha Termino </th>
                     <th class="listado-th">Estado</th>
                     <th class="listado-th">Accion</th>
-                    <th class="listado-th">Asignado a</th>
+                    <th class="listado-th">Asignar</th>
+                    <th class="listado-th">Asignado a</th>                   
                 </thead>
                 <tbody>
                 <?php 
@@ -177,13 +209,22 @@ $(document).on('click', '.borrar', function (event) {
                         ."</td>";
                         switch($campo['estado_partida_os']){
                             case "PENDIENTE";
-                             echo   "<td><a onclick=clickaction(this) href='#openModalIniciar' id='". $campo['id_partida_os'] ."' data-os='". $campo['num_orden_partida_os']."' data-dptoserv='". $campo['id_dpto_serv'] ."'><img class='ico-partida' src='/views/img/iniciar.png'></a></td>";
+                             echo   "<td>
+                                        <a onclick=clickaction(this) href='#openModalIniciar' id='". $campo['id_partida_os'] ."' data-os='". $campo['num_orden_partida_os']."' data-dptoserv='". $campo['id_dpto_serv'] ."'>
+                                            <img class='ico-partida' src='/views/img/iniciar.png'>
+                                        </a>
+                                    </td><td></td>";
                             break;
                             case "ENPROCESO";
-                            echo   "<td><a onclick=clickactionFinalizar(this) href='#openModalFinalizar' id='". $campo['id_partida_os'] ."' data-os='". $campo['num_orden_partida_os']."'><img class='ico-partida' src='/views/img/stop.png'></td>";
+                            echo   "<td><a onclick=clickactionFinalizar(this) href='#openModalFinalizar' id='". $campo['id_partida_os'] ."' data-os='". $campo['num_orden_partida_os']."'><img class='ico-partida' src='/views/img/stop.png'></td>
+                                    <td>
+                                        <a onclick=clickactionAsignar(this) href='#openModalAsignar' id='". $campo['id_partida_os'] ."' data-os='". $campo['num_orden_partida_os']."' data-dptoServ='".$campo['id_dpto_serv']."'>
+                                            <img class='ico-partida' src='/views/img/asignar.png'>
+                                        </a>
+                                    </td>";
                             break;
                             case "TERMINADO";
-                            echo   "<td><img class='ico-partida' src='/views/img/listo.png'></td>";                       
+                            echo   "<td><img class='ico-partida' src='/views/img/listo.png'></td><td></td>";                       
                             break;
                         }
                         echo    "<td><a href='index.php?action=OrdenesServicio/usuariosAsignados&id_partida_os=".$campo['id_partida_os']."&OS=".$campo['num_orden_partida_os']."'>".
@@ -254,9 +295,44 @@ $(document).on('click', '.borrar', function (event) {
 	        </div>
         </div>
         <!-- TERMINA EL MODAL PARA FINALIZAR SERVICIO -->
+
+        <!-- MODAL PARA ASIGNAR USUARIO -->
+
+        <div id="openModalAsignar" class="modalDialog">
+    	    <div>
+            	<a href="#close" title="Close" class="close">X</a>
+                <h1>ASIGNAR USUARIO(S)</h1>
+                <table>
+                    <input type="hidden" name="id_partida_os" id="id_partida_os">
+                    <input type="hidden" name="id_partida_os_asignar" id="id_partida_os_asignar">
+                    <tr>
+                        <td class="titulo"><p class="derecha">Asignar a : </p></td>
+                        <td>
+                            <select name="usuariosAsignar" id="usuariosAsignar">                   
+                            </select>
+                        </td>
+                        <td>
+                            <input class="btn-agregar-serv" type="button" value="Añadir" name="agregar-user" id="agregar-user-asignar">
+                        </td>
+                    </tr>
+                </table>
+                <table class="listado-previo" id="tabla-user-pre-asignar">
+                    <thead>
+                        <th class="listado-th">Id Usuario</th>
+                        <th class="listado-th">Usuario - Nombre Completo</th>
+                        <th class="listado-th">Eliminar</th>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                <input class="btn-registrar" type="submit" value="ASIGNAR USUARIO(S)">
+	        </div>
+        </div>
     </form>
 </div>
+
 <?php
+    $vistaUsuario -> asignarUsuariosServicioListadoController();  
     $vistaUsuario -> iniciarServicioModalController();//AGREGAMOS LA VARIABLE DE INCIAR SERVICIO.
     $vistaUsuario -> finalizarServicioModalController();//AGREGAMOS LA VARIABLE DE INCIAR SERVICIO.
 ?>
