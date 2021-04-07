@@ -394,7 +394,7 @@ class Datos extends Conexion{
 		if($stmt->execute()){
 			return "success";
 		}else{
-			return "error";
+			return $stmt->errorInfo();
 		}
 		$stmt->close();
 	}
@@ -455,8 +455,8 @@ class Datos extends Conexion{
 		#prepare() Prepara una sentencia SQL para ser ejecutada por el método PDOStatement::execute(). La sentencia SQL puede contener cero o más marcadores de parámetros con nombre (:name) o signos de interrogación (?) por los cuales los valores reales serán sustituidos cuando la sentencia sea ejecutada. Ayuda a prevenir inyecciones SQL eliminando la necesidad de entrecomillar manualmente los parámetros.
 
 		$stmt = Conexion::conectar()->prepare("INSERT INTO $tabla (codigo_atr_serv, descripcion_serv, comentarios_serv, 
-                fecha_creacion_serv, id_usuario_creacion_serv, estado_serv) VALUES (:codigo_atr_serv, :descripcion_serv, 
-                :comentarios_serv, :fecha_creacion_serv, :id_usuario_creacion_serv, :estado_serv)");	
+                fecha_creacion_serv, id_usuario_creacion_serv, estado_serv, id_dpto_serv) VALUES (:codigo_atr_serv, :descripcion_serv, 
+                :comentarios_serv, :fecha_creacion_serv, :id_usuario_creacion_serv, :estado_serv, :id_dpto_serv)");	
 		#bindParam() Vincula una variable de PHP a un parámetro de sustitución con nombre o de signo de interrogación correspondiente de la sentencia SQL que fue usada para preparar la sentencia.
 		session_start();
         $fecha_creacion_serv = date("Y-m-d H:m:s");
@@ -467,6 +467,7 @@ class Datos extends Conexion{
 		$stmt->bindParam(":comentarios_serv", $datosModel["comentarios_serv"], PDO::PARAM_STR);
         $stmt->bindParam(":fecha_creacion_serv", $fecha_creacion_serv, PDO::PARAM_STR);
 		$stmt->bindParam(":id_usuario_creacion_serv", $id_usuario_creacion_serv, PDO::PARAM_INT);
+        $stmt->bindParam(":id_dpto_serv", $datosModel["id_dpto_serv"], PDO::PARAM_INT);
 		$stmt->bindParam(":estado_serv", $estado_serv, PDO::PARAM_STR);
 		if($stmt->execute()){
 			return "success";
@@ -481,8 +482,10 @@ class Datos extends Conexion{
 
 	public static function vistaServiciosAtrTablaModel($tabla){
 		$stmt = Conexion::conectar()->prepare("SELECT id_servicio, codigo_atr_serv, descripcion_serv, comentarios_serv, 
-                fecha_creacion_serv, u.usuario, estado_serv 
-                FROM $tabla LEFT JOIN usuarios u ON id_usuario_creacion_serv = u.id_usuario");	
+                fecha_creacion_serv, u.usuario, estado_serv, d.nombre_dpto
+                FROM $tabla 
+                LEFT JOIN usuarios u ON id_usuario_creacion_serv = u.id_usuario
+                LEFT JOIN departamento d ON id_dpto_serv = d.id_departamento");	
 		$stmt->execute();
 		#fetchAll(): Obtiene todas las filas de un conjunto de resultados asociado al objeto PDOStatement. 
 		return $stmt->fetchAll();
@@ -572,7 +575,7 @@ class Datos extends Conexion{
 			return "success";
 		}else{
 			$arr = $stmt->errorInfo();
-			return "algo";
+			return $arr;
 		}
 		$stmt->close();
 	}
@@ -757,7 +760,8 @@ class Datos extends Conexion{
 	#-------------------------------------
 
 	public static function obtenerPartidasOSModel($datosModel, $tabla){
-		$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla WHERE num_orden_partida_os = :num_orden_partida_os");
+		$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla LEFT JOIN servicios_atr ON codigo_partida_os = codigo_atr_serv
+                                                             WHERE num_orden_partida_os = :num_orden_partida_os");
 		$stmt->bindParam(":num_orden_partida_os", $datosModel, PDO::PARAM_INT);	
 		$stmt->execute();
 		return $stmt->fetchall();
@@ -992,14 +996,15 @@ class Datos extends Conexion{
 	#-------------------------------------
 
 	public static function vistaPartidasEnProcesoAtrTablaModel($tabla){
-		$stmt = Conexion::conectar()->prepare("SELECT num_orden, id_unidad_servicio, comentarios_os, 
-                comentario_final, observaciones_os, fecha_creacion_partida_os, fecha_inicio_partida_os, id_partida_os, num_orden_partida_os
+		$stmt = Conexion::conectar()->prepare("SELECT num_orden_partida_os, id_unidad_servicio, descripcion_serv, comentarios_os, 
+                comentario_final, observaciones_os, fecha_creacion_partida_os, fecha_inicio_partida_os, id_partida_os
                 FROM $tabla 
-                LEFT JOIN partidas_os ON num_orden = num_orden_partida_os WHERE estado_partida_os = 'ENPROCESO'");	
+                LEFT JOIN ordenServicio ON num_orden = num_orden_partida_os 
+                LEFT JOIN servicios_atr ON codigo_partida_os = codigo_atr_serv
+                WHERE estado_partida_os = 'ENPROCESO'");
 		$stmt->execute();
 		#fetchAll(): Obtiene todas las filas de un conjunto de resultados asociado al objeto PDOStatement. 
 		return $stmt->fetchAll();
-
 		$stmt->close();
 	}
 
