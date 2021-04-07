@@ -21,15 +21,28 @@ $(document).ready(function(){
         });
 	    return false;   
     });
+    
     //AL SELECCIONAR EL OPTION DE LA PARTIDA DE SERVICIO SE AGREGUE LOS VALORES DE OBSERVACIONES
     $('#id_partida_os').change(function(){
 		$('#observaciones_os').val();
 		$('#comentarios_os').val();
+        $('#usuarios').val();
 		var observaciones = $(this).find("option:selected").attr('data-observaciones');
 		var comentarios = $(this).find("option:selected").attr('data-comentarios');
+        var id_dpto_serv = $(this).find("option:selected").attr('data-dptoServ');
 		$('#observaciones_os').val(observaciones);
 		$('#comentarios_os').val(comentarios);
+        $.ajax({
+            type: 'POST',
+            url: '/views/modules/OrdenesServicio/obtenerTrabajador',
+            data: {'id_dpto_serv' : id_dpto_serv},
+            dataType: "html",
+            success: function(resp){
+                $('#usuarios').html(resp);
+            }
+        });
 	});
+
 
     //EVENTO DEL BOTON AGREGAR USUARIO A LA TABLA
     $("#agregar-user").click(function(){
