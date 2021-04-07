@@ -1,0 +1,202 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400&display=swap');
+
+*{
+    font-family: 'Montserrat', sans-serif;
+}
+
+.error-acceso{
+  font-size: 19px;
+  font-weight: bold;
+  color: #971a1a;
+  text-align: center;
+}
+
+.principal{
+    width: 520px;
+    height: 490px;   
+    color: white;
+    background: #971a1a;
+    box-sizing: border-box;
+    padding: 70px 30px;
+    border-radius: 5px;
+    font-size: 19px;
+    box-shadow: 10px 16px 12px #999;
+    margin: 70px auto;
+    margin-top: 10%;
+}
+
+
+.principal .ico-login{
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    position: absolute;
+    top: -50px;
+    left: calc(50% - 50px);
+    animation: fade-1 3s infinite;
+    -webkit-animation: fade-1 3s infinite;
+}
+
+span{
+    text-align: right;
+    font-weight: bold;
+    font-weight: bold;
+    display: block;
+    font-size: 17px;    
+    animation: fadeIn ease 10s;
+    -webkit-animation: fadeIn ease 10s;
+}
+
+.principal h1 {
+    margin: 0;
+    padding: 0 0 20px;
+    text-align: center;
+    font-size: 21px;
+    animation: fade-2 10s infinite;
+    -webkit-animation: fade-2 10s infinite;
+}
+
+.input_form {
+    width: 100%;
+    border-radius: 6px;
+    padding: 5px;
+    border: 2px solid white;
+    background: transparent;
+    margin: 7px;
+    margin-bottom: 20px;
+    font-size: 1.2em;
+    color:white;
+    font-weight: bold;
+    text-align: center;
+    animation-duration: 2s;
+    animation-name: slidein;
+}
+
+
+.principal input[type="submit"] {
+    border-radius: 20px;
+    font-size: 25px;
+    padding: 10px;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    background: transparent;
+    border: 2px solid white;
+    color: white;
+    -webkit-transition: all ease 0.4s;
+    -moz-transition: all ease 0.4s;
+    transition: all ease 0.4s;
+    width: 100%;
+    margin-top: 35px;
+    animation-duration: 2s;
+    animation-name: slideout;
+}
+
+.principal input[type="submit"]:hover{
+    box-shadow: inset 460px 0 0 0 white;
+    color: #971a1a ;  	
+}
+
+.one{
+    width: 32%;
+    vertical-align: middle;
+}
+
+.two{
+    width: 68%;
+}
+
+.principal a{
+    color: white;
+}
+
+
+
+
+.principal p {
+    display: inline-block;   
+    text-transform: none;
+    margin-top: 40px;
+    opacity: 0.0;
+    animation: fadeIn ease 10s;
+    -webkit-animation: fadeIn ease 10s;
+    }
+    
+
+
+
+    @keyframes fadeIn {
+    0% {opacity:0;}
+    100% {opacity:1;}
+    }
+    
+    @-moz-keyframes fadeIn {
+    0% {opacity:0;}
+    100% {opacity:1;}
+    }
+    
+    @-webkit-keyframes fadeIn {
+    0% {opacity:0;}
+    100% {opacity:1;}
+    }
+    
+    @-o-keyframes fadeIn {
+    0% {opacity:0;}
+    100% {opacity:1;}
+    }
+    
+    @-ms-keyframes fadeIn {
+    0% {opacity:0;}
+    100% {opacity:1;}
+    }
+    
+    @keyframes slidein {
+        from {
+          margin-left: 100%;
+          width: 300%
+        }
+      
+        to {
+          margin-left: 0%;
+          width: 100%;
+        }
+      }
+
+      @keyframes slideout {
+        from {
+          margin-left: -100%;
+          width: 100%
+        }
+      
+        to {
+          margin-left: 0%;
+          width: 100%;
+        }
+      }
+
+      @keyframes fade-1 {
+        0% { opacity: 1; }
+        33% { opacity: 0; }
+        66% { opacity: 0; }
+        100% { opacity: 1; }
+       }
+
+       @keyframes fade-2 {
+        0% { opacity: 0; }
+        33% { opacity: 1; }
+        66% { opacity: 0; }
+        100% { opacity: 0; }
+       }@keyframes fade-3 {
+        0% { opacity: 0; }
+        33% { opacity: 0; }
+        66% { opacity: 1; }
+        100% { opacity: 0; }
+       }/* example for a 4th slide */
+       @keyframes fade-4 {
+        0% { opacity: 0; }
+        25% { opacity: 0; }
+        50% { opacity: 0; }
+        75% { opacity: 1; }
+        100% { opacity: 0; }
+       }
+
