@@ -95,6 +95,7 @@
     border-spacing: 0px 10px;
     margin: auto;
     font-size: 13px;
+    padding-bottom: 50px;
 }
 
 .tabla-listado thead tr th{
@@ -128,6 +129,20 @@ section{
     display: flex;
 }
 
+.new-flotante{
+    position: fixed;
+    bottom: 0;
+    margin-left: 1%;
+}
+
+.new-flotante img{
+    border: 1px solid black;
+    border-radius: 50%
+}
+
+.new-flotante img:hover{
+    filter: blur(1px);
+}
 
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400&display=swap');
 
@@ -444,9 +459,6 @@ textarea{
 	padding: 5px 20px 13px 20px;
 	border-radius: 10px;
 	background: #fff;
-	background: -moz-linear-gradient(#fff, #999);
-	background: -webkit-linear-gradient(#fff, #999);
-	background: -o-linear-gradient(#fff, #999);
     -webkit-transition: opacity 400ms ease-in;
     -moz-transition: opacity 400ms ease-in;
     transition: opacity 400ms ease-in;
@@ -483,12 +495,10 @@ textarea{
 	padding: 5px 20px 13px 20px;
 	border-radius: 10px;
 	background: #fff;
-	background: -moz-linear-gradient(#fff, #999);
-	background: -webkit-linear-gradient(#fff, #999);
-	background: -o-linear-gradient(#fff, #999);
     -webkit-transition: opacity 400ms ease-in;
     -moz-transition: opacity 400ms ease-in;
     transition: opacity 400ms ease-in;
+    text-align: center;
 }
 
 
@@ -498,6 +508,26 @@ textarea{
     text-align: center;
 }
 
+
+.tabla-div-modal{
+    margin: auto;
+    border-collapse: separate;
+    border-spacing: 5px 10px;
+}
+
+.modalDialog img{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.modalDialog h1{
+    margin-top: 10px;
+}
+
+
+div.modalDialog input.btn-eliminar{
+    margin-left: 10px;
+}
 
 
 @media(max-width: 460px) {
