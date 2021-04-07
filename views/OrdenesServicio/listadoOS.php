@@ -6,18 +6,25 @@ function clickactionEliminar( b ){
 }
 
 $(document).ready(function(){
+    $('.num_orden').toggle();
 	$('#capturo').toggle();
 	$('#atiempo').toggle();
 	$('td:nth-child(4)').toggle();
 	$('td:nth-child(9)').toggle();
 });
+
 </script>
 <div class="tablas-listado" id="contenido">
+    <div class="new-flotante">
+        <a href="index.php?action=OrdenesServicio/altaOrdenS">
+            <img src="/views/img/new_Flotante.png" alt="">
+        </a>
+    </div>
     <h1>Listado Ordenes de Servicio ATR</h1>
 	<table class="tabla-listado" id="listado-os">	
 		<thead>	
 			<tr>
-				<th class="listado-th"># ORDEN</th>
+				<th class="num_orden"># ORDEN</th>
 				<th class="listado-th">Unidad</th>
 				<th class="listado-th">Operador</th>
 				<th class="listado-th" id="capturo">Capturó</th>
@@ -43,7 +50,7 @@ $(document).ready(function(){
 			$respuesta = $vistaUsuario -> vistaOSAtrTablaController();
             foreach($respuesta as $row => $item){
                 echo'<tr>
-                        <td>'.$item["num_orden"].'</td>
+                        <td class="num_orden">'.$item["num_orden"].'</td>
                         <td><a href="index.php?action=OrdenesServicio/detalleOS&id_os_editar='.$item["num_orden"].'">'.$item["id_unidad_servicio"].'</a></td>
                         <td>'.$item["operador"].'</td>
                         <td>'.$item["captura"].'</td>
