@@ -902,13 +902,7 @@ public static function editarServicioAtrController(){
         } else {
 			echo "<p class='error-acceso'>". $respuesta[2]."</p>";
 		}
-	}
-    
-    
-
-    
-
-
-
+	}    
+  
 }
 ?>
