@@ -2,7 +2,17 @@
 
 //FUNCIONA PARA DETECTAR CUANDO DEN CLICK EN LA PARTIDA Y SABER A QUIEN ASIGANAR LOS USUARIOS
 function clickaction( b ){
-    document.getElementById('id_partida_os_asignar').value = b.id; 
+    document.getElementById('id_partida_os_asignar').value = b.id;
+    var id_dpto_serv = b.dataset.dptoserv;
+    $.ajax({
+        type: 'POST',
+        url: '/views/modules/OrdenesServicio/obtenerTrabajador',
+        data: {'id_dpto_serv' : id_dpto_serv},
+        dataType: "html",
+        success: function(resp){
+            $('#usuarios').html(resp);
+        }
+    });
 }
 
 $(document).ready(function(){
@@ -78,7 +88,7 @@ $(document).ready(function(){
                     <td>".
                         $campo['fecha_inicio_partida_os']
                     ."</td>
-                    <td><a onclick=clickaction(this) href='#openModalIniciar' id='". $campo['id_partida_os'] ."' data-os='". $campo['num_orden_partida_os']."'><img class='ico-partida' src='/views/img/asignar.png'></a></td>
+                    <td><a onclick=clickaction(this) href='#openModalIniciar' id='". $campo['id_partida_os'] ."' data-os='". $campo['num_orden_partida_os']."' data-dptoServ='".$campo['id_dpto_serv']."'><img class='ico-partida' src='/views/img/asignar.png'></a></td>
                     </td>
                     <td>
                         <a href='index.php?action=OrdenesServicio/usuariosAsignados&id_partida_os=".$campo['id_partida_os']."&OS=".$campo['num_orden_partida_os']."'>".
@@ -92,6 +102,7 @@ $(document).ready(function(){
     </table>
 </div>
 
+
 <div id="openModalIniciar" class="modalDialog">
 	<div>
     	<a href="#close" title="Close" class="close">X</a>
@@ -102,14 +113,14 @@ $(document).ready(function(){
             <input type="hidden" name="id_partida_os_asignar" id="id_partida_os_asignar">
             <tr>
                 <td class="titulo"><p class="derecha">Asignar a : </p></td>
-                <td>
-                    <select name="usuarios" id="usuarios">
-                        <?php
-                            $vistaUsuario = new MvcController();
-                            $vistaUsuario -> obtenerTrabajadorController();   
-                        ?>
-                    </select>
-                </td>
+                    <td>
+                       <select name="usuarios" id="usuarios">
+                           <?php
+                                $vistaUsuario = new MvcController();
+                                $vistaUsuario -> obtenerTrabajadorController();   
+                            ?>
+                        </select>
+                    </td>
                 <td>
                     <input class="btn-agregar-serv" type="button" value="Añadir" name="agregar-user" id="agregar-user">
                 </td>
