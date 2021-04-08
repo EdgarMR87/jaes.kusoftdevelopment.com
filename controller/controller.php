@@ -903,6 +903,22 @@ public static function editarServicioAtrController(){
 			echo "<p class='error-acceso'>". $respuesta[2]."</p>";
 		}
 	}    
+
+    
+    //BUSQUEDA DE HISTORIAL PERSONALIZADA
+    public function vistaOSAtrTablaBusquedaController(){
+        require_once "./models/crud.php";
+		if(isset($_POST["valor_buscado_text"])){
+            $datosController = array("campo_buscado"=> $_POST["campo_buscado"],
+                                                "valor" => $_POST['valor_buscado_text']); 
+            $respuesta = Datos::vistaOSAtrTablaBusquedaModel($datosController, "ordenServicio"); 
+            if(isset($respuesta)){
+                return $respuesta;
+            }else{
+                echo "<p class='error-acceso'>". $respuesta[2]."</p>";
+            }
+        }
+    }
   
 }
 ?>
