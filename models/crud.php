@@ -638,16 +638,35 @@ class Datos extends Conexion{
 	public static function vistaOSAtrTablaModel($tabla){
 		$stmt = Conexion::conectar()->prepare("SELECT num_orden, id_unidad_servicio, operador, 
                 captura, fecha_orden, kilometraje, servicio, tipo_servicio, servicio_tiempo, 
-                fecha_creacion, CONCAT(u.ape_pat_u,' ',u.ape_mat_u,' ',u.nombre_u)as nombre_completo, estado, avance_porcentaje FROM $tabla 
-                LEFT JOIN usuarios u ON id_usuario_creacion = u.id_usuario");	
+                fecha_creacion, CONCAT(u.ape_pat_u,' ',u.ape_mat_u,' ',u.nombre_u)as nombre_completo, estado, avance_porcentaje, impreso FROM $tabla 
+                LEFT JOIN usuarios u ON id_usuario_creacion = u.id_usuario ORDER BY fecha_orden ASC");	
 		$stmt->execute();
-
 		#fetchAll(): Obtiene todas las filas de un conjunto de resultados asociado al objeto PDOStatement. 
 		return $stmt->fetchAll();
-
 		$stmt->close();
 	}
 
+    #VISTA ORDEN DE SERVICIO ATR TABLA
+	#-------------------------------------
+
+	public static function vistaOSAtrTablaBusquedaModel($datosModel, $tabla){
+		$stmt = Conexion::conectar()->prepare("SELECT num_orden, id_unidad_servicio, operador, 
+                captura, fecha_orden, kilometraje, servicio, tipo_servicio, servicio_tiempo, 
+                fecha_creacion, CONCAT(u.ape_pat_u,' ',u.ape_mat_u,' ',u.nombre_u)as nombre_completo, estado, avance_porcentaje, impreso FROM $tabla 
+                LEFT JOIN usuarios u ON id_usuario_creacion = u.id_usuario 
+                WHERE " . $datosModel["campo_buscado"] . " = :valor                
+                ORDER BY fecha_orden ASC");	
+        
+        $stmt->bindParam(":valor", $datosModel["valor"], PDO::PARAM_STR);
+        if($stmt->execute()){
+            return $stmt->fetchAll();
+		}else{
+			$arr = $stmt->errorInfo();
+			return $arr;
+		}
+        $stmt->close();
+	}
+    
 	 #BORRAR ORDEN DE SERVICIO ATR
 	#------------------------------------
 	public static function borrarOSAtrModel($datosModel, $tabla){
