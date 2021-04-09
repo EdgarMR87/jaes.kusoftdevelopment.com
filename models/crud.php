@@ -485,7 +485,8 @@ class Datos extends Conexion{
                 fecha_creacion_serv, u.usuario, estado_serv, d.nombre_dpto
                 FROM $tabla 
                 LEFT JOIN usuarios u ON id_usuario_creacion_serv = u.id_usuario
-                LEFT JOIN departamento d ON id_dpto_serv = d.id_departamento");	
+                LEFT JOIN departamento d ON id_dpto_serv = d.id_departamento 
+                ORDER BY codigo_atr_serv ASC");	
 		$stmt->execute();
 		#fetchAll(): Obtiene todas las filas de un conjunto de resultados asociado al objeto PDOStatement. 
 		return $stmt->fetchAll();
