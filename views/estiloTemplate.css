@@ -529,6 +529,28 @@ div.modalDialog input.btn-eliminar{
     margin-left: 10px;
 }
 
+.busqueda{
+    width: 1200px;
+    border-spacing: 15px 5px;
+}
+
+.form-busqueda{
+    position: relative;
+    margin: auto;
+    width: 1200px;
+}
+
+.titulo-servicio{
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.border-titulo{
+    background: black;
+    color: white;
+}
+
+
 
 @media(max-width: 460px) {
 
