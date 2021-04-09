@@ -6,6 +6,11 @@ function clickactionEliminar( b ){
 </script>
 
 <div class="tablas-listado" id="contenido">
+    <div class="new-flotante">
+        <a href="index.php?action=ServiciosAtr/altaServicioAtr">
+            <img src="/views/img/new_Flotante.png" alt="">
+        </a>
+    </div>
     <h1>Listado Servicios ATR</h1>
 	    <table class="tabla-listado">		
 		    <thead>
@@ -14,6 +19,7 @@ function clickactionEliminar( b ){
 				<th class="listado-th">Codigo ATR</th>
 				<th class="listado-th">Descripción</th>
 				<th class="listado-th">Comentarios</th>
+                <th class="listado-th">Dpto. Realiza</th>
 				<th class="listado-th">Fecha Creación</th>
                 <th class="listado-th">Creado Por</th>
                 <th class="listado-th">Estado</th>
@@ -25,24 +31,74 @@ function clickactionEliminar( b ){
 			<?php
 			$vistaUsuario = new MvcController();
 			$respuesta = $vistaUsuario -> vistaServiciosAtrTablaController();
+            $letra2 = "";
+
             foreach($respuesta as $row => $item){
+                $letra1 = substr($item["codigo_atr_serv"], 0, 1);
+                if($letra1 != $letra2){
+                    switch($letra1){
+                        case "C":
+                            echo "<tr class='border-titulo'><td colspan='10' class='titulo-servicio'>CARROCERIA</td></tr>";
+                            break;
+                        case "D":
+                            echo "<tr class='border-titulo'><td colspan='10' class='titulo-servicio'>CARROCERIA</td></tr>";
+                        break;
+                        case "E":
+                            echo "<tr class='border-titulo'><td colspan='10' class='titulo-servicio'>ELECTRICA</td></tr>";
+                        break;
+                        case "F":
+                            echo "<tr class='border-titulo'><td colspan='10' class='titulo-servicio'>MECANICA FRENOS</td></tr>";
+                        break;
+                        case "H":
+                            echo "<tr class='border-titulo'><td colspan='10' class='titulo-servicio'>HIDRAULICO</td></tr>";
+                        break;
+                        case "L":
+                            echo "<tr class='border-titulo'><td colspan='10' class='titulo-servicio'>MECANICA LIQUIDOS</td></tr>";
+                        break;
+                        case "M":
+                            echo "<tr class='border-titulo'><td colspan='10' class='titulo-servicio'>MECANICA MOTOR</td></tr>";
+                        break;
+                        case "N":
+                            echo "<tr class='border-titulo'><td colspan='10' class='titulo-servicio'>LONAS</td></tr>";
+                        break;
+                        case "Q":
+                            echo "<tr class='border-titulo'><td colspan='10' class='titulo-servicio'>MECANICA TREN MOTRIZ</td></tr>";
+                        break;
+                        case "S":
+                            echo "<tr class='border-titulo'><td colspan='10' class='titulo-servicio'>SUSPENSION</td></tr>";
+                        break;
+                        case "T":
+                            echo "<tr class='border-titulo'><td colspan='10' class='titulo-servicio'>MECANICA TREN MOTRIZ</td></tr>";
+                        break;
+                        case "X":
+                            echo "<tr class='border-titulo'><td colspan='10' class='titulo-servicio'>AUXILIO</td></tr>";
+                        break;
+                        case "Y":
+                            echo "<tr class='border-titulo'><td colspan='10' class='titulo-servicio'>LLANTAS</td></tr>";
+                        break;
+                        case "Z":
+                            echo "<tr class='border-titulo'><td colspan='10' class='titulo-servicio'>SOLDADURA</td></tr>";
+                        break;
+                    }
+                }
                 echo'<tr>
                         <td>'.$item["id_servicio"].'</td>
                         <td>'.$item["codigo_atr_serv"].'</td>
-                        <td>'.$item["descripcion_serv"].'</td>
+                        <td>'. utf8_encode($item["descripcion_serv"]) .'</td>
                         <td>'.$item["comentarios_serv"].'</td>
+                        <td>'.$item["nombre_dpto"].'</td>
                         <td>'.$item["fecha_creacion_serv"].'</td>
                         <td>'.$item["usuario"].'</td>
                         <td>'.$item["estado_serv"].'</td>
                         <td><a href="index.php?action=ServiciosAtr/editarServicioAtr&id_servicio_editar='.$item["id_servicio"].'"><img src="/views/img/editar.png" class="img-25"></img></a></td>
                         <td>
-                            <a href="#openModalEliminar" onclick="clickactionEliminar(this)" id="'.$item["id_servicio"].'" data-name="'.$item["descripcion_serv"].'">
-                                <img src="/views/img/eliminar.png" class="img25"></img>
-                                </a>
-                            </td>
+                            <a href="#openModalEliminar" onclick="clickactionEliminar(this)" id="'.$item["id_servicio"].'" data-name="'.$item["descripcion_serv"].'">                                <img src="/views/img/eliminar.png" class="img-25"></img>
+                            </a>
+                        </td>
                     </tr>';
-                }
-		
+                $letra2 = substr($item["codigo_atr_serv"], 0, 1);
+            }
+            
 			?>
 		</tbody>
 	</table>
