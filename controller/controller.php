@@ -238,7 +238,7 @@ class MvcController{
 					<td>'.$item["nombre_dpto"].'</td>
 					<td>'.$item["descripcion_dpto"].'</td>
 					<td><a href="index.php?action=Departamentos/editarDpto&id_dpto_editar='.$item["id_departamento"].'"><img src="/views/img/editar.png" class="img-25"></img></a></td>
-					<td><a href="index.php?action=Departamentos/listadoDpto&id_dpto_Borrar='.$item["id_departamento"].'"><img src="/views/img/eliminar.png" class="img25"></img></a></td>
+					<td><a href="index.php?action=Departamentos/listadoDpto&id_dpto_Borrar='.$item["id_departamento"].'"><img src="/views/img/eliminar.png" class="img-25"></img></a></td>
 				</tr>';
 			}
 	}
@@ -288,7 +288,7 @@ class MvcController{
                     <td>'.$item["nombre_dpto"].'</td>
                     <td>'.$item["fecha_creacion_puesto"].'</td>
 					<td><a href="index.php?action=Puestos/editarPuesto&id_puesto_editar='.$item["id_puesto"].'"><img src="/views/img/editar.png" class="img-25"></img></a></td>
-					<td><a href="index.php?action=Puestos/listadoPuesto&id_puesto_borrar='.$item["id_puesto"].'"><img src="/views/img/eliminar.png" class="img25"></img></a></td>
+					<td><a href="index.php?action=Puestos/listadoPuesto&id_puesto_borrar='.$item["id_puesto"].'"><img src="/views/img/eliminar.png" class="img-25"></img></a></td>
 				</tr>';
 			}
 	}
@@ -574,10 +574,9 @@ public static function editarServicioAtrController(){
 		#El constructor foreach proporciona un modo sencillo de iterar sobre arrays. foreach funciona sólo sobre arrays y objetos, y emitirá un error al intentar usarlo con una variable de un tipo diferente de datos o una variable no inicializada.
 		echo"<option value='0' selected disabled> Selecciona un servicio ... </option>";
 		foreach($respuesta as $row => $item){
-				echo"<option value='". $item['codigo_atr_serv']."' data-name='". $item['descripcion_serv']."'>".$item['codigo_atr_serv']."</option>";
+				echo"<option value='". $item['codigo_atr_serv']."' data-name='". utf8_encode($item['descripcion_serv'])."'>".$item['codigo_atr_serv']."</option>";
 		}
 	}
-
 
 	 #REGISTRO DE OS Y PARTIDAS
 	#------------------------------------
@@ -919,6 +918,64 @@ public static function editarServicioAtrController(){
             }
         }
     }
-  
+
+    #ACTUALIZAR USUARIO
+	#------------------------------------
+	public function actualizarOSAtrController(){
+		require_once "./models/crud.php";
+		if(isset($_POST["num_orden_e"])){
+			$datosController = array( "num_orden"=>$_POST["num_orden_e"], 
+								      "id_unidad_servicio"=>$_POST["id_unidad_servicio"],
+                                    "operador"=>strtoupper($_POST["operador"]),
+									"captura"=>strtoupper($_POST["captura"]),
+									"fecha_orden"=>$_POST["fecha_orden"],
+									"kilometraje"=>$_POST["kilometraje"],
+									"servicio"=>strtoupper($_POST["servicio"]),
+									"tipo_servicio"=>strtoupper($_POST["tipo_servicio"]),
+                                    "servicio_tiempo"=>strtoupper($_POST["servicio_tiempo"]));
+			$respuesta = Datos::actualizarOSAtrModel($datosController, "ordenServicio");
+			$link = "index.php?action=OrdenesServicio/listadoOS";
+			if($respuesta == "success"){
+                if(isset($_POST["partidas"])){
+                    $partidas = $_POST["partidas"];
+			        $observacionesPartidas = $_POST["observacionesPartidas"];
+                    $consecutivos = $_POST["consecutivos"];
+                    $i =0;
+                    foreach($partidas as $partida){
+                        $datosController2 = array("consec_partida_os" => $consecutivos[$i],
+                                                "codigo_partida_os" => $partida,
+                                                "observaciones_os" => $observacionesPartidas[$i],
+                                                "num_orden_partida_os" => $_POST["num_orden_e"]);
+                        $respuesta2 = Datos::registroPartidaOSModel($datosController2, "partidas_os");
+                        $i++;
+                    }
+                    if($respuesta2 == "success"){
+                        echo "  <script>
+                                    actualizarOK('".$link."');
+                                </script>";
+                    }else{ 
+                        $valor = $respuesta2[2];
+                        $error = str_replace("'", "", $valor);
+                        echo '<script>
+                                errorRegistro('."'".$error."','".$link."'".');
+                            </script>';
+                    }
+                } else{
+                echo "<script>
+                        actualizarOK('".$link."');
+                    </script>";
+                }
+			}else{
+                $valor = $respuesta[2];
+                $error = str_replace("'", "", $valor);
+                echo '<script>
+                        errorRegistro('."'".$error."','".$link."'".');
+                </script>';
+			}
+		}
+	}
+
+
+
 }
 ?>
