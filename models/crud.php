@@ -707,25 +707,27 @@ class Datos extends Conexion{
 		$stmt->close();
 	}  
 
-	#ACTUALIZAR SERVICIO ATR
+	#ACTUALIZAR ORDEN DE SERVICIO 
 	#-------------------------------------
 
-	public function actualizarOSAtrModel($datosModel, $tabla){
-
-		$stmt = Conexion::conectar()->prepare("UPDATE $tabla SET codigo_atr_serv = :codigo_atr_serv, descripcion_serv = :descripcion_serv, 
-                                                comentarios_serv = :comentarios_serv, estado_serv = :estado_serv 
-												WHERE id_servicio = :id_servicio");		
-        $stmt->bindParam(":codigo_atr_serv", $datosModel["codigo_atr_serv_editar"], PDO::PARAM_STR);
-		$stmt->bindParam(":descripcion_serv", $datosModel["descripcion_serv_editar"], PDO::PARAM_STR);
-		$stmt->bindParam(":comentarios_serv", $datosModel["comentarios_serv_editar"], PDO::PARAM_STR);
-		$stmt->bindParam(":estado_serv", $datosModel["estado_serv_editar"], PDO::PARAM_STR);
-        $stmt->bindParam(":id_servicio", $datosModel["id_servicio_editar"], PDO::PARAM_INT);
-
+	public static function actualizarOSAtrModel($datosModel, $tabla){
+		$stmt = Conexion::conectar()->prepare("UPDATE $tabla SET id_unidad_servicio = :id_unidad_servicio, operador = :operador,
+                captura=:captura, fecha_orden=:fecha_orden, kilometraje=:kilometraje, servicio=:servicio, tipo_servicio=:tipo_servicio,
+                servicio_tiempo=:servicio_tiempo WHERE num_orden = :num_orden");		
+        $stmt->bindParam(":id_unidad_servicio", $datosModel["id_unidad_servicio"], PDO::PARAM_INT);
+		$stmt->bindParam(":operador", $datosModel["operador"], PDO::PARAM_STR);
+		$stmt->bindParam(":captura", $datosModel["captura"], PDO::PARAM_STR);
+		$stmt->bindParam(":fecha_orden", $datosModel["fecha_orden"], PDO::PARAM_STR);
+        $stmt->bindParam(":kilometraje", $datosModel["kilometraje"], PDO::PARAM_INT);
+        $stmt->bindParam(":servicio", $datosModel["servicio"], PDO::PARAM_STR);
+        $stmt->bindParam(":tipo_servicio", $datosModel["tipo_servicio"], PDO::PARAM_STR);
+        $stmt->bindParam(":servicio_tiempo", $datosModel["servicio_tiempo"], PDO::PARAM_STR);
+        $stmt->bindParam(":num_orden", $datosModel["num_orden"], PDO::PARAM_INT);
 		if($stmt->execute()){
 			return "success";
 		}else{
 			$arr = $stmt->errorInfo();
-			return "algo";
+			return $arr;
 		}
 		$stmt->close();
 	}
@@ -1030,6 +1032,4 @@ class Datos extends Conexion{
 
 
 }
-
-
 ?>
