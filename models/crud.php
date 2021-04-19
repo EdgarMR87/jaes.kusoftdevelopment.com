@@ -333,17 +333,26 @@ class Datos extends Conexion{
 		$stmt->close();
 
 	}
+    
+	#VISTA UNIDADES EN GENERAL 
+	#-------------------------------------
 
     public static function vistaUnidadesModel($tabla){
-
 		$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla");	
 		$stmt->execute();
-
 		#fetchAll(): Obtiene todas las filas de un conjunto de resultados asociado al objeto PDOStatement. 
 		return $stmt->fetchAll();
-
 		$stmt->close();
+	}
 
+	#VISTA UNIDADES MAZDA
+	#-------------------------------------
+    public static function vistaUnidadesMazdaModel($tabla){
+		$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla WHERE modelo='MAZDA'");	
+		$stmt->execute();
+		#fetchAll(): Obtiene todas las filas de un conjunto de resultados asociado al objeto PDOStatement. 
+		return $stmt->fetchAll();
+		$stmt->close();
 	}
 
     
@@ -373,7 +382,6 @@ class Datos extends Conexion{
 			return "success";
 
 		}
-
 		else{
 
 			return $stmt->errorInfo();
@@ -580,11 +588,6 @@ class Datos extends Conexion{
 		}
 		$stmt->close();
 	}
-
-
-
-
-
 
 
 
@@ -1030,6 +1033,69 @@ class Datos extends Conexion{
 		$stmt->close();
 	}
 
+    public static function registroChecklistModel($datosModel, $tabla){
+		#prepare() Prepara una sentencia SQL para ser ejecutada por el método PDOStatement::execute(). La sentencia SQL puede contener cero o más marcadores de parámetros con nombre (:name) o signos de interrogación (?) por los cuales los valores reales serán sustituidos cuando la sentencia sea ejecutada. Ayuda a prevenir inyecciones SQL eliminando la necesidad de entrecomillar manualmente los parámetros.
+		$stmt = Conexion::conectar()->prepare("INSERT INTO $tabla (fecha_checklist, id_usuario_realiza, unidad_mazda, kilometraje, 
+                observaciones) VALUES (:fecha_checklist, :id_usuario_realiza, :unidad_mazda, :kilometraje, :observaciones)");
+                date_default_timezone_set('America/Mexico_City');
+                $fecha_registro = date("Y-m-d H:m:s");
+		#bindParam() Vincula una variable de PHP a un parámetro de sustitución con nombre o de signo de interrogación correspondiente de la sentencia SQL que fue usada para preparar la sentencia.
+		$stmt->bindParam(":fecha_checklist", $fecha_registro, PDO::PARAM_STR);
+        $stmt->bindParam(":id_usuario_realiza", $datosModel["id_usuario_realiza"], PDO::PARAM_INT);
+		$stmt->bindParam(":unidad_mazda", $datosModel["unidad_mazda"], PDO::PARAM_INT);
+        $stmt->bindParam(":kilometraje", $datosModel["kilometraje"], PDO::PARAM_INT);
+        $stmt->bindParam(":observaciones", $datosModel["observaciones"], PDO::PARAM_STR);
+		if($stmt->execute()){
+            $stmt2 = Conexion::conectar()->prepare("SELECT MAX(id_checklist)AS id FROM $tabla");
+            $stmt2->execute();
+            return $stmt2->fetchAll();
+		} else {
+			return $stmt->errorInfo();
+		}
+		$stmt->close();
+	}
+    
+
+    public static function registroPartidasChecklistModel($datosModel, $tabla){
+		#prepare() Prepara una sentencia SQL para ser ejecutada por el método PDOStatement::execute(). La sentencia SQL puede contener cero o más marcadores de parámetros con nombre (:name) o signos de interrogación (?) por los cuales los valores reales serán sustituidos cuando la sentencia sea ejecutada. Ayuda a prevenir inyecciones SQL eliminando la necesidad de entrecomillar manualmente los parámetros.
+		$stmt = Conexion::conectar()->prepare("INSERT INTO $tabla (id_checklist_partidas, parte_revisada, estado_general, 
+                observaciones_partida) VALUES (:id_checklist_partidas, :parte_revisada, :estado_general, :observaciones_partida)");
+		$stmt->bindParam(":id_checklist_partidas", $datosModel["id_checklist_partidas"], PDO::PARAM_INT);
+        $stmt->bindParam(":parte_revisada", $datosModel["parte_revisada"], PDO::PARAM_STR);
+		$stmt->bindParam(":estado_general", $datosModel["estado_general"], PDO::PARAM_STR);
+        $stmt->bindParam(":observaciones_partida", $datosModel["observaciones_partida"], PDO::PARAM_STR);
+		if($stmt->execute()){
+			return "success";
+		} else {
+			return $stmt->errorInfo();
+		}
+		$stmt->close();
+	}
+
+
+    public static function vistaChecklistTablaModel($tabla){
+		$stmt = Conexion::conectar()->prepare("SELECT id_checklist, fecha_checklist, 
+                            CONCAT(nombre_u,' ', ape_pat_u, ' ',ape_mat_u)as nombreCompleto, unidad_mazda, kilometraje,
+                            observaciones FROM $tabla
+                            LEFT JOIN usuarios ON id_usuario_realiza = id_usuario");	
+		$stmt->execute();
+		#fetchAll(): Obtiene todas las filas de un conjunto de resultados asociado al objeto PDOStatement. 
+		return $stmt->fetchAll();
+
+		$stmt->close();
+
+	}
+    
+    public static function vistaDetalleChecklistTablaModel($tabla, $datos){
+		$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla WHERE id_checklist_partidas = :id_checklist_partidas");	
+        $stmt->bindParam(":id_checklist_partidas", $datos, PDO::PARAM_INT);
+		$stmt->execute();
+		#fetchAll(): Obtiene todas las filas de un conjunto de resultados asociado al objeto PDOStatement. 
+		return $stmt->fetchAll();
+
+		$stmt->close();
+
+	}
 
 }
 ?>
