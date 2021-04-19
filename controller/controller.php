@@ -518,7 +518,7 @@ public static function editarServicioAtrController(){
 			$datosController = array( "id_unidad_editar"=>$_POST["id_unidad_editar"],
 							          "num_unidad_editar"=>$_POST["num_unidad_editar"],
                                       "estado_unidad_editar"=>$_POST["estado_unidad_editar"],
-				                      "modelo_unidad_editar"=>$_POST["modelo_unidad_editar"]);
+				                      "modelo_unidad_editar"=> strtoupper($_POST["modelo_unidad_editar"]));
 			$respuesta = Datos::actualizarUnidadesModel($datosController, "unidades");
 			if($respuesta == "success"){
 				echo "<span class='registro-actualizado'>Actualizacion Correcta</span>";
@@ -565,6 +565,17 @@ public static function editarServicioAtrController(){
 		}
 	}
 	
+	#VISTA DE UNIDADES MAZDA PARA CARGARLOS A UNA NUEVA ORDEN DE SERVICIO
+	#------------------------------------
+	public static function vistaUnidadesMazdaSelectController(){
+		require_once "./models/crud.php";
+		$respuesta = Datos::vistaUnidadesMazdaModel("unidades");
+		#El constructor foreach proporciona un modo sencillo de iterar sobre arrays. foreach funciona sólo sobre arrays y objetos, y emitirá un error al intentar usarlo con una variable de un tipo diferente de datos o una variable no inicializada.
+		echo"<option value='0' selected disabled> Selecciona una unidad ... </option>";
+		foreach($respuesta as $row => $item){
+				echo"<option value='". $item['id_unidad']."'>".$item['num_unidad']."</option>";
+		}
+	}
 
 	#VISTA DE SERVICIOS ATR PARA CARGARLOS A UNA NUEVA ORDEN DE SERVICIO
 	#------------------------------------
@@ -975,6 +986,217 @@ public static function editarServicioAtrController(){
 		}
 	}
 
+
+
+     #REGISTRO DE OS Y PARTIDAS
+	#------------------------------------
+	public static function registroChecklistController(){
+		require_once "./models/crud.php";
+		if(isset($_POST["fecha_checklist"])){
+			$datosController = array( "fecha_checklist"=>$_POST["fecha_checklist"], 
+								      "id_usuario_realiza"=>$_POST["id_usuario"],
+                                    "kilometraje"=>$_POST["kilometraje_checklist"],
+									"unidad_mazda"=>$_POST["unidad_checklist"],
+									"observaciones"=>strtoupper($_POST["observaciones_checklist"]));
+			$respuesta = Datos::registroChecklistModel($datosController, "checklist_mazda");
+            $id;
+            foreach($respuesta as $row => $item){
+                $id = $item["id"];
+            }
+
+            $partes[] = "CRISTALES";
+            $estados[] = $_POST["cristales_estado"]; 
+            $partes[] = "ESPEJOS";
+            $estados[] = $_POST["espejos_estado"]; 
+            $partes[] = "PARABRISAS";
+            $estados[] = $_POST["parabrisas_estado"];
+            $partes[] = "BATERIAS"; 
+            $estados[] = $_POST["baterias_estado"]; 
+            $partes[] = "ENCENDIDO DE LUCES";
+            $estados[] = $_POST["luces_estado"]; 
+            $partes[] = "PLAFONES";
+            $estados[] = $_POST["plafones_estado"];
+            $partes[] = "LUZ DE TRABAJO"; 
+            $estados[] = $_POST["luz_trabajo_estado"];
+            $partes[] = "NIVEL DE MOTOR";
+            $estados[] = $_POST["motor_estado"]; 
+            $partes[] = "NIVEL DE ANTICONGELANTE";
+            $estados[] = $_POST["anticongelante_estado"]; 
+            $partes[] = "NIVEL DE DIRECCION HD";
+            $estados[] = $_POST["direccion_estado"]; 
+            $partes[] = "CLUTCH";
+            $estados[] = $_POST["clutch_estado"];
+            $partes[] = "ADMISION"; 
+            $estados[] = $_POST["admision_estado"];
+            $partes[] = "BANDAS";
+            $estados[] = $_POST["bandas_estado"];
+            $partes[] = "FUGA ACEITE MOTOR";
+            $estados[] = $_POST["f_motor_estado"];
+            $partes[] = "FUGA ACEITE TRANSMISION";
+            $estados[] = $_POST["transmision_estado"];
+            $partes[] = "FUGA ACEITE DIFERENCIAL";
+            $estados[] = $_POST["diferencial_estado"];
+            $partes[] = "PASAMUROS ELECTRICO";
+            $estados[] = $_POST["r_pasamuros_electrico_estado"];
+            $partes[] = "PASAMUROS HIDRAULICO";
+            $estados[] = $_POST["r_pasamuros_hidraulico_estado"];
+            $partes[] = "PASAMUROS NEUMATICO";
+            $estados[] = $_POST["r_pasamuros_neumatico_estado"];
+            $partes[] = "TAPAS1";
+            $estados[] = $_POST["t1_estado"];
+            $partes[] = "TAPAS2";
+            $estados[] = $_POST["t2_estado"];
+            $partes[] = "TAPAS3";
+            $estados[] = $_POST["t3_estado"];
+            $partes[] = "TAPAS4";
+            $estados[] = $_POST["t4_estado"];
+            $partes[] = "TAPAS5";
+            $estados[] = $_POST["t5_estado"];
+            $partes[] = "TAPAS6";
+            $estados[] = $_POST["t6_estado"];
+            $partes[] = "TAPAS7";
+            $estados[] = $_POST["t7_estado"];
+            $partes[] = "TAPAS8";
+            $estados[] = $_POST["t8_estado"];
+            $partes[] = "TAPAS9";           
+            $estados[] = $_POST["t9_estado"];
+            $partes[] = "TAPAS10";
+            $estados[] = $_POST["t10_estado"];
+            for ($i=1; $i <= 18 ; $i++) { 
+                $partes[] = "LLANTAS".$i;
+            }
+            for ($i=1; $i <= 18 ; $i++) { 
+                $llanta = "llanta_".$i."_estado";
+                $estados[] = $_POST[$llanta];
+            }
+            $partes[] = "ARRANQUE";
+            $estados[] = $_POST["arranque_estado"];
+            $partes[] = "TAKE OFF";
+            $estados[] = $_POST["take_off_estado"];
+            $partes[] = "PISO TRACTOR";
+            $estados[] = $_POST["piso_tractor_estado"];
+            $partes[] = "PISO REMOLQUE";
+            $estados[] = $_POST["piso_remolque_estado"];
+            $partes[] = "BLOQUE HD TRACTOR";
+            $estados[] = $_POST["bloque_hd_tractor_estado"];
+            $partes[] = "BLOQUE HD REMOLQUE";
+            $estados[] = $_POST["bloque_hd_remolque_estado"];
+            for ($i=1; $i <= 30 ; $i++) { 
+                $partes[] = "RAMPAS".$i;
+            }
+            for ($i=1; $i <= 30 ; $i++) { 
+                $rampa = "rampa_".$i."_estado"; 
+                $estados[] = $_POST[$rampa];
+            }
+            for ($i=1; $i <= 30 ; $i++) { 
+                $partes[] = "PISTONES".$i;
+            }
+            for ($i=1; $i <= 30 ; $i++) { 
+                $piston  = "piston_".$i."_estado";
+                $estados[] = $_POST[$piston];
+            }
+            $partes[] = "CINCHOS DE TRINCADO";
+            $estados[] = $_POST["cinchos_trincado_estado"];
+            $partes[] = "TENDEDEROS";
+            $estados[] = $_POST["tendederos_estado"];
+            $partes[] = "MALLA CUBRE AL 100";
+            $estados[] = $_POST["malla_estado"];
+            $partes[] = "MARCA EN PTR";           
+            $estados[] = $_POST["ptr_estado"];
+            $partes[] = "CADENA DE TRINCADO";
+            $estados[] = $_POST["cadena_trincado_estado"];
+
+
+            $observaciones[] = $_POST["cristales_observ"]; 
+            $observaciones[] = $_POST["espejos_observ"]; 
+            $observaciones[] = $_POST["parabrisas_observ"]; 
+            $observaciones[] = $_POST["baterias_observ"]; 
+            $observaciones[] = $_POST["luces_observaciones"]; 
+            $observaciones[] = $_POST["plafones_observ"]; 
+            $observaciones[] = $_POST["luz_trabajo_estado_observ"]; 
+            $observaciones[] = $_POST["motor_observ"]; 
+            $observaciones[] = $_POST["anticongelante_observ"]; 
+            $observaciones[] = $_POST["direccion_observ"]; 
+            $observaciones[] = $_POST["clutch_observ"]; 
+            $observaciones[] = $_POST["admision_observ"]; 
+            $observaciones[] = $_POST["bandas_observ"]; 
+            $observaciones[] = $_POST["f_motor_observ"]; 
+            $observaciones[] = $_POST["transmision_observ"]; 
+            $observaciones[] = $_POST["diferencial_observ"]; 
+            $observaciones[] = $_POST["r_pasamuros_electrico_obser"]; 
+            $observaciones[] = $_POST["r_pasamuros_hidraulico_observ"]; 
+            $observaciones[] = $_POST["r_pasamuros_neumatico_observ"]; 
+            $observaciones[] = $_POST["t1_observ"]; 
+            $observaciones[] = $_POST["t2_observ"]; 
+            $observaciones[] = $_POST["t3_observ"]; 
+            $observaciones[] = $_POST["t4_observ"]; 
+            $observaciones[] = $_POST["t5_observ"]; 
+            $observaciones[] = $_POST["t6_observ"]; 
+            $observaciones[] = $_POST["t7_observ"]; 
+            $observaciones[] = $_POST["t8_observ"]; 
+            $observaciones[] = $_POST["t9_observ"]; 
+            $observaciones[] = $_POST["t10_observ"]; 
+            for ($i=1; $i <= 18 ; $i++) { 
+                $llanta = "llanta_".$i."_observ";
+                $observaciones[] = $_POST[$llanta];
+            }
+            $observaciones[] = $_POST["arranque_observaciones"];
+            $observaciones[] = $_POST["take_off_observ"];
+            $observaciones[] = $_POST["piso_tractor_observ"];
+            $observaciones[] = $_POST["piso_remolque_observ"];
+            $observaciones[] = $_POST["bloque_hd_tractor_observ"];
+            $observaciones[] = $_POST["bloque_hd_remolque_observ"];
+            for ($i=1; $i <= 30 ; $i++) { 
+                $rampa = "rampa_".$i."_observ";
+                $observaciones[] = $_POST[$rampa];
+            }
+            for ($i=1; $i <= 30 ; $i++) { 
+                $piston = "piston_".$i."_observ";
+                $observaciones[] = $_POST[$piston];
+            }
+            $observaciones[] = $_POST["cinchos_trincado_observ"];
+            $observaciones[] = $_POST["tendederos_observ"];
+            $observaciones[] = $_POST["malla_observ"];
+            $observaciones[] = $_POST["ptr_observ"];
+            $observaciones[] = $_POST["cadena_trincado_observ"];
+
+            $i =0;
+            foreach($partes as $parte){
+                $datosController2 = array("id_checklist_partidas"=>$id,
+                                        "parte_revisada"=>$partes[$i],
+                                        "estado_general"=>$estados[$i],
+                                        "observaciones_partida"=>$observaciones[$i]);
+                $respuesta = Datos::registroPartidasChecklistModel($datosController2, "partidas_checklist");
+                $i++;
+            }
+            $link = "index.php?action=CheckLists/altaCheckListMazda";
+            if($respuesta == "success"){
+                echo "<script>
+                        registroOK('".$link."');
+                    </script>";
+            } else{           
+                $valor = $respuesta[2];
+                $error = str_replace("'", "", $valor);
+                echo '<script>
+                        errorRegistro('."'".$error."','".$link."'".');
+                </script>';
+            }
+        }
+    }
+
+	public static function vistaChecklistTablaController(){
+        require_once "./models/crud.php";
+		$respuesta = Datos::vistaChecklistTablaModel("checklist_mazda");
+		#El constructor foreach proporciona un modo sencillo de iterar sobre arrays. foreach funciona sólo sobre arrays y objetos, y emitirá un error al intentar usarlo con una variable de un tipo diferente de datos o una variable no inicializada.
+        return $respuesta;
+    }
+    
+    public static function vistaDetalleChecklistTablaController($datos){
+        require_once "./models/crud.php";
+		$respuesta = Datos::vistaDetalleChecklistTablaModel("partidas_checklist", $datos);
+		#El constructor foreach proporciona un modo sencillo de iterar sobre arrays. foreach funciona sólo sobre arrays y objetos, y emitirá un error al intentar usarlo con una variable de un tipo diferente de datos o una variable no inicializada.
+        return $respuesta;
+    }
 
 
 }
