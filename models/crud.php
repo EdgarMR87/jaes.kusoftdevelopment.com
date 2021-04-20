@@ -1092,10 +1092,92 @@ class Datos extends Conexion{
 		$stmt->execute();
 		#fetchAll(): Obtiene todas las filas de un conjunto de resultados asociado al objeto PDOStatement. 
 		return $stmt->fetchAll();
-
 		$stmt->close();
-
 	}
 
+    #BORRAR ORDEN DE SERVICIO ATR
+	#------------------------------------
+	public static function borrarChecklistModel($datosModel, $tabla){
+		$stmt = Conexion::conectar()->prepare("DELETE FROM $tabla WHERE id_checklist = :id_checklist");
+		$stmt->bindParam(":id_checklist", $datosModel, PDO::PARAM_INT);
+		if($stmt->execute()){
+			return "success";
+		}else{
+			return "error";
+		}
+		$stmt->close();
+	}
+    
+	#BORRAR ORDEN DE SERVICIO ATR
+	#------------------------------------
+	public static function borrarPartidasChecklistModel($datosModel, $tabla){
+		$stmt = Conexion::conectar()->prepare("DELETE FROM $tabla WHERE id_checklist_partidas = :id_checklist_partidas");
+		$stmt->bindParam(":id_checklist_partidas", $datosModel, PDO::PARAM_INT);
+		if($stmt->execute()){
+			return "success";
+		}else{
+			return "error";
+		}
+		$stmt->close();
+	}
+
+    #EDITAR CHECKLIST
+    #-------------------------------------
+	public static function editarCheckListModel($datosModel, $tabla){
+		$stmt = Conexion::conectar()->prepare("SELECT id_checklist, fecha_checklist, id_usuario_realiza, unidad_mazda, 
+                kilometraje, observaciones, CONCAT(nombre_u,' ', ape_pat_u, ' ',ape_mat_u)as nombreCompleto 
+                FROM $tabla
+                LEFT JOIN usuarios ON id_usuario_realiza = id_usuario
+                WHERE id_checklist = :id_checklist");
+		$stmt->bindParam(":id_checklist", $datosModel, PDO::PARAM_INT);	
+		$stmt->execute();
+		return $stmt->fetch();
+		$stmt->close();
+	}
+
+      #EDITAR CHECKLIST
+    #-------------------------------------
+	public static function editarPartidasCheckListModel($datosModel, $tabla){
+		$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla WHERE id_checklist_partidas = :id_checklist_partidas");
+		$stmt->bindParam(":id_checklist_partidas", $datosModel, PDO::PARAM_INT);	
+		$stmt->execute();
+		return $stmt->fetch();
+		$stmt->close();
+	}
+
+
+    public static function actualizarChecklistModel($datosModel, $tabla){
+		#prepare() Prepara una sentencia SQL para ser ejecutada por el método PDOStatement::execute(). La sentencia SQL puede contener cero o más marcadores de parámetros con nombre (:name) o signos de interrogación (?) por los cuales los valores reales serán sustituidos cuando la sentencia sea ejecutada. Ayuda a prevenir inyecciones SQL eliminando la necesidad de entrecomillar manualmente los parámetros.
+		$stmt = Conexion::conectar()->prepare("UPDATE $tabla SET fecha_checklist=:fecha_checklist, unidad_mazda=:unidad_mazda, 
+                kilometraje=:kilometraje, observaciones=:observaciones WHERE id_checklist=:id_checklist");
+		#bindParam() Vincula una variable de PHP a un parámetro de sustitución con nombre o de signo de interrogación correspondiente de la sentencia SQL que fue usada para preparar la sentencia.
+		$stmt->bindParam(":fecha_checklist", $datosModel["fecha_checklist"], PDO::PARAM_STR);
+        $stmt->bindParam(":unidad_mazda", $datosModel["unidad_checklist"], PDO::PARAM_INT);
+		$stmt->bindParam(":kilometraje", $datosModel["kilometraje_checklist"], PDO::PARAM_INT);
+        $stmt->bindParam(":observaciones", $datosModel["observaciones_checklist"], PDO::PARAM_STR);
+        $stmt->bindParam(":id_checklist", $datosModel["id_checklist_editar"], PDO::PARAM_INT);
+		if($stmt->execute()){
+            return "success";
+		} else {
+			return $stmt->errorInfo();
+		}
+		$stmt->close();
+	}
+
+    public static function actualizarPartidasChecklistModel($datosModel, $tabla){
+		#prepare() Prepara una sentencia SQL para ser ejecutada por el método PDOStatement::execute(). La sentencia SQL puede contener cero o más marcadores de parámetros con nombre (:name) o signos de interrogación (?) por los cuales los valores reales serán sustituidos cuando la sentencia sea ejecutada. Ayuda a prevenir inyecciones SQL eliminando la necesidad de entrecomillar manualmente los parámetros.
+		$stmt = Conexion::conectar()->prepare("UPDATE $tabla SET estado_general=:estado_general, 
+                observaciones_partida=:observaciones_partida WHERE id_partida=:id_partida");
+		$stmt->bindParam(":estado_general", $datosModel["estado_general"], PDO::PARAM_STR);
+        $stmt->bindParam(":observaciones_partida", $datosModel["observaciones_partida"], PDO::PARAM_STR);
+		$stmt->bindParam(":id_partida", $datosModel["id_partida"], PDO::PARAM_INT);
+		if($stmt->execute()){
+			return "success";
+		} else {
+			return $stmt->errorInfo();
+		}
+		$stmt->close();
+	}
+   
 }
 ?>
