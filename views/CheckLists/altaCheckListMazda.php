@@ -544,32 +544,32 @@
                 <tbody>
                     <tr>
                         <td>28.-CINCHOS DE TRINCADO</td>
-                        <td><input type="radio" class="buenos" name="cinchos_trincado_estado" value="bueno" checked></td>
-                        <td><input type="radio" class="malos" name="cinchos_trincado_estado" value="malo"></td>
+                        <td><input type="radio" class="buenos" name="cinchos_trincado_estado" value="si" checked></td>
+                        <td><input type="radio" class="malos" name="cinchos_trincado_estado" value="no"></td>
                         <td class="observaciones"><input type="text" name="cinchos_trincado_observ"></td>
                     </tr>
                     <tr>
                         <td>29 TENDEDEROS</td>
-                        <td><input type="radio" class="buenos" name="tendederos_estado" value="bueno" checked></td>
-                        <td><input type="radio" class="malos" name="tendederos_estado" value="malo"></td>
+                        <td><input type="radio" class="buenos" name="tendederos_estado" value="si" checked></td>
+                        <td><input type="radio" class="malos" name="tendederos_estado" value="no"></td>
                         <td class="observaciones"><input type="text" name="tendederos_observ"></td>
                     </tr>
                     <tr>
                         <td>30.- MALLA CUBRE AL 100%</td>
-                        <td><input type="radio" class="buenos" name="malla_estado" value="bueno" checked></td>
-                        <td><input type="radio" class="malos" name="malla_estado" value="malo"></td>
+                        <td><input type="radio" class="buenos" name="malla_estado" value="si" checked></td>
+                        <td><input type="radio" class="malos" name="malla_estado" value="no"></td>
                         <td class="observaciones"><input type="text" name="malla_observ"></td>
                     </tr>
                     <tr>
                         <td>31.- MARCA EN PTR</td>
-                        <td><input type="radio" class="buenos" name="ptr_estado" value="bueno" checked></td>
-                        <td><input type="radio" class="malos" name="ptr_estado" value="malo"></td>
+                        <td><input type="radio" class="buenos" name="ptr_estado" value="si" checked></td>
+                        <td><input type="radio" class="malos" name="ptr_estado" value="no"></td>
                         <td class="observaciones"><input type="text" name="ptr_observ"></td>
                     </tr>
                     <tr>
                         <td>32.- CADENA DE TRINCADO</td>
-                        <td><input type="radio" class="buenos" name="cadena_trincado_estado" value="bueno" checked></td>
-                        <td><input type="radio" class="malos" name="cadena_trincado_estado" value="malo"></td>
+                        <td><input type="radio" class="buenos" name="cadena_trincado_estado" value="si" checked></td>
+                        <td><input type="radio" class="malos" name="cadena_trincado_estado" value="no"></td>
                         <td class="observaciones"><input type="text" name="cadena_trincado_observ"></td>
                     </tr>
                 </tbody>
