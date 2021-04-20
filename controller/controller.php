@@ -576,6 +576,20 @@ public static function editarServicioAtrController(){
 				echo"<option value='". $item['id_unidad']."'>".$item['num_unidad']."</option>";
 		}
 	}
+    
+    #VISTA DE UNIDADES MAZDA PARA CARGARLOS A UNA NUEVA ORDEN DE SERVICIO
+	#------------------------------------
+	public static function vistaUnidadesMazdaSelectedController($unidad){
+		require_once "./models/crud.php";
+		$respuesta = Datos::vistaUnidadesMazdaModel("unidades");
+		#El constructor foreach proporciona un modo sencillo de iterar sobre arrays. foreach funciona sólo sobre arrays y objetos, y emitirá un error al intentar usarlo con una variable de un tipo diferente de datos o una variable no inicializada.
+		foreach($respuesta as $row => $item){
+            if($unidad == $item['id_unidad'])
+                echo"<option value='". $item['id_unidad']."' selected>".$item['num_unidad']."</option>";
+            else
+				echo"<option value='". $item['id_unidad']."'>".$item['num_unidad']."</option>";
+		}
+	}
 
 	#VISTA DE SERVICIOS ATR PARA CARGARLOS A UNA NUEVA ORDEN DE SERVICIO
 	#------------------------------------
@@ -674,7 +688,6 @@ public static function editarServicioAtrController(){
         return $respuesta;
     }
 
-
 	public static function obtenerOSPendientesController(){
         require_once "./models/crud.php";
 		$respuesta = Datos::obtenerOSPendientesModel("ordenServicio");
@@ -684,7 +697,6 @@ public static function editarServicioAtrController(){
 				echo"<option value='". $item['num_orden']."' data-os='". $item['num_orden']."'>".$item['id_unidad_servicio']."</option>";
 		}
     }
-
 
 	#ACTUALIZAR SERVICIO ATR
 	#------------------------------------
@@ -1198,6 +1210,207 @@ public static function editarServicioAtrController(){
         return $respuesta;
     }
 
+    #BORRAR ORDEN DE SERVICIO
+	#------------------------------------
+	public function borrarChecklistController(){
+        require_once "./models/crud.php";
+		if(isset($_POST["id_checklist_borrar"])){
+			$datosController = $_POST["id_checklist_borrar"];
+			$respuesta2 = Datos::borrarPartidasChecklistModel($datosController, "partidas_checklist");
+            $respuesta3 = Datos::borrarChecklistModel($datosController, "checklist_mazda");
+            $link = "index.php?action=CheckLists/listadoCheckListMazda";
+            if($respuesta2 == "success" && $respuesta3 == "success"){
+                echo '<script>
+                        var x = document.getElementById("openModalEliminar");
+                        x.style.display = "none";    
+                        borrarOk('."'".$link."'".');
+                    </script>';
+            } else{           
+                $valor = $respuesta2[2];
+                $valor2 = $respuesta3[2];
+                $error2 = str_replace("'", "", $valor2);
+                $error = str_replace("'", "", $valor);
+                echo '<script>
+                        var x = document.getElementById("openModalEliminar");
+                        x.style.display = "none";              
+                        errorRegistro('."'".$error."/".$error2."','".$link."'".');
+                </script>';
+            }
+        }
+    }
+
+    #EDITAR OS
+	public static function editarChecklistController(){
+        require_once "./models/crud.php";
+        $datosController = $_GET["id_checklist_editar"];
+        $respuesta = Datos::editarCheckListModel($datosController, "checklist_mazda");
+        return $respuesta;
+    }
+
+    #EDITAR OS
+    public static function editarPartidasChecklistController(){
+        require_once "./models/crud.php";
+        $datosController = $_GET["id_checklist_editar"];
+        $respuesta = Datos::vistaDetalleChecklistTablaModel($datosController, "partidas_checklist");
+        return $respuesta;
+    }
+
+    public static function actualizarChecklistController(){
+        require_once "./models/crud.php";
+		if(isset($_POST["id_checklist_editar"])){
+			$datosController = array( "id_checklist_editar"=>$_POST["id_checklist_editar"], 
+								      "fecha_checklist"=>$_POST["fecha_checklist"],
+                                    "kilometraje_checklist"=>$_POST["kilometraje_checklist"],
+									"unidad_checklist"=>$_POST["unidad_checklist"],
+									"observaciones_checklist"=>strtoupper($_POST["observaciones_checklist"]));
+			$respuesta = Datos::actualizarChecklistModel($datosController, "checklist_mazda");
+            if($respuesta == "success"){           
+                $estados[] = $_POST["cristales_estado"]; 
+                $estados[] = $_POST["espejos_estado"]; 
+                $estados[] = $_POST["parabrisas_estado"];
+                $estados[] = $_POST["baterias_estado"]; 
+                $estados[] = $_POST["luces_estado"]; 
+                $estados[] = $_POST["plafones_estado"];
+                $estados[] = $_POST["luz_trabajo_estado"];
+                $estados[] = $_POST["motor_estado"];
+                $estados[] = $_POST["anticongelante_estado"]; 
+                $estados[] = $_POST["direccion_estado"]; 
+                $estados[] = $_POST["clutch_estado"];
+                $estados[] = $_POST["admision_estado"];
+                $estados[] = $_POST["bandas_estado"];
+                $estados[] = $_POST["f_motor_estado"];
+                $estados[] = $_POST["transmision_estado"];
+                $estados[] = $_POST["diferencial_estado"];
+                $estados[] = $_POST["r_pasamuros_electrico_estado"];
+                $estados[] = $_POST["r_pasamuros_hidraulico_estado"];
+                $estados[] = $_POST["r_pasamuros_neumatico_estado"];
+                $estados[] = $_POST["t1_estado"];
+                $estados[] = $_POST["t3_estado"];
+                $estados[] = $_POST["t5_estado"];
+                $estados[] = $_POST["t7_estado"];
+                $estados[] = $_POST["t9_estado"];
+                $estados[] = $_POST["t2_estado"];
+                $estados[] = $_POST["t4_estado"];
+                $estados[] = $_POST["t6_estado"];
+                $estados[] = $_POST["t8_estado"];         
+                $estados[] = $_POST["t10_estado"];
+                for ($i=1; $i <= 17 ; $i+=2) { 
+                    $llanta = "llanta_".$i."_estado";
+                    $estados[] = $_POST[$llanta];
+                }
+                for ($i=2; $i <= 18 ; $i+=2) { 
+                    $llanta = "llanta_".$i."_estado";
+                    $estados[] = $_POST[$llanta];
+                }
+                $estados[] = $_POST["arranque_estado"];
+                $estados[] = $_POST["take_off_estado"];
+                $estados[] = $_POST["piso_tractor_estado"];
+                $estados[] = $_POST["piso_remolque_estado"];
+                $estados[] = $_POST["bloque_hd_tractor_estado"];
+                $estados[] = $_POST["bloque_hd_remolque_estado"];
+                for ($i=1; $i <= 30 ; $i++) { 
+                    $rampa = "rampa_".$i."_estado"; 
+                    $estados[] = $_POST[$rampa];
+                }
+                for ($i=1; $i <= 30 ; $i++) { 
+                    $piston  = "piston_".$i."_estado";
+                    $estados[] = $_POST[$piston];
+                }
+                $estados[] = $_POST["cinchos_trincado_estado"];
+                $estados[] = $_POST["tendederos_estado"];
+                $estados[] = $_POST["malla_estado"];          
+                $estados[] = $_POST["ptr_estado"];
+                $estados[] = $_POST["cadena_trincado_estado"];
+                #OBSERVACIONES
+                $observaciones[] = $_POST["cristales_observ"]; 
+                $observaciones[] = $_POST["espejos_observ"]; 
+                $observaciones[] = $_POST["parabrisas_observ"]; 
+                $observaciones[] = $_POST["baterias_observ"]; 
+                $observaciones[] = $_POST["luces_observaciones"]; 
+                $observaciones[] = $_POST["plafones_observ"]; 
+                $observaciones[] = $_POST["luz_trabajo_estado_observ"]; 
+                $observaciones[] = $_POST["motor_observ"]; 
+                $observaciones[] = $_POST["anticongelante_observ"]; 
+                $observaciones[] = $_POST["direccion_observ"]; 
+                $observaciones[] = $_POST["clutch_observ"]; 
+                $observaciones[] = $_POST["admision_observ"]; 
+                $observaciones[] = $_POST["bandas_observ"]; 
+                $observaciones[] = $_POST["f_motor_observ"]; 
+                $observaciones[] = $_POST["transmision_observ"]; 
+                $observaciones[] = $_POST["diferencial_observ"]; 
+                $observaciones[] = $_POST["r_pasamuros_electrico_obser"]; 
+                $observaciones[] = $_POST["r_pasamuros_hidraulico_observ"]; 
+                $observaciones[] = $_POST["r_pasamuros_neumatico_observ"]; 
+                $observaciones[] = $_POST["t1_observ"]; 
+                $observaciones[] = $_POST["t3_observ"]; 
+                $observaciones[] = $_POST["t5_observ"];
+                $observaciones[] = $_POST["t7_observ"]; 
+                $observaciones[] = $_POST["t9_observ"]; 
+                $observaciones[] = $_POST["t2_observ"]; 
+                $observaciones[] = $_POST["t4_observ"];
+                $observaciones[] = $_POST["t6_observ"]; 
+                $observaciones[] = $_POST["t8_observ"]; 
+                $observaciones[] = $_POST["t10_observ"]; 
+                for ($i=1; $i <= 17 ; $i+=2) { 
+                    $llanta = "llanta_".$i."_observ";
+                    $observaciones[] = $_POST[$llanta];
+                }
+                for ($i=2; $i <= 18 ; $i+=2) { 
+                    $llanta = "llanta_".$i."_observ";
+                    $observaciones[] = $_POST[$llanta];
+                }
+
+                $observaciones[] = $_POST["arranque_observaciones"];
+                $observaciones[] = $_POST["take_off_observ"];
+                $observaciones[] = $_POST["piso_tractor_observ"];
+                $observaciones[] = $_POST["piso_remolque_observ"];
+                $observaciones[] = $_POST["bloque_hd_tractor_observ"];
+                $observaciones[] = $_POST["bloque_hd_remolque_observ"];
+                for ($i=1; $i <= 30 ; $i++) { 
+                    $rampa = "rampa_".$i."_observ";
+                    $observaciones[] = $_POST[$rampa];
+                }
+                for ($i=1; $i <= 30 ; $i++) { 
+                    $piston = "piston_".$i."_observ";
+                    $observaciones[] = $_POST[$piston];
+                }
+                $observaciones[] = $_POST["cinchos_trincado_observ"];
+                $observaciones[] = $_POST["tendederos_observ"];
+                $observaciones[] = $_POST["malla_observ"];
+                $observaciones[] = $_POST["ptr_observ"];
+                $observaciones[] = $_POST["cadena_trincado_observ"];
+                $partidas = $_POST["partidas"];
+                $i=0;
+                foreach($partidas as $partida){
+                    $datosController2 = array("id_partida"=>$partida,
+                                        "estado_general"=>$estados[$i],
+                                        "observaciones_partida"=>$observaciones[$i]);
+                                        echo "<script>alert('". $partida. " = " . $observaciones[$i] ."')</script>";
+                                        
+                    $respuesta2 = Datos::actualizarPartidasChecklistModel($datosController2, "partidas_checklist");
+                    $i++;
+                }            
+                $link = "index.php?action=CheckLists/listadoCheckListMazda";
+                if($respuesta2 == "success"){     
+                    echo "<script>
+                            actualizarOK('".$link."');
+                        </script>";
+                }else{
+                    $valor = $respuesta2[2];
+                    $error = str_replace("'", "", $valor);
+                    echo '<script>
+                            errorRegistro('."'".$error."','".$link."'".');
+                        </script>';
+                }
+            }else{
+                $valor = $respuesta[2];
+                $error = str_replace("'", "", $valor);
+                echo '<script>
+                        errorRegistro('."'".$error."','".$link."'".');
+                    </script>';
+            }
+        }
+    }
 
 }
 ?>
