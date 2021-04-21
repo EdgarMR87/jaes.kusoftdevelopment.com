@@ -17,8 +17,9 @@ function clickactionAsignar( b ){
 
 //EVENTO DEL BOTON AGREGAR PARTIDA 
 function clickaction( b ){
-    document.getElementById('id_partida_os').value = b.id; 
-    document.getElementById('num_orden_iniciar').value = b.dataset.os; 
+    document.getElementById('id_partida_os_i').value = b.id; 
+    document.getElementById('num_orden_iniciar').value = b.dataset.os;
+    
     $('#usuarios').val();
     var id_dpto_serv = b.dataset.dptoserv;
 
@@ -32,7 +33,6 @@ function clickaction( b ){
             }
         });
 }
-
 
 function clickactionFinalizar(b){
     document.getElementById('id_partida_os_f').value = b.id;
@@ -59,7 +59,7 @@ $("#agregar-user").click(function(){
     var id_usuario = $("#usuarios").val();
     var nombre_usuario = $("#usuarios option:selected").text();
     var htmlTags = '<tr>'+
-        '<td>' + id_usuario  + '<input type="hidden" name="usuariosAsignados[]" value="' + id_usuario + '"></td>'+
+        '<td>' + id_usuario  + '<input type="hidden" name="usuariosAsignadosInicio[]" value="' + id_usuario + '"></td>'+
         '<td>' + nombre_usuario +'</td>'+
         '<td><a class="borrar"><img src="/views/img/eliminar.png" class="img25"></img></a></td>'+
        '</tr>';
@@ -240,7 +240,7 @@ $(document).on('click', '.borrar', function (event) {
     		    <a href="#close" title="Close" class="close">X</a>
                 <h1>INICIAR SERVICIO </h1>
                 <table>
-                    <input type="hidden" name="id_partida_os" id="id_partida_os">
+                    <input type="hidden" name="id_partida_os_i" id="id_partida_os_i">
                     <input type="hidden" name="num_orden_iniciar" id="num_orden_iniciar">
                     <tr>
                         <td class="titulo"><p class="derecha">Comentarios : </p></td>
@@ -330,9 +330,8 @@ $(document).on('click', '.borrar', function (event) {
         </div>
     </form>
 </div>
-
 <?php
     $vistaUsuario -> asignarUsuariosServicioListadoController();  
     $vistaUsuario -> iniciarServicioModalController();//AGREGAMOS LA VARIABLE DE INCIAR SERVICIO.
-    $vistaUsuario -> finalizarServicioModalController();//AGREGAMOS LA VARIABLE DE INCIAR SERVICIO.
+    $vistaUsuario -> finalizarServicioModalController();//AGREGAMOS LA VARIABLE DE FINALIZAR SERVICIO.
 ?>

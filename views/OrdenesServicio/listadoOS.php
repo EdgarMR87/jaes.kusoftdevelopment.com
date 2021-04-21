@@ -39,10 +39,10 @@ $(document).ready(function(){
                 <th class="listado-th">Avance %</th>
                 <th class="listado-th">Modificar</th>
 				<th class="listado-th">Eliminar</th>
+                <th class="listado-th">Imprimir</th>
 			</tr>
 		</thead>
 		<tbody>
-
 			<?php
               ini_set('display_errors', '1');
               ini_set('error_reporting', E_ALL);
@@ -63,8 +63,21 @@ $(document).ready(function(){
                         <td>'.$item["nombre_completo"].'</td>
                         <td class='."'".$item["estado"]."'".'>'.$item["estado"].'</td>
                         <td>'.$item["avance_porcentaje"].'</td>
-                        <td><a href="index.php?action=OrdenesServicio/editarOS&id_os_editar='.$item["num_orden"].'"><img src="/views/img/editar.png" class="img-25"></img></a></td>
-                        <td><a href="#openModalEliminar" onclick="clickactionEliminar(this)" id="'.$item["num_orden"].'"><img src="/views/img/eliminar.png" class="img25"></img></a></td>
+                        <td>
+                            <a href="index.php?action=OrdenesServicio/editarOS&id_os_editar='.$item["num_orden"].'">
+                                <img src="/views/img/editar.png" class="img-25"></img>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="#openModalEliminar" onclick="clickactionEliminar(this)" id="'.$item["num_orden"].'">
+                                <img src="/views/img/eliminar.png" class="img-25"></img>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="#" onclick="" id="'.$item["impreso"].'">
+                                <img src="/views/img/Imprimir.png" class="img-25"></img>
+                            </a>
+                        </td>
                     </tr>';
             }			
 			?>
@@ -98,5 +111,3 @@ $(document).ready(function(){
         ?>
     </form>
 </div>
-
- 
