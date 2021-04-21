@@ -805,25 +805,35 @@ public static function editarServicioAtrController(){
     # Y LOS USUARIOS A REALIZAR LA ACTIVIDAD
     public function iniciarServicioModalController(){
 		require_once "./models/crud.php";
-		if(isset($_POST["num_orden_iniciar"])){
-			$datosController = array( "id_partida_os"=>$_POST["id_partida_os"],
+		if(isset($_POST["id_partida_os_i"])){
+			$datosController = array( "id_partida_os"=>$_POST["id_partida_os_i"],
 							          "comentarios_os"=>$_POST["comentarios_os"]);
 			$respuesta = Datos::iniciarServicioModel($datosController, "partidas_os");
-            $usuariosAgisnados = $_POST["usuariosAsignados"];
+            $usuariosAgisnados = $_POST["usuariosAsignadosInicio"];
             if($respuesta == "success"){                
                 foreach($usuariosAgisnados as $usuarioAsignado){
-                    $datosController2 = array("id_partida_os"=> $_POST["id_partida_os"],
+                    $datosController2 = array("id_partida_os"=> $_POST["id_partida_os_i"],
                                                 "usuario" => $usuarioAsignado);                    
                     $respuesta2 = Datos::asigarUsuariosIniciarServicioModel($datosController2, "usuario_partida_os");
                     $respuesta3 = Datos::empezarOSModel($_POST["num_orden_iniciar"]);
-                }               
-                echo '<script>
-						alert("Se INICIO el servicio correctamente");
-						location.href = "index.php?action=OrdenesServicio/detalleOS&id_os_editar='.$_POST["num_orden_iniciar"].'";
-						</script>';
-            } else {
-				echo "<p class='error-acceso'>". $respuesta[2]."</p>";
-			}
+                }
+                if($respuesta2 == "success" && $respuesta3 == "success"){
+                    $link = "index.php?action=OrdenesServicio/listadoOS";
+                    echo '<script>
+                            var x = document.getElementById("openModalIniciar");
+                            x.style.display = "none";    
+                            registroOK('."'".$link."'".');
+                        </script>';
+                }else{
+                    $valor = $respuesta[2];
+                    $error = str_replace("'", "", $valor);
+                    echo '<script>
+                            var x = document.getElementById("openModalIniciar");
+                            x.style.display = "none";              
+                            errorRegistro('."'".$error."','".$link."'".');
+                    </script>';
+			    }
+            }
 		}
 	}
 
@@ -844,7 +854,6 @@ public static function editarServicioAtrController(){
 		#El constructor foreach proporciona un modo sencillo de iterar sobre arrays. foreach funciona sólo sobre arrays y objetos, y emitirá un error al intentar usarlo con una variable de un tipo diferente de datos o una variable no inicializada.
         return $respuesta;
     }
-
 
     public function finalizarServicioModalController(){
 		require_once "./models/crud.php";
@@ -915,15 +924,14 @@ public static function editarServicioAtrController(){
             foreach($usuariosAgisnados as $usuarioAsignado){
                     $datosController2 = array("id_partida_os"=> $_POST["id_partida_os_asignar"],
                                                 "usuario" => $usuarioAsignado);                    
-                    $respuesta2 = Datos::asigarUsuariosIniciarServicioModel($datosController2, "usuario_partida_os");
+                    $respuesta = Datos::asigarUsuariosIniciarServicioModel($datosController2, "usuario_partida_os");
             }               
-            echo '<script>
-			    	alert("Asignacion Correcta");
-					setTimeout("location.href ='."'index.php?action=OrdenesServicio/listadoServiciosEnProceso'".'"'.', 200);
-				</script>';
-        } else {
+            if($respuesta == "success"){
+                echo "";
+            } else {
 			echo "<p class='error-acceso'>". $respuesta[2]."</p>";
-		}
+		    }
+        }
 	}    
 
     
@@ -1385,8 +1393,7 @@ public static function editarServicioAtrController(){
                     $datosController2 = array("id_partida"=>$partida,
                                         "estado_general"=>$estados[$i],
                                         "observaciones_partida"=>$observaciones[$i]);
-                                        echo "<script>alert('". $partida. " = " . $observaciones[$i] ."')</script>";
-                                        
+                                      
                     $respuesta2 = Datos::actualizarPartidasChecklistModel($datosController2, "partidas_checklist");
                     $i++;
                 }            
@@ -1411,6 +1418,40 @@ public static function editarServicioAtrController(){
             }
         }
     }
+
+    #VITA DE LA LISTA DE SERVICIOS EN PROCESO
+    public static function vistaPartidasFinalizarUsuariosController(){
+        require_once "./models/crud.php";
+        $respuesta = Datos::vistaPartidasFinalizarUsariosTablaModel("usuario_partida_os");
+        #El constructor foreach proporciona un modo sencillo de iterar sobre arrays. foreach funciona sólo sobre arrays y objetos, y emitirá un error al intentar usarlo con una variable de un tipo diferente de datos o una variable no inicializada.
+        return $respuesta;
+    }
+
+    public function finalizarTurnoUsuarioController(){
+		require_once "./models/crud.php";
+		if(isset($_POST["id_partida_finalizar"])){
+			$datosController = array( "id_partida_finalizar"=>$_POST["id_partida_finalizar"]);
+			$respuesta = Datos::finalizarTurnoUsuarioModel($datosController, "usuario_partida_os");
+            $link = "index.php?action=OrdenesServicio/finalizarTurnoUsuarios";
+			if($respuesta == "success"){
+                echo '<script>
+                        var x = document.getElementById("openModalIniciar");
+                        x.style.display = "none";    
+                        actualizarOK('."'".$link."'".');
+                    </script>';
+            } else {
+                $valor = $respuesta[2];
+                $error = str_replace("'", "", $valor);
+                echo '<script>
+                        var x = document.getElementById("openModalIniciar");
+                        x.style.display = "none";              
+                        errorRegistro('."'".$error."','".$link."'".');
+                </script>';
+			}
+		}
+	}
+
+
 
 }
 ?>
