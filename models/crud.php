@@ -812,7 +812,6 @@ class Datos extends Conexion{
 	#INICIAR SERVICIO 
 	#-------------------------------------
 
-
 	public static function iniciarServicioModel($datosModel, $tabla){
 		$stmt = Conexion::conectar()->prepare("UPDATE $tabla SET fecha_inicio_partida_os = :fecha_inicio_partida_os, 
 											comentarios_os = :comentarios_os, estado_partida_os = :estado_partida_os 
@@ -829,36 +828,31 @@ class Datos extends Conexion{
 		$stmt->bindParam(":estado_partida_os", $estado, PDO::PARAM_STR);
         $stmt->bindParam(":id_partida_os", $datosModel["id_partida_os"], PDO::PARAM_INT);
 
-		$insert = Conexion::conectar()->prepare("INSERT INTO movimientos_partidas_os(id_usuario_m, id_partida_os_m, valores_m, 
-					fecha_m, tipo_m) VALUES (:id_usuario_m, :id_partida_os_m, :valores_m, :fecha_m, :tipo_m)");
-		$insert->bindParam(":id_usuario_m", $id_usuario_creacion, PDO::PARAM_INT);
-		$insert->bindParam(":id_partida_os_m", $datosModel["id_partida_os"], PDO::PARAM_INT);
-		$insert->bindParam(":valores_m", $valores, PDO::PARAM_STR);
-		$insert->bindParam(":fecha_m", $fecha_inicio, PDO::PARAM_STR);
-		$insert->bindParam(":tipo_m", $tipo_m, PDO::PARAM_STR);
+        $insert = Conexion::conectar()->prepare("INSERT INTO movimientos_partidas_os(id_usuario_m, id_partida_os_m, valores_m, 
+					    fecha_m, tipo_m) VALUES (:id_usuario_m, :id_partida_os_m, :valores_m, :fecha_m, :tipo_m)");
+		    $insert->bindParam(":id_usuario_m", $id_usuario_creacion, PDO::PARAM_INT);
+		    $insert->bindParam(":id_partida_os_m", $datosModel["id_partida_os"], PDO::PARAM_INT);
+		    $insert->bindParam(":valores_m", $valores, PDO::PARAM_STR);
+		    $insert->bindParam(":fecha_m", $fecha_inicio, PDO::PARAM_STR);
+		    $insert->bindParam(":tipo_m", $tipo_m, PDO::PARAM_STR);
 
-        $iniciarOS = Conexion::conectar()->prepare("UPDATE ordenServicio set estado='ENPROCESO' WHERE avance_porcentaje BETWEEN  0 AND 99");
-       
 		if($stmt->execute()){
-				
 			if($insert->execute()){
-               
-				return "success";
-                $iniciarOS->execute();
+                return "success";
 			}
 			else{
 				$arr = $insert->errorInfo();
-			return $arr;
+			    return $arr;
 			}
 			
 		}else{
 			$arr = $stmt->errorInfo();
 			return $arr;
 		}
-		$stmt->close();
-     
-		$insert->close();
+        $stmt->close();  
+        $insert->close();
 	}
+
 
     public static function asigarUsuariosIniciarServicioModel($datosModel, $tabla){
         $asignarUser = Conexion::conectar()->prepare("INSERT INTO $tabla(id_partida_os, id_usuario_r, 
@@ -901,30 +895,34 @@ class Datos extends Conexion{
 
 	public static function finalizarSevicioModel($datosModel, $tabla){
 
-		$stmt = Conexion::conectar()->prepare("UPDATE $tabla SET fecha_termino_partida_os = :fecha_termino_partida_os, 
+		$stmt = Conexion::conectar()->prepare("UPDATE $tabla SET fecha_termino_partida_os = (SELECT NOW()), 
 										estado_partida_os = :estado_partida_os, comentario_final = :comentario_final
 												WHERE id_partida_os = :id_partida_os");	
 		session_start();
-		date_default_timezone_set('America/Mexico_City');
-		$fecha_termino = date("Y-m-d H:m:s");
+		
 		$id_usuario_creacion = $_SESSION["id_usuario"];
 		$estado = "TERMINADO";	
 		$tipo_m = "U";						
 		$valores =  $datosModel["comentario_final"] . "," . $estado ;
         $stmt->bindParam(":comentario_final", $datosModel["comentario_final"], PDO::PARAM_STR);
-		$stmt->bindParam(":fecha_termino_partida_os", $fecha_termino, PDO::PARAM_STR);
 		$stmt->bindParam(":estado_partida_os", $estado, PDO::PARAM_STR);
         $stmt->bindParam(":id_partida_os", $datosModel["id_partida_os"], PDO::PARAM_INT);
 
 		$insert = Conexion::conectar()->prepare("INSERT INTO movimientos_partidas_os(id_usuario_m, id_partida_os_m, valores_m, 
-					fecha_m, tipo_m) VALUES (:id_usuario_m, :id_partida_os_m, :valores_m, :fecha_m, :tipo_m)");
+					fecha_m, tipo_m) VALUES (:id_usuario_m, :id_partida_os_m, :valores_m, (SELECT NOW()), :tipo_m)");
 		$insert->bindParam(":id_usuario_m", $id_usuario_creacion, PDO::PARAM_INT);
 		$insert->bindParam(":id_partida_os_m", $datosModel["id_partida_os"], PDO::PARAM_INT);
 		$insert->bindParam(":valores_m", $valores, PDO::PARAM_STR);
-		$insert->bindParam(":fecha_m", $fecha_termino, PDO::PARAM_STR);
+	
 		$insert->bindParam(":tipo_m", $tipo_m, PDO::PARAM_STR);
+
+        $update = Conexion::conectar()->prepare("UPDATE usuario_partida_os SET fecha_termino =(SELECT NOW()) 
+                    WHERE id_partida_os = :id_partida_os AND fecha_termino IS NULL");
+        $update->bindParam(":id_partida_os", $datosModel["id_partida_os"], PDO::PARAM_INT);
+        
 		if($stmt->execute()){				
 			if($insert->execute()){
+                $update->execute();
 				return "success";
 			} else {
 				$arr = $insert->errorInfo();
@@ -936,8 +934,8 @@ class Datos extends Conexion{
 		}
 		$stmt->close();
 		$insert->close();
+        $update->close();
 	}
-	
 
 	#VISTA PUESTO
 	#-------------------------------------
@@ -1178,6 +1176,37 @@ class Datos extends Conexion{
 		}
 		$stmt->close();
 	}
-   
+
+    #VISTA PARTIDAS USARIOS PARA FINALIZAR SU TURNO
+	#-------------------------------------
+	public static function vistaPartidasFinalizarUsariosTablaModel(){
+		$stmt = Conexion::conectar()->prepare("SELECT id_u_p_os, id_unidad_servicio,
+                CONCAT(nombre_u,' ',ape_pat_u,' ',ape_mat_u)as nombreCompleto, fecha_asignacion, descripcion_serv
+                FROM usuario_partida_os
+                LEFT JOIN usuarios ON usuarios.id_usuario = usuario_partida_os.id_partida_os
+                LEFT JOIN partidas_os ON partidas_os.id_partida_os = usuario_partida_os.id_partida_os
+                LEFT JOIN servicios_atr ON servicios_atr.codigo_atr_serv =  partidas_os.codigo_partida_os
+                LEFT JOIN ordenServicio ON ordenServicio.num_orden = partidas_os.num_orden_partida_os
+                WHERE fecha_termino IS NULL");
+		$stmt->execute();
+		#fetchAll(): Obtiene todas las filas de un conjunto de resultados asociado al objeto PDOStatement. 
+		return $stmt->fetchAll();
+		$stmt->close();
+	}
+
+    public static function finalizarTurnoUsuarioModel($datosModel, $tabla){
+		#prepare() Prepara una sentencia SQL para ser ejecutada por el método PDOStatement::execute(). La sentencia SQL puede contener cero o más marcadores de parámetros con nombre (:name) o signos de interrogación (?) por los cuales los valores reales serán sustituidos cuando la sentencia sea ejecutada. Ayuda a prevenir inyecciones SQL eliminando la necesidad de entrecomillar manualmente los parámetros.
+		$stmt = Conexion::conectar()->prepare("UPDATE $tabla SET fecha_termino=(SELECT now())
+                WHERE id_u_p_os=:id_u_p_os");
+		$stmt->bindParam(":id_u_p_os", $datosModel["id_partida_finalizar"], PDO::PARAM_INT);
+		if($stmt->execute()){
+			return "success";
+		} else {
+			return $stmt->errorInfo();
+		}
+		$stmt->close();
+	}
+
+    
 }
 ?>

@@ -51,7 +51,6 @@ class Paginas{
 }
 
     class PaginasAtr{
-	
         public static function enlacesPaginasAtrModel($enlaces){
             session_start();
             if( $_SESSION["autentificado"] == "SI"){
@@ -63,7 +62,9 @@ class Paginas{
 			    	|| $enlaces == "OrdenesServicio/iniciarServicio" || $enlaces == "OrdenesServicio/finalizarServicio"
 				    || $enlaces == "OrdenesServicio/usuariosAsignados" || $enlaces == "OrdenesServicio/editarOS"
                     || $enlaces == "OrdenesServicio/asignarUsuarios" || $enlaces == "OrdenesServicio/listadoServiciosEnProceso"
-                    || $enlaces == "OrdenesServicio/historialOS"){
+                    || $enlaces == "OrdenesServicio/historialOS"|| $enlaces == "CheckLists/listadoCheckListMazda"
+                    || $enlaces == "CheckLists/altaCheckListMazda" || $enlaces == "CheckLists/detalleCheckList"
+                    || $enlaces == "CheckLists/editarCheckList" || $enlaces == "OrdenesServicio/finalizarTurnoUsuarios"){
                                 $module =  "views/modules/".$enlaces.".php";
                 } else if($enlaces == "Unidades/altaUnidadOk"){				
         				$module =  "views/modules/Unidades/altaUnidad.php";                
