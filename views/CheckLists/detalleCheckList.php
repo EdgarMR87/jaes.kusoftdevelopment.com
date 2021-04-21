@@ -15,8 +15,9 @@
                 ini_set('display_errors', '1');
                 ini_set('error_reporting', E_ALL);
 			    $vistaUsuario = new MvcController();
-			    $respuesta = $vistaUsuario->vistaDetalleChecklistTablaController($_GET["id_checklist_editar"]);
-                foreach($respuesta as $row => $item){        
+			    $respuesta = $vistaUsuario -> vistaDetalleChecklistTablaController($_GET["id_checklist_editar"]);
+                foreach($respuesta as $row => $item){
+        
 
                 switch ($item["parte_revisada"]) {
                     case 'CRISTALES':
