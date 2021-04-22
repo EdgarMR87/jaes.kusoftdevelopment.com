@@ -64,7 +64,8 @@ class Paginas{
                     || $enlaces == "OrdenesServicio/asignarUsuarios" || $enlaces == "OrdenesServicio/listadoServiciosEnProceso"
                     || $enlaces == "OrdenesServicio/historialOS"|| $enlaces == "CheckLists/listadoCheckListMazda"
                     || $enlaces == "CheckLists/altaCheckListMazda" || $enlaces == "CheckLists/detalleCheckList"
-                    || $enlaces == "CheckLists/editarCheckList" || $enlaces == "OrdenesServicio/finalizarTurnoUsuarios"){
+                    || $enlaces == "CheckLists/editarCheckList" || $enlaces == "OrdenesServicio/finalizarTurnoUsuarios"
+                    || $enlaces == "Tiempos/tiemposUnidad"){
                                 $module =  "views/modules/".$enlaces.".php";
                 } else if($enlaces == "Unidades/altaUnidadOk"){				
         				$module =  "views/modules/Unidades/altaUnidad.php";                
@@ -90,6 +91,5 @@ class Paginas{
             }
         }
     }
-
 
 ?>

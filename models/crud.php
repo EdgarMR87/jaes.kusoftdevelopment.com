@@ -1207,6 +1207,33 @@ class Datos extends Conexion{
 		$stmt->close();
 	}
 
+	public static function vistaCalculoManoObraDirectaModel($datosModel, $tabla){
+		$stmt = Conexion::conectar()->prepare("SELECT descripcion_serv, observaciones_os, fecha_asignacion, fecha_termino, 
+				nombre_u, (salario_usuario/3360)as salario_minuto, 
+				TIMESTAMPDIFF(MINUTE, fecha_asignacion, fecha_termino) AS tiempo_diferencia 
+				FROM $tabla upo 
+				LEFT JOIN partidas_os po ON po.id_partida_os = upo.id_partida_os 
+				LEFT JOIN servicios_atr s ON s.codigo_atr_serv = po.codigo_partida_os 
+				LEFT JOIN usuarios u ON u.id_usuario = upo.id_usuario_r 
+				WHERE upo.id_partida_os = :id_partida_os");
+		$stmt->bindParam(":id_partida_os", $datosModel["id_partida_os"], PDO::PARAM_INT);
+		if($stmt->execute()){
+			return $stmt->fetchAll();
+		} else {
+			return $stmt->errorInfo();
+		}
+		$stmt->close();
+	}
+
+  	#OBTENER PARTIDAS DE LA ORDEN DE SERVICIO PARA CALCULAR MANO DE OBRA DIRECTA
+    #-------------------------------------
+	public static function obtenerPartidasOSXOSModel($datosModel, $tabla){
+		$stmt = Conexion::conectar()->prepare("SELECT id_partida_os FROM $tabla WHERE num_orden_partida_os = :num_orden_partida_os");
+		$stmt->bindParam(":num_orden_partida_os", $datosModel["os_buscar"], PDO::PARAM_INT);	
+		$stmt->execute();
+		return $stmt->fetchAll();
+		$stmt->close();
+	}
     
 }
 ?>
