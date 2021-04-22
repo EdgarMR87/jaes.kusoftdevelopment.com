@@ -1450,6 +1450,57 @@ public static function editarServicioAtrController(){
 			}
 		}
 	}
+    
+        //BUSQUEDA DE HISTORIAL PERSONALIZADA
+        public function vistaCalculoManoObraDirectaController(){
+            require_once "./models/crud.php";
+            if(isset($_POST["id_partida_os_calcular"])){
+                $datosController = array("id_partida_os"=> $_POST["id_partida_os_calcular"]); 
+                $respuesta = Datos::vistaCalculoManoObraDirectaModel($datosController, "usuario_partida_os"); 
+                if(isset($respuesta)){
+                    return $respuesta;
+                }else{
+                    echo "<p class='error-acceso'>". $respuesta[2]."</p>";
+                }
+            }
+        }
+
+        public function obtenerPartidaOSXOSController(){
+            require_once "./models/crud.php";
+            if(isset($_POST["os_buscar"])){
+                $datosController = array( "os_buscar"=>$_POST["os_buscar"]);
+                $respuesta = Datos::obtenerPartidasOSXOSModel($datosController, "partidas_os");
+                if(isset($respuesta)){
+                    $total_orden_servicio=0;
+                    foreach($respuesta as $row => $item){
+                        $datosController2 = array("id_partida_os"=>$item["id_partida_os"]);
+                        $respuesta2 = Datos::vistaCalculoManoObraDirectaModel($datosController2, "usuario_partida_os");
+                        foreach($respuesta2 as $row2 => $item2){
+                            $tiempo =  $item2["tiempo_diferencia"];
+                            $salario = $item2["salario_minuto"];
+                            $costo = $tiempo * $salario;     
+                            $total_orden_servicio += $costo; 
+                            echo'<tr>
+                                <td>'. utf8_decode($item2["descripcion_serv"]) .'</td>
+                                <td>'. utf8_decode($item2["descripcion_serv"]) .'</td>
+                                <td>'.$item2["observaciones_os"].'</td>
+                                <td>'.$item2["fecha_asignacion"].'</td>
+                                <td>'.$item2["fecha_termino"].'</td>
+                                <td>'.$item2["nombre_u"].'</td>
+                                <td>'.$item2["salario_minuto"].'</td>
+                                <td>'.$item2["tiempo_diferencia"].'</td>
+                                <td>'. $costo .'</td>
+                            </tr>';
+                        }
+                    }   
+                    echo "<tr><td colspan='3'>".$total_orden_servicio."</td></tr>";              
+                } else {
+                    echo "<p class='error-acceso'>". $respuesta[2]."</p>";
+                }
+            }
+        }        
+
+
 
 
 
