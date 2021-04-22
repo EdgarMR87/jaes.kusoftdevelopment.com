@@ -52,13 +52,22 @@
             </a>            
         </li>
         <li>
+            <a id="li-checklist">
+                <img class="img-header" src="/views/img/checklist.png">
+            </a>            
+        </li>
+        <li>
+            <a id="li-tiempos">
+                <img class="img-header" src="/views/img/tiempos.png">
+            </a>            
+        </li>
+        <li>
             <a onclick="salir(); return false;" >
                 <img class="img-header" src="/views/img/Salir.png">
             </a>
         </li>
 	</ul>
 </div>
-
 
 <div class="submenu-usuarios" id="submenu-os">
 	<div class="listado-submenu">
@@ -92,14 +101,24 @@
 		</a>
 	</div>
     <div class="listado-submenu">
+		<a href="index.php?action=OrdenesServicio/finalizarTurnoUsuarios">
+			<img src="/views/img/asignarUsuarios.png">
+			<p>Finalizar Turno Usuario</p>
+		</a>
+	</div>
+    <div class="listado-submenu">
 		<a href="index.php?action=OrdenesServicio/listadoServiciosEnProceso">
 			<img src="/views/img/servicios_Proceso.png">
 			<p>Servicios En Proceso</p>
 		</a>
 	</div>
-
+    <div class="listado-submenu">
+		<a href="index.php?action=OrdenesServicio/historialOS">
+			<img src="/views/img/Historial.png">
+			<p>Historial OS</p>
+		</a>
+	</div>
 </div>
-    
 
 <div class="submenu-usuarios" id="submenu-unidades">
 	<div class="listado-submenu">
@@ -127,6 +146,33 @@
 		<a href="index.php?action=ServiciosAtr/altaServicioAtr">
 			<img src="/views/img/Add_Servicio.png">
 			<p>Agregar Servicio</p>
+		</a>
+	</div>
+</div>
+
+<!-- SUBMENU DE LOS CHECKLIST !-->
+
+<div class="submenu-usuarios" id="submenu-checklist">
+	<div class="listado-submenu">
+		<a href="index.php?action=CheckLists/altaCheckListMazda">
+			<img src="/views/img/NuevoCheckListMazda.png">
+			<p>Nuevo Checklist Mazda</p>
+		</a>
+	</div>
+    <div class="listado-submenu">
+		<a href="index.php?action=CheckLists/listadoCheckListMazda">
+			<img src="/views/img/ListadoCheckListMazda.png">
+			<p>Listado Checklist Mazda</p>
+		</a>
+	</div>
+</div>
+
+<!-- SUBMENU DE LOS TIEMPOS !-->
+<div class="submenu-usuarios" id="submenu-tiempos">
+	<div class="listado-submenu">
+		<a href="index.php?action=Tiempos/tiemposUnidad">
+			<img src="/views/img/unidadTiempos.png">
+			<p>Tiempos Servicios x Unidad</p>
 		</a>
 	</div>
 </div>
