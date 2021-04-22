@@ -1,3 +1,99 @@
+
+  	$(document).ready(function(){
+
+      $("#departamento").on('change', function(){
+			let id_departamento =  document.getElementById('departamento').value;
+    		var dataen = 'id_departamento=' + id_departamento;	
+    		$.ajax({
+        		type:'post',
+        		url:'/views/modules/Usuarios/obtenerPuestosId.php',
+        		data: dataen, 
+        		dataType: "html",     
+        		success: function(resp){      	      
+          		  	$("#puesto").html(resp);
+        		}
+    		});
+    		return false;
+        });
+
+		$("#servicio").on('change', function(){
+			let servicio =  document.getElementById('servicio').value;
+			switch(servicio){
+				case "PREVENTIVO":
+					$('#tipo_servicio').empty();
+					$('#tipo_servicio').prepend("<option value='A' >A</option>");
+					$('#tipo_servicio').prepend("<option value='AB' >AB</option>");
+					$('#tipo_servicio').prepend("<option value='ABC' >ABC</option>");
+					break;
+				default:
+				$('#tipo_servicio').empty();
+				$('#tipo_servicio').prepend("<option value='"+servicio+"'>"+servicio+"</option>");
+			}
+		});
+
+        
+$('#li-usuarios').click(function(event){
+    $('#submenu-usuarios').css('display', 'block');
+    $('#submenu-almacen').css('display', 'none');
+    $('#contenido').css('display', 'none');    
+});
+
+$('#li-almacen').click(function(event){
+    $('#submenu-almacen').css('display', 'block');
+    $('#submenu-usuarios').css('display', 'none');
+    $('#contenido').css('display', 'none');
+});
+
+$('#li-os').click(function(event){
+    $('#submenu-os').css('display', 'block');
+    $('#submenu-unidades').css('display', 'none');
+    $('#submenu-servicios').css('display', 'none');
+    $('#submenu-checklist').css('display', 'none');
+    $('#submenu-tiempos').css('display', 'none');
+    $('#contenido').css('display', 'none');    
+});
+
+$('#li-unidades').click(function(event){
+    $('#submenu-unidades').css('display', 'block');
+    $('#submenu-os').css('display', 'none');
+    $('#submenu-servicios').css('display', 'none');
+    $('#submenu-checklist').css('display', 'none');
+    $('#submenu-tiempos').css('display', 'none');
+    $('#contenido').css('display', 'none');    
+});
+
+$('#li-servicios').click(function(event){
+    $('#submenu-servicios').css('display', 'block');
+    $('#submenu-unidades').css('display', 'none');
+    $('#submenu-checklist').css('display', 'none');
+    $('#submenu-tiempos').css('display', 'none');
+    $('#submenu-os').css('display', 'none');
+    $('#contenido').css('display', 'none');    
+});
+
+
+$('#li-checklist').click(function(event){
+    $('#submenu-checklist').css('display', 'block');
+    $('#submenu-servicios').css('display', 'none');
+    $('#submenu-unidades').css('display', 'none');
+    $('#submenu-tiempos').css('display', 'none');
+    $('#submenu-os').css('display', 'none');
+    $('#contenido').css('display', 'none');    
+});
+
+$('#li-tiempos').click(function(event){
+    $('#submenu-tiempos').css('display', 'block');
+    $('#submenu-checklist').css('display', 'none');
+    $('#submenu-servicios').css('display', 'none');
+    $('#submenu-unidades').css('display', 'none');
+    $('#submenu-os').css('display', 'none');
+    $('#contenido').css('display', 'none');    
+});
+
+
+});
+
+
 function registroOK(url){
     swal({
         title: "Registro Exitoso",
@@ -41,3 +137,4 @@ function borrarOk(link){
         window.location.href = link;
     });
 }
+
