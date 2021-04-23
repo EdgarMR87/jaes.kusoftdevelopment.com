@@ -18,8 +18,7 @@ function clickactionAsignar( b ){
 //EVENTO DEL BOTON AGREGAR PARTIDA 
 function clickaction( b ){
     document.getElementById('id_partida_os_i').value = b.id; 
-    document.getElementById('num_orden_iniciar').value = b.dataset.os;
-    
+    document.getElementById('num_orden_iniciar').value = b.dataset.os;    
     $('#usuarios').val();
     var id_dpto_serv = b.dataset.dptoserv;
 
@@ -76,9 +75,8 @@ $(document).on('click', '.borrar', function (event) {
 //EVENTO CUANDO DEN CLICK EN UN PENDIENTE Y OBTENER SU IDA
 
 });
+
 </script>
-
-
 
 
 <?PHP
