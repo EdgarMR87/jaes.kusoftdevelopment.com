@@ -536,20 +536,40 @@ public static function editarServicioAtrController(){
         return $respuesta;
     }
 
-
-
 	#BORRAR ORDEN DE SERVICIO
 	#------------------------------------
 	public function borrarOSAtrController(){
         require_once "./models/crud.php";
 		if(isset($_POST["id_os_borrar"])){
 			$datosController = $_POST["id_os_borrar"];
-			$respuesta2 = Datos::borrarPartidasOSAtrModel($datosController, "partidas_os");
-            $respuesta3 = Datos::borrarOSAtrModel($datosController, "ordenServicio");
-            echo '<script>
-                alert("Se ELIMINO la OS  y sus partidas correctamente");
-                setTimeout("location.href ='."'index.php?action=OrdenesServicio/listadoOS'".'"'.', 200);
-            </script>';
+			$respuesta = Datos::borrarPartidasOSAtrModel($datosController, "partidas_os");
+            $respuesta2 = Datos::borrarOSAtrModel($datosController, "ordenServicio");
+            $link = "index.php?action=OrdenesServicio/listadoOS";
+            if($respuesta == "success"){
+                if($respuesta2 == "success"){
+                    echo '<script>
+                            var x = document.getElementById("openModalEliminar");
+                            x.style.display = "none";    
+                            borrarOk("'.$link.'");
+                        </script>';
+                }else{
+                    $valor = $respuesta2[2];
+                    $error = str_replace("'", "", $valor);
+                    echo '<script>
+                            var x = document.getElementById("openModalEliminar");
+                            x.style.display = "none";              
+                            errorRegistro('."'".$error."','".$link."'".');
+                        </script>';
+                }
+            }else{
+                $valor = $respuesta[2];
+                $error = str_replace("'", "", $valor);
+                echo '<script>
+                        var x = document.getElementById("openModalEliminar");
+                        x.style.display = "none";              
+                        errorRegistro('."'".$error."','".$link."'".');
+                </script>';
+            }
         }
     }
 	
@@ -618,27 +638,31 @@ public static function editarServicioAtrController(){
 									"tipo_servicio"=>strtoupper($_POST["tipo_servicio"]));
 			$respuesta = Datos::registroOSAtrModel($datosController, "ordenServicio");
 			$partidas = $_POST["partidas"];
-			$observacionesPartidas = $_POST["observacionesPartidas"];
+			$observacionesPartidas = $_POST["observacionesPartidas"];            
+            $link = "index.php?action=OrdenesServicio/listadoOS";
 			if($respuesta == "success"){
 				$i =0;
 				foreach($partidas as $partida){
 					$datosController2 = array("consec_partida_os" => ($i+1),
 											"codigo_partida_os" => $partida,
-											"observaciones_os" => $observacionesPartidas[$i],
+											"observaciones_os" => strtoupper($observacionesPartidas[$i]),
 											"num_orden_partida_os" => $_POST["num_orden"]);
 					$respuesta2 = Datos::registroPartidaOSModel($datosController2, "partidas_os");
 					$i++;
 				}
 				echo '<script>
-                        alert("Se inserto la OS correctamente");
-                        setTimeout("location.href ='."'index.php?action=OrdenesServicio/listadoOS'".'"'.', 200);
-                    </script>';
-      
+                        registroOK("'.$link.'");
+                    </script>';      
 			}else{
-				echo "<p class='error-acceso'>".$respuesta[2]."</p>";
+                $valor = $respuesta[2];
+                $error = str_replace("'", "", $valor);
+                echo '<script>          
+                        errorRegistro('."'".$error."','".$link."'".');
+                </script>';
 			}
 		}
 	}
+
 
 	  #EDITAR OS
 	  public static function editarOSAtrController(){
@@ -708,7 +732,7 @@ public static function editarServicioAtrController(){
 			$respuesta = Datos::obtenerPartidaOSModel($datosController, "partidas_os");
 			if($respuesta == "success"){
 				echo "<span class='registro-actualizado'>Actualizacion Correcta</span>";
-                echo '<script> setTimeout("location.href ='."'index.php?action=Unidades/listadoUnidades'".'"'.', 200);</script>';
+                echo '<sc> setTimeout("location.href ='."'index.php?action=Unidades/listadoUnidades'".'"'.', 200);</sc>';
             } else {
 				echo "<p class='error-acceso'>". $respuesta[2]."</p>";
 			}
@@ -745,10 +769,10 @@ public static function editarServicioAtrController(){
                     $respuesta2 = Datos::asigarUsuariosIniciarServicioModel($datosController2, "usuario_partida_os");
                     $respuesta3 = Datos::empezarOSModel($_POST["orden_servicio_a"]);
                 }               
-                echo '<script>
+                echo '<sc>
 						alert("Se INICIO el servicio correctamente");
 						setTimeout("location.href ='."'index.php?action=OrdenesServicio/listadoOS'".'"'.', 200);
-					</script>';
+					</sc>';
             } else {
 				echo "<p class='error-acceso'>". $respuesta[2]."</p>";
 			}
@@ -768,7 +792,7 @@ public static function editarServicioAtrController(){
                 echo '<script>
 						alert("Se INICIO el servicio correctamente");
 						setTimeout("location.href ='."'index.php?action=OrdenesServicio/iniciarServicio'".'"'.', 200);
-					</script>';
+					</sc>';
             } else {
 				echo "<p class='error-acceso'>". $respuesta[2]."</p>";
 			}
@@ -857,23 +881,37 @@ public static function editarServicioAtrController(){
 
     public function finalizarServicioModalController(){
 		require_once "./models/crud.php";
-		if(isset($_POST["num_orden_finalizar"])){
+		if(isset($_POST["id_partida_os_f"])){
 			$datosController = array( "id_partida_os"=>$_POST["id_partida_os_f"],
 							          "comentario_final"=>$_POST["observacion_final_os_f"]);
 			$respuesta = Datos::finalizarSevicioModel($datosController, "partidas_os");
+            $link = "index.php?action=OrdenesServicio/detalleOS&id_os_editar=".$_POST["num_orden_finalizar"];
 			if($respuesta == "success"){
                 $respuesta2 = Datos::actualizarPorcentajeGral($_POST["num_orden_finalizar"]);
-                if($respuesta2 == "success" )
+                if($respuesta2 == "success" ){
                     $respuesta3 = Datos::cerrarOSModel($_POST["num_orden_finalizar"]);
-                else{
-                    echo "<p class='error-acceso'>". $respuesta2[2]."</p>";
-                }
+                    echo '<script>
+                            var x = document.getElementById("openModalFinalizar");
+                            x.style.display = "none";
+                            finalizarServicioOK("'.$link.'");
+                        </script>';
+                }else{
+                    $valor = $respuesta2[2];
+                    $error = str_replace("'", "", $valor);
+                    echo '<script>
+                            var x = document.getElementById("openModalFinalizar");
+                            x.style.display = "none";              
+                            errorRegistro('."'".$respuesta2[2]."','".$link."'".');
+                        </script>';
+                } 
+            }else{                
+                $valor = $respuesta[2];
+                $error = str_replace("'", "", $valor);
                 echo '<script>
-						alert("Se FINALIZO el servicio correctamente");
-						location.href = "index.php?action=OrdenesServicio/detalleOS&id_os_editar='.$_POST["num_orden_finalizar"].'";
-					</script>';
-            } else {
-				echo "<p class='error-acceso'>". $respuesta[2]."</p>";
+                        var x = document.getElementById("openModalFinalizar");
+                        x.style.display = "none";              
+                        errorRegistro('."'".$respuesta[2]."','".$link."'".');
+                    </script>';
 			}
 		}
 	}
@@ -1499,9 +1537,6 @@ public static function editarServicioAtrController(){
                 }
             }
         }        
-
-
-
 
 
 }
