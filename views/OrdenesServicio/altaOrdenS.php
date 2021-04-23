@@ -42,18 +42,14 @@ $("#agregar-serv").click(function(){
         '<td>' + $("#codigo_atr_serv").val() + '<input type="hidden" name="partidas[]" value="'+$("#codigo_atr_serv").val()+'"> </td>'+
         '<td>' + $("#codigo_atr_serv option:selected").attr('data-name') + '</td>'+
         '<td>' + $("#observaciones-serv").val() + '<input type="hidden" name="observacionesPartidas[]" value="'+$("#observaciones-serv").val()+'"></td>'+
-        '<td><a class="borrar"><img src="/views/img/eliminar.png" class="img25"></img></a></td>'+
+        '<td><a class="borrar"><img src="/views/img/eliminar.png" class="img-25"></img></a></td>'+
        '</tr>';
    $('#tabla-servicios-pre tbody').append(htmlTags);
    $("#observaciones-serv").val('');
    $("#codigo_atr_serv").focus();
    actualizarFilas(); //REORDENAMOS LOS NUMEROS DE CONSECUTIVO
 });
-
-    //POSICIONAR EN COMENTARIOS DESPUES DE SELECCIONAR EL CODIGO
-    $("#codigo_atr_serv").change(function(){
-        $("#observaciones-serv").focus();
-    });
+//POSICIONAR EN COMENTARIOS DESPUES DE SELECCIONAR EL CODIGO 
 
 });
 
@@ -88,7 +84,7 @@ $(document).on('click', '.borrar', function (event) {
             <tr>
                 <td class="titulo"><p class="derecha">Operador : </p></td>
                 <td class=input>
-                    <input type="text" placeholder="Nombre del Operador" name="operador" required>
+                    <input class="mayusculas" type="text" placeholder="Nombre del Operador" name="operador" required>
                 </td>
                 <td class="titulo"><p class="derecha">Capturo : </p></td>
                 <td class=input>
@@ -103,7 +99,10 @@ $(document).on('click', '.borrar', function (event) {
             <tr> 
                 <td class="titulo"><p class="derecha">Fecha Orden : </p></td>
                 <td class=input>
-                    <input type="date" placeholder="Fecha de la Orden" name="fecha_orden" required>
+                    <?php
+                        date_default_timezone_set('America/Mexico_City');
+                    ?>
+                    <input type="datetime-local" value="<?php echo date('Y-m-d\TH:i');?>" name="fecha_orden" required>
                 </td>
                 <td class="titulo"><p class="derecha">Kilometraje : </p></td>
                 <td class=input>
@@ -143,7 +142,7 @@ $(document).on('click', '.borrar', function (event) {
             </td>
             <td class="titulo"><p class="derecha">Comentarios : </p></td>
             <td>
-                <input type="text" name="observaciones" id="observaciones-serv">
+                <input class="mayusculas" type="text" name="observaciones" id="observaciones-serv">
             </td>
             <td>
                 <input class="btn-agregar-serv" type="button" value="Añadir" name="agregar-serv" id="agregar-serv">
@@ -168,13 +167,6 @@ $(document).on('click', '.borrar', function (event) {
 
 /*ini_set('display_errors', '1');
 ini_set('error_reporting', E_ALL);*/
-
 $registro = new MvcController();
-
 $registro -> registroOSAtrController();
-
-
-
-
 ?>
-
