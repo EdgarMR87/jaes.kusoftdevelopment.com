@@ -8,9 +8,8 @@ function clickactionEliminar( b ){
 $(document).ready(function(){
     $('.num_orden').toggle();
 	$('#capturo').toggle();
-	$('#atiempo').toggle();
 	$('td:nth-child(4)').toggle();
-	$('td:nth-child(9)').toggle();
+
 });
 
 </script>
@@ -24,15 +23,13 @@ $(document).ready(function(){
 	<table class="tabla-listado" id="listado-os">	
 		<thead>	
 			<tr>
-				<th class="num_orden"># ORDEN</th>
+				<th class="listado-th"># ORDEN</th>
 				<th class="listado-th">Unidad</th>
-				<th class="listado-th">Operador</th>
+				<th class="num_orden">Operador</th>
 				<th class="listado-th" id="capturo">Capturó</th>
 				<th class="listado-th">Fecha Orden</th>
                 <th class="listado-th">Kilometraje</th>
-                <th class="listado-th">Servicio</th>
                 <th class="listado-th">Tipo de Servicio</th>
-                <th class="listado-th" id="atiempo">A tiempo</th>
                 <th class="listado-th">Fecha Creación</th>
                 <th class="listado-th">Creado Por</th>
                 <th class="listado-th">Estado</th>
@@ -49,18 +46,22 @@ $(document).ready(function(){
 			$vistaUsuario = new MvcController();
 			$respuesta = $vistaUsuario -> vistaOSAtrTablaController();
             foreach($respuesta as $row => $item){
+                $date = date_create($item["fecha_orden"]);
+                $date2 = date_create($item["fecha_creacion"]);
                 echo'<tr>
-                        <td class="num_orden">'.$item["num_orden"].'</td>
+                        <td>'.$item["num_orden"].'</td>
                         <td><a href="index.php?action=OrdenesServicio/detalleOS&id_os_editar='.$item["num_orden"].'">'.$item["id_unidad_servicio"].'</a></td>
-                        <td>'.$item["operador"].'</td>
+                        <td class="num_orden">'.$item["operador"].'</td>
                         <td>'.$item["captura"].'</td>
-                        <td>'.$item["fecha_orden"].'</td>
-                        <td>'.$item["kilometraje"].'</td>
-                        <td>'.$item["servicio"].'</td>
-                        <td>'.$item["tipo_servicio"].'</td>
-                        <td>'.$item["servicio_tiempo"].'</td>
-                        <td>'.$item["fecha_creacion"].'</td>
-                        <td>'.$item["nombre_completo"].'</td>
+                        <td>'.date_format($date,"d-m-Y H:i:s").'</td>
+                        <td>'.$item["kilometraje"].'</td>';
+                        if($item["servicio"] == "PREVENTIVO"){
+                            echo  '<td>'.$item["servicio"].' '. $item["tipo_servicio"] .'</td>';
+                        }else{
+                            echo '<td>'.$item["tipo_servicio"].'</td>';
+                        }
+                echo '<td>'.date_format($date2,"d-m-Y H:i:s").'</td>
+                        <td>'.$item["nombre_u"].'</td>
                         <td class='."'".$item["estado"]."'".'>'.$item["estado"].'</td>
                         <td>'.$item["avance_porcentaje"].'</td>
                         <td>
