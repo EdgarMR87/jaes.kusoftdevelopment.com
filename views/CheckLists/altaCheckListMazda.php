@@ -49,10 +49,9 @@
             </tr>
     </table>
 
-
     <div class="panel-checklist">
         <div>
-            <table class="listado-previo" id="tabla-servicios-pre">
+            <table class="listado-checklist" id="carroceria">
                 <thead>
                     <th class="listado-th">Carroceria</th>
                     <th class="listado-th">Bueno</th>
@@ -87,8 +86,9 @@
                 </tbody>
             </table>
         </div>  
+        
         <div>
-            <table class="listado-previo" id="tabla-servicios-pre">
+            <table class="listado-checklist" id="carroceria">
                 <thead>
                     <th class="listado-th">Electrico</th>
                     <th class="listado-th">Bueno</th>
@@ -119,7 +119,7 @@
         </div>
         <!-- INICIA TERCE PARTE -->
         <div>
-            <table class="listado-previo" id="tabla-servicios-pre">
+            <table class="listado-checklist" id="carroceria">
                 <thead>
                     <th class="listado-th">Niveles</th>
                     <th class="listado-th">SI</th>
@@ -156,7 +156,7 @@
         </div>
         <!-- INICIA TERCE PARTE -->
         <div>
-            <table class="listado-previo" id="tabla-servicios-pre">
+            <table class="listado-checklist" id="carroceria">
                 <thead>
                     <th class="listado-th"></th>
                     <th class="listado-th">Bueno</th>
@@ -181,7 +181,7 @@
         </div>  
         <!-- INICIA TERCE PARTE -->
         <div>
-            <table class="listado-previo" id="tabla-servicios-pre">
+            <table class="listado-checklist" id="carroceria">
                 <thead>
                     <th class="listado-th">Fugas de Aceite</th>
                     <th class="listado-th">NO</th>
@@ -212,7 +212,7 @@
         </div>
              <!-- INICIA TERCE PARTE -->
              <div>
-            <table class="listado-previo" id="tabla-servicios-pre">
+            <table class="listado-checklist" id="carroceria">
                 <thead>
                     <th class="listado-th">Revisión de Pasa Muros</th>
                     <th class="listado-th">BUENO</th>
@@ -243,7 +243,7 @@
         </div>
         <!-- INICIA TERCE PARTE -->
         <div>
-            <table class="listado-previo" id="tabla-servicios-pre">
+            <table class="listado-checklist" id="carroceria">
                 <thead>
                     <th class="listado-th">TAPAS</th>
                     <th class="listado-th">SI</th>
@@ -283,9 +283,10 @@
                     </tr>
                 </tbody>
             </table>
-        </div>    <!-- INICIA TERCE PARTE -->
+        </div>    
+        <!-- INICIA TERCE PARTE -->
         <div>
-            <table class="listado-previo" id="tabla-servicios-pre">
+            <table class="listado-checklist" id="carroceria">
                 <thead>
                     <th class="listado-th">TAPAS</th>
                     <th class="listado-th">SI</th>
@@ -328,7 +329,7 @@
         </div>  
         <!-- INICIA 1RA PARTE LLANTAS -->
         <div>
-            <table class="listado-previo" id="tabla-servicios-pre">
+            <table class="listado-checklist" id="carroceria">
                 <thead>
                     <th class="listado-th">LLANTAS PONCHADAS</th>
                     <th class="listado-th">NO</th>
@@ -357,7 +358,7 @@
         </div>  
         <!-- INICIA 2DA PARTE LLANTAS -->
         <div>
-            <table class="listado-previo" id="tabla-servicios-pre">
+            <table class="listado-checklist" id="carroceria">
                 <thead>
                     <th class="listado-th">LLANTAS PONCHADAS</th>
                     <th class="listado-th">NO</th>
@@ -386,7 +387,7 @@
         </div>
           <!-- INICIA TERCE PARTE -->
         <div>
-            <table class="listado-previo" id="tabla-servicios-pre">
+            <table class="listado-checklist" id="carroceria">
                 <thead>
                     <th class="listado-th"></th>
                     <th class="listado-th">BUENO</th>
@@ -405,7 +406,7 @@
         </div>
         <!-- INICIA TERCE PARTE -->
         <div>
-            <table class="listado-previo" id="tabla-servicios-pre">
+            <table class="listado-checklist" id="carroceria">
                 <thead>
                     <th class="listado-th"></th>
                     <th class="listado-th">BUENO</th>
@@ -424,7 +425,7 @@
         </div>
         <!-- INICIA TERCE PARTE -->
         <div>
-            <table class="listado-previo" id="tabla-servicios-pre">
+            <table class="listado-checklist" id="carroceria">
                 <thead>
                     <th class="listado-th"></th>
                     <th class="listado-th">BUENO</th>
@@ -449,7 +450,7 @@
         </div>
         <!-- INICIA TERCE PARTE -->
         <div>
-            <table class="listado-previo" id="tabla-servicios-pre">
+            <table class="listado-checklist" id="carroceria">
                 <thead>
                     <th class="listado-th"></th>
                     <th class="listado-th">SI</th>
@@ -474,7 +475,7 @@
         </div>
          <!-- INICIA PARTE DE RAMPAS -->
          <div>
-            <table class="listado-previo" id="tabla-servicios-pre">
+            <table class="listado-checklist" id="carroceria">
                 <thead>
                     <th class="listado-th">RAMPAS</th>
                     <th class="listado-th">BUENO</th>
@@ -504,7 +505,7 @@
         </div>
           <!-- INICIA PARTE DE PISTONES -->
         <div>
-            <table class="listado-previo" id="tabla-servicios-pre">
+            <table class="listado-checklist" id="carroceria">
                 <thead>
                     <th class="listado-th">PISTONES</th>
                     <th class="listado-th">BUENO</th>
@@ -534,7 +535,7 @@
         </div>
          <!-- ULTIMA PARTE EQUIPAMIENTO -->
         <div>
-            <table class="listado-previo" id="tabla-servicios-pre">
+            <table class="listado-checklist" id="carroceria">
                 <thead>
                     <th class="listado-th">EL EQUIPO CUENTA CON </th>
                     <th class="listado-th">SI</th>
