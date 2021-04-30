@@ -7,7 +7,7 @@ function clickactionEliminar( b ){
 </script>
 <div class="tablas-listado" id="contenido">
     <div class="new-flotante">
-        <a href="index.php?action=OrdenesServicio/altaOrdenS">
+        <a href="index.php?action=CheckLists/altaCheckListMazda">
             <img src="/views/img/new_Flotante.png" alt="">
         </a>
     </div>
@@ -20,7 +20,6 @@ function clickactionEliminar( b ){
 				<th class="listado-th">Usuario</th>
 				<th class="listado-th">Unidad</th>
 				<th class="listado-th">Kilometraje</th>
-                <th class="listado-th">Observaciones</th>
                 <th class="listado-th">Modificar</th>
 				<th class="listado-th">Eliminar</th>
                 <th class="listado-th">Imprimir</th>
@@ -39,7 +38,6 @@ function clickactionEliminar( b ){
                         <td>'.$item["nombreCompleto"].'</td>
                         <td><a href="index.php?action=CheckLists/detalleCheckList&id_checklist_editar='.$item["id_checklist"].'">'.$item["unidad_mazda"].'</a></td>
                         <td>'.$item["kilometraje"].'</td>
-                        <td>'.$item["observaciones"].'</td>
                         <td>
                             <a href="index.php?action=CheckLists/editarCheckList&id_checklist_editar='.$item["id_checklist"].'">
                                 <img src="/views/img/editar.png" class="img-25"></img>
