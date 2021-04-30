@@ -50,6 +50,7 @@ $('#li-os').click(function(event){
     $('#submenu-servicios').css('display', 'none');
     $('#submenu-checklist').css('display', 'none');
     $('#submenu-tiempos').css('display', 'none');
+    $('#submenu-reportes').css('display', 'none');
     $('#contenido').css('display', 'none');    
 });
 
@@ -59,6 +60,7 @@ $('#li-unidades').click(function(event){
     $('#submenu-servicios').css('display', 'none');
     $('#submenu-checklist').css('display', 'none');
     $('#submenu-tiempos').css('display', 'none');
+    $('#submenu-reportes').css('display', 'none');
     $('#contenido').css('display', 'none');    
 });
 
@@ -67,6 +69,7 @@ $('#li-servicios').click(function(event){
     $('#submenu-unidades').css('display', 'none');
     $('#submenu-checklist').css('display', 'none');
     $('#submenu-tiempos').css('display', 'none');
+    $('#submenu-reportes').css('display', 'none');
     $('#submenu-os').css('display', 'none');
     $('#contenido').css('display', 'none');    
 });
@@ -77,12 +80,24 @@ $('#li-checklist').click(function(event){
     $('#submenu-servicios').css('display', 'none');
     $('#submenu-unidades').css('display', 'none');
     $('#submenu-tiempos').css('display', 'none');
+    $('#submenu-reportes').css('display', 'none');
     $('#submenu-os').css('display', 'none');
     $('#contenido').css('display', 'none');    
 });
 
 $('#li-tiempos').click(function(event){
     $('#submenu-tiempos').css('display', 'block');
+    $('#submenu-checklist').css('display', 'none');
+    $('#submenu-servicios').css('display', 'none');
+    $('#submenu-unidades').css('display', 'none');
+    $('#submenu-reportes').css('display', 'none');
+    $('#submenu-os').css('display', 'none');
+    $('#contenido').css('display', 'none');    
+});
+
+$('#li-reportes').click(function(event){
+    $('#submenu-reportes').css('display', 'block');
+    $('#submenu-tiempos').css('display', 'none');
     $('#submenu-checklist').css('display', 'none');
     $('#submenu-servicios').css('display', 'none');
     $('#submenu-unidades').css('display', 'none');
@@ -100,6 +115,17 @@ function registroOK(url){
         text: "Redireccionando en 2 segundos .....",
         type: "success",
         timer: 2000
+    }).then(() => {
+        window.location.href = url;
+    });
+}
+
+function finalizarServicioOK(url){
+    swal({
+        title: "Se finalizo el servicio exitosamente",
+        text: "Redireccionando en 5 segundos .....",
+        type: "success",
+        timer: 5000
     }).then(() => {
         window.location.href = url;
     });
@@ -136,5 +162,27 @@ function borrarOk(link){
     }).then(() => {
         window.location.href = link;
     });
+}
+
+function iniciarFinalizarServiciok(link){
+    swal({
+        title: "¡Se inicio y finalizo el servicio Exitosamente!",
+        text: "Redireccionando en 2 segundos . . .  ",
+        type: "success",
+        timer: 2000
+        }).then(() => {
+            window.location.href = link;
+        });
+}
+
+function finalizarOSOK(link){
+    swal({
+        title: "¡Se inicio y finalizo el servicio Exitosamente!",
+        text: "Redireccionando en 2 segundos . . .  ",
+        type: "success",
+        timer: 2000
+        }).then(() => {
+            window.location.href = link;
+        });
 }
 
