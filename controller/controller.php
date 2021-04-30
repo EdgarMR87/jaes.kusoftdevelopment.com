@@ -77,6 +77,7 @@ class MvcController{
 				$_SESSION["id_usuario"] = $respuesta["id_usuario"];
                 $_SESSION["nombreCompleto"] = $respuesta["nombreCompleto"];
                 $_SESSION["id_departamento"] = $respuesta["id_dpto_u"];
+                $_SESSION["timeout"] = time();
                 return "success";
 			} else{
 				return "error";		
@@ -746,7 +747,7 @@ public static function editarServicioAtrController(){
 		#El constructor foreach proporciona un modo sencillo de iterar sobre arrays. foreach funciona sólo sobre arrays y objetos, y emitirá un error al intentar usarlo con una variable de un tipo diferente de datos o una variable no inicializada.
 		echo"<option value='0' selected disabled>Selecciona una trabajador ... </option>";
 		foreach($respuesta as $row => $item){
-				echo"<option value='". $item['id_usuario']."'>".$item['usuario']." - ".$item['ape_pat_u']. " " . $item['ape_mat_u']. " " . $item['nombre_u']."</option>";
+				echo"<option value='". $item['id_usuario']."'>".$item['nombre_u']. " " . $item['ape_pat_u']. " " . $item['ape_mat_u']."</option>";
 		}
     }
 
@@ -842,7 +843,7 @@ public static function editarServicioAtrController(){
                     $respuesta3 = Datos::empezarOSModel($_POST["num_orden_iniciar"]);
                 }
                 if($respuesta2 == "success" && $respuesta3 == "success"){
-                    $link = "index.php?action=OrdenesServicio/listadoOS";
+                    $link = "index.php?action=OrdenesServicio/detalleOS&id_os_editar=".$_POST["num_orden_iniciar"];
                     echo '<script>
                             var x = document.getElementById("openModalIniciar");
                             x.style.display = "none";    
@@ -860,7 +861,6 @@ public static function editarServicioAtrController(){
             }
 		}
 	}
-
 
     #OBTENER LOS USUARIOS QUE HAN REALIZADO DICHA ACTIVIDAD
 	#OBTENEMOS LOS VALORES ENUM DEL CAMPO TIPO_SERVICIO DE LA TABLA ORDEN DE SERVICIO
@@ -1001,7 +1001,8 @@ public static function editarServicioAtrController(){
 									"kilometraje"=>$_POST["kilometraje"],
 									"servicio"=>strtoupper($_POST["servicio"]),
 									"tipo_servicio"=>strtoupper($_POST["tipo_servicio"]),
-                                    "servicio_tiempo"=>strtoupper($_POST["servicio_tiempo"]));
+                                    "servicio_tiempo"=>strtoupper($_POST["servicio_tiempo"]),
+                                    "observaciones_os"=>strtoupper($_POST["observaciones_os"]));
 			$respuesta = Datos::actualizarOSAtrModel($datosController, "ordenServicio");
 			$link = "index.php?action=OrdenesServicio/listadoOS";
 			if($respuesta == "success"){
@@ -1489,19 +1490,19 @@ public static function editarServicioAtrController(){
 		}
 	}
     
-        //BUSQUEDA DE HISTORIAL PERSONALIZADA
-        public function vistaCalculoManoObraDirectaController(){
-            require_once "./models/crud.php";
-            if(isset($_POST["id_partida_os_calcular"])){
-                $datosController = array("id_partida_os"=> $_POST["id_partida_os_calcular"]); 
-                $respuesta = Datos::vistaCalculoManoObraDirectaModel($datosController, "usuario_partida_os"); 
-                if(isset($respuesta)){
-                    return $respuesta;
-                }else{
-                    echo "<p class='error-acceso'>". $respuesta[2]."</p>";
-                }
+    //BUSQUEDA DE HISTORIAL PERSONALIZADA
+    public function vistaCalculoManoObraDirectaController(){
+        require_once "./models/crud.php";
+        if(isset($_POST["id_partida_os_calcular"])){
+            $datosController = array("id_partida_os"=> $_POST["id_partida_os_calcular"]); 
+            $respuesta = Datos::vistaCalculoManoObraDirectaModel($datosController, "usuario_partida_os"); 
+            if(isset($respuesta)){
+                return $respuesta;
+            }else{
+                echo "<p class='error-acceso'>". $respuesta[2]."</p>";
             }
         }
+    }
 
         public function obtenerPartidaOSXOSController(){
             require_once "./models/crud.php";
@@ -1538,6 +1539,75 @@ public static function editarServicioAtrController(){
             }
         }        
 
+        public function iniciarFinalizarServicioController(){
+            require_once "./models/crud.php";
+            if(isset($_POST["id_partida_os"])){
+                $datosController = array( "id_partida_os"=>$_POST["id_partida_os"],
+                                          "fecha_inicio"=>$_POST["fecha_inicio"],
+                                          "fecha_termino"=>$_POST["fecha_termino"],
+                                          "comentarios_os"=>$_POST["comentarios_os"]);
+                $respuesta = Datos::iniciarFinalizarServicioModel($datosController, "partidas_os");
+                $usuariosAgisnados = $_POST["usuariosAsignados"];
+                $link = "index.php?action=OrdenesServicio/iniciarServicio";
+                if($respuesta == "success"){                
+                    foreach($usuariosAgisnados as $usuarioAsignado){
+                        $datosController2 = array("id_partida_os"=> $_POST["id_partida_os"],
+                                                    "fecha_inicio"=> $_POST["fecha_inicio"],                            
+                                                    "fecha_termino"=> $_POST["fecha_termino"],
+                                                    "usuario" => $usuarioAsignado);                    
+                        $respuesta2 = Datos::asigarUsuariosIniciarFinalizarServicioModel($datosController2, "usuario_partida_os");
+                        $respuesta3 = Datos::empezarOSModel($_POST["orden_servicio_a"]);
+                    }               
+                    echo '<script>
+                            iniciarFinalizarServiciok("'.$link.'");
+                        </script>';
+                } else {
+                    echo "<p class='error-acceso'>". $respuesta[2]."</p>";
+                }
+            }
+        }
+    
+        public function finalizarOSController(){
+            require_once "./models/crud.php";
+            if(isset($_POST["orden_servicio"])){
+                $datosController = array( "orden_servicio"=>$_POST["orden_servicio"],
+                                          "fecha_termino"=>$_POST["fecha_termino"],
+                                          "fecha_liberacion"=>$_POST["fecha_liberacion"]);
+                $respuesta = Datos::finalizarOSModel($datosController, "ordenServicio");
+                $link = "index.php?action=OrdenesServicio/finalizarOS";
+                if($respuesta == "success"){
+                    echo '<script>
+                        iniciarFinalizarServiciok("'.$link.'");
+                    </script>';
+                } else {
+                    echo "<script>
+                            finalizarOSError('".$link . "," . $respuesta[2]."');
+                        </script>";
+                }
+            }
+        }
 
+        public function registroReporteOSAtrController(){
+            require_once "./models/crud.php";
+            if(isset($_POST["id_unidad_servicio"])){
+                $datosController = array( "id_unidad_servicio"=>$_POST["id_unidad_servicio"],
+                                          "num_orden"=>$_POST["num_orden"],
+                                          "fecha_solicitud"=>$_POST["fecha_solicitud"],
+                                          "falla_reportada"=>$_POST["falla_reportada"],
+                                        "operacion"=>$_POST["operacion"],
+                                    "reporte"=>$_POST["reporte"]);
+                //Como el elemento es un arreglos utilizamos foreach para extraer todos los valores
+	            foreach($_FILES["archivo_imagen"]['tmp_name'] as $key => $tmp_name){
+        		    //Validamos que el archivo exista
+	        	    if($_FILES["archivo_imagen"]["name"][$key]) {
+		        	    $filename = $_FILES["archivo_imagen"]["name"][$key]; //Obtenemos el nombre original del archivo
+			            $source = $_FILES["archivo_imagen"]["tmp_name"][$key]; //Obtenemos un nombre temporal del archivo
+                        //lo comvertimos en binario antes de guardarlo
+                        $fp = fopen($source, 'r+b');
+                        $data = fread($fp, filesize($source));	
+                    }         
+                }
+            }
+        }
 }
 ?>
