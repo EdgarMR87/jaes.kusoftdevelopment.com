@@ -18,7 +18,6 @@ class MvcController{
 		}
 		$respuesta = Paginas::enlacesPaginasModel($enlaces);
 		include $respuesta;
-
 	}
 
     #LLAMADA A LA PLANTILLA ATR
@@ -104,6 +103,8 @@ class MvcController{
 					<td>'.$item["nombre_puesto"].'</td>
 					<td>'.$item["estado_u"].'</td>
 					<td>'.$item["fecha_creacion_usuario"].'</td>
+                    <td>'.$item["salario_usuario"].'</td>
+                    <td>'.$item["lugar_trabajo"].'</td>
 					<td><a href="index.php?action=Usuarios/editar&id_usuario_m='.$item["id_usuario"].'"><img src="/views/img/editar.png" class="img-25"></img></a></td>
 					<td><a href="index.php?action=Usuarios/usuarios&id_usuario_borrar='.$item["id_usuario"].'"><img src="/views/img/eliminar.png" class="img-25"></img></a></td>
 				</tr>';
@@ -145,13 +146,19 @@ class MvcController{
 									  "contrasena_m"=>$_POST["contrasena_m"],
 									  "departamento_m"=>$_POST["departamento_m"],
 									  "puesto_m"=>$_POST["puesto_m"],
-									  "estado_m"=>$_POST["estado_m"]);
+									  "estado_m"=>$_POST["estado_m"],
+                                      "salario_usuario"=>$_POST["salario_usuario"],
+                                      "lugar_trabajo"=>$_POST["lugar_trabajo"]);
 			$respuesta = Datos::actualizarUsuarioModel($datosController, "usuarios");
+            $url ="index.php?action=Usuarios/usuarios";
 			if($respuesta == "success"){
-				echo "<span class='registro-actualizado'>Actualizacion Correcta</span>";
-                echo '<script> setTimeout("location.href ='."'index.php?action=Usuarios/usuarios'".'"'.', 1000);</script>';
+                echo "<script>
+                        actualizarOK('". $url . "');
+                    </script>";
             } else {
-				echo "<p class='error-acceso'>". var_dump($respuesta)."</p>";
+				echo "<script> 
+                        errorRegistro('". $respuesta[2] . "','" . $url . "');
+                    </script>";
 			}
 		}
 	}
@@ -218,7 +225,7 @@ class MvcController{
 			$respuesta = Datos::actualizarDptoModel($datosController, "departamento");
 			if($respuesta == "success"){
                 echo "<span class='registro-actualizado'>Actualizacion Correcta</span>";
-                echo '<script> setTimeout("location.href ='."'index.php?action=Departamentos/listadoDpto'".'"'.', 1000);</script>';
+                echo '<scrip> setTimeout("location.href ='."'index.php?action=Departamentos/listadoDpto'".'"'.', 1000);</scrip>';
             } else {
 				echo $respuesta;
 			}
@@ -779,7 +786,6 @@ public static function editarServicioAtrController(){
 			}
 		}
     }
-
     
     #ACTUALIZAR SERVICIO ATR
 	#------------------------------------
@@ -825,15 +831,16 @@ public static function editarServicioAtrController(){
 			}
 		}	
 	}
-    
+
     #INICIAMOS EL SERVICIO DESDE EL DETALLE DE SERVICIOS CON UNA MODAL DONDE SOLO SE PIDE LOS COMENTARIOS INCIALES.
     # Y LOS USUARIOS A REALIZAR LA ACTIVIDAD
     public function iniciarServicioModalController(){
 		require_once "./models/crud.php";
 		if(isset($_POST["id_partida_os_i"])){
 			$datosController = array( "id_partida_os"=>$_POST["id_partida_os_i"],
-							          "comentarios_os"=>$_POST["comentarios_os"]);
-			$respuesta = Datos::iniciarServicioModel($datosController, "partidas_os");
+							          "comentarios_os"=>$_POST["comentarios_os"]);       
+			$respuesta = Datos::iniciarServicioModel($datosController, "partidas_os"); 
+            $link = "index.php?action=OrdenesServicio/detalleOS&id_os_editar=".$_POST["num_orden_iniciar"];           
             $usuariosAgisnados = $_POST["usuariosAsignadosInicio"];
             if($respuesta == "success"){                
                 foreach($usuariosAgisnados as $usuarioAsignado){
@@ -843,11 +850,10 @@ public static function editarServicioAtrController(){
                     $respuesta3 = Datos::empezarOSModel($_POST["num_orden_iniciar"]);
                 }
                 if($respuesta2 == "success" && $respuesta3 == "success"){
-                    $link = "index.php?action=OrdenesServicio/detalleOS&id_os_editar=".$_POST["num_orden_iniciar"];
-                    echo '<script>
+                   echo '<script>
                             var x = document.getElementById("openModalIniciar");
-                            x.style.display = "none";    
-                            registroOK('."'".$link."'".');
+                            x.style.display = "none";
+                            iniciarServicioOK("'.$link.'");
                         </script>';
                 }else{
                     $valor = $respuesta[2];
@@ -861,6 +867,7 @@ public static function editarServicioAtrController(){
             }
 		}
 	}
+
 
     #OBTENER LOS USUARIOS QUE HAN REALIZADO DICHA ACTIVIDAD
 	#OBTENEMOS LOS VALORES ENUM DEL CAMPO TIPO_SERVICIO DE LA TABLA ORDEN DE SERVICIO
@@ -1609,5 +1616,256 @@ public static function editarServicioAtrController(){
                 }
             }
         }
+
+    public function registroProcesoGeneralController(){
+        require_once "./models/crud.php";
+        if(isset($_POST["descripcion_proceso_general"])){
+            $datosController = array("descripcion_proceso_general" => strtoupper($_POST["descripcion_proceso_general"]),
+                                        "comentarios_proceso_general" => strtoupper($_POST["comentarios_proceso_general"]));
+            $respuesta = Datos::registroProcesoGeneralModel($datosController, "procesos_general");
+            $link = "index.php?action=Procesos/registrarProcesoGeneral";
+            if($respuesta == "success"){
+                echo '<script>
+                        registroOK("'.$link.'");
+                </script>';
+            } else {
+                echo "<script>
+                        errorRegistro('".$respuesta[2]  ,  $link ."');
+                    </script>";
+            }
+        }
+    }
+
+     //VISTA DEL LISTADO DE PROCESOS GENERAL
+     public function vistaProcesosGeneralController(){
+        require_once "./models/crud.php";
+        $respuesta = Datos::vistaGeneralTablaModel("procesos_general");
+        #El constructor foreach proporciona un modo sencillo de iterar sobre arrays. foreach funciona sólo sobre arrays y objetos, y emitirá un error al intentar usarlo con una variable de un tipo diferente de datos o una variable no inicializada.
+        return $respuesta;
+    }
+
+    #VISTA DE DEPARTAMENTOS SELECT
+	#------------------------------------
+	public static function vistaSelectProcesosGeneralController(){
+		require_once "./models/crud.php";
+		$respuesta = Datos::vistaGeneralTablaModel("procesos_general");
+		#El constructor foreach proporciona un modo sencillo de iterar sobre arrays. foreach funciona sólo sobre arrays y objetos, y emitirá un error al intentar usarlo con una variable de un tipo diferente de datos o una variable no inicializada.
+		echo"<option value='0' disabled selected>Selecciona el proceso general  ... </option>";
+        foreach($respuesta as $row => $item){
+		    echo"<option value='". $item['id_proceso_general']."'>".$item['descripcion_proceso_general']."</option>";
+		}
+	}
+
+
+    public function registroProcesoController(){
+        require_once "./models/crud.php";
+        if(isset($_POST["codigo_proceso"])){
+            $datosController = array("codigo_proceso" => strtoupper($_POST["codigo_proceso"]),
+                                        "id_proceso_general_pp" => $_POST["id_proceso_general_pp"],
+                                        "descripcion_proceso" => strtoupper($_POST["descripcion_proceso"]),
+                                        "comentarios_proceso" => strtoupper($_POST["comentarios_proceso"]),
+                                        "tiempo_promedio_proceso" => $_POST["tiempo_promedio_proceso"]);
+            $respuesta = Datos::registroProcesoModel($datosController, "procesos_prod");
+            $link = "index.php?action=Procesos/registrarProceso";
+            if($respuesta == "success"){
+                echo '<script>
+                        registroOK("'.$link.'");
+                </script>';
+            }else if($respuesta == "duplicado") {
+                echo "<script>
+                    errorRegistro('Registro Duplicado','". $link ."');
+                </script>"; 
+            }else{
+                echo "<script>
+                        errorRegistro('".$respuesta[2] . "','" .  $link ."');
+                    </script>";
+            }
+        }
+    }    
+
+    
+     //VISTA DEL LISTADO DE PROCESOS GENERAL
+     public function vistaProcesosController(){
+        require_once "./models/crud.php";
+        $respuesta = Datos::vistaProcesosModel("procesos_prod");
+        #El constructor foreach proporciona un modo sencillo de iterar sobre arrays. foreach funciona sólo sobre arrays y objetos, y emitirá un error al intentar usarlo con una variable de un tipo diferente de datos o una variable no inicializada.
+        return $respuesta;
+    }
+
+    #EDITAR PROCESO GENERAL
+    public static function editarProcesoGralController(){
+        require_once "./models/crud.php";
+        $datosController = $_GET["id_proceso_general"];
+        $respuesta = Datos::editarProcesoGeneralModel($datosController, "procesos_general");
+        return $respuesta;
+    }
+
+    #ACTUALIZAR PROCESO GENERAL
+	#------------------------------------
+	public function actualizarProcesoGralController(){
+		require_once "./models/crud.php";
+		if(isset($_POST["id_proceso_actualizar"])){
+			$datosController = array( "id_proceso_actualizar"=>$_POST["id_proceso_actualizar"],
+							          "descripcion_proceso"=>strtoupper($_POST["descripcion_proceso"]),
+                                      "comentarios_proceso"=>strtoupper($_POST["comentarios_proceso"]));
+			$respuesta = Datos::actualizarProcesoGralModel($datosController, "procesos_general");
+            $url = "index.php?action=Procesos/listadoProcesosGeneral";
+			if($respuesta == "success"){
+                echo "<script> 
+                        actualizarOK('". $url . "');
+                    </script>";
+            } else {
+				echo "<script> 
+                        errorRegistro('". $respuesta[2] . "','" . $url . "');
+                    </script>";
+			}
+		}
+	}    
+
+    #BORRAR PROCESO GENERAL 
+	#------------------------------------
+	public function borrarProcesoGeneralController(){
+        require_once "./models/crud.php";
+		if(isset($_POST["id_proceso_gral_eliminar"])){
+			$datosController = $_POST["id_proceso_gral_eliminar"];
+			$respuesta = Datos::borrarDatoModel($datosController, "procesos_general", "id_proceso_general");
+            $link = "index.php?action=Procesos/listadoProcesosGeneral";
+            if($respuesta == "success"){
+                echo '<script>
+                        var x = document.getElementById("openModalEliminar");
+                        x.style.display = "none";    
+                        borrarOk('."'".$link."'".');
+                    </script>';
+            } else{           
+                $valor = $respuesta2[2];
+                $error = str_replace("'", "", $valor);
+                echo '<script>
+                        var x = document.getElementById("openModalEliminar");
+                        x.style.display = "none";              
+                        errorRegistro('."'".$error."','".$link."'".');
+                </script>';
+            }
+        }
+    }
+
+    #BORRAR PROCESO 
+	#------------------------------------
+	public function borrarProcesoController(){
+        require_once "./models/crud.php";
+		if(isset($_POST["id_proceso_eliminar"])){
+			$datosController = $_POST["id_proceso_eliminar"];
+			$respuesta = Datos::borrarDatoModel($datosController, "procesos_prod", "id_proceso_prod");
+            $link = "index.php?action=Procesos/listadoProcesos";
+            if($respuesta == "success"){
+                echo '<script>
+                        var x = document.getElementById("openModalEliminar");
+                        x.style.display = "none";    
+                        borrarOk('."'".$link."'".');
+                    </script>';
+            } else{           
+                $valor = $respuesta2[2];
+                $error = str_replace("'", "", $valor);
+                echo '<script>
+                        var x = document.getElementById("openModalEliminar");
+                        x.style.display = "none";              
+                        errorRegistro('."'".$error."','".$link."'".');
+                </script>';
+            }
+        }
+    }
+    
+     #EDITAR PROCESO GENERAL
+     public static function editarProcesoController(){
+        require_once "./models/crud.php";
+        $datosController = $_GET["id_proceso_editar"];
+        $respuesta = Datos::editarGeneralModel($datosController, "procesos_prod", "id_proceso_prod");
+        return $respuesta;
+    }
+
+    #VISTA DE DEPARTAMENTOS SELECT
+	#------------------------------------
+	public static function vistaSelectProcesosGeneralSelectController($id_seleccionado){
+		require_once "./models/crud.php";
+		$respuesta = Datos::vistaGeneralTablaModel("procesos_general");
+        foreach($respuesta as $row => $item){
+            if($id_seleccionado == $item["id_proceso_general"])
+                echo"<option value='". $item['id_proceso_general']."' SELECTED>".$item['descripcion_proceso_general']."</option>";
+            else
+		        echo"<option value='". $item['id_proceso_general']."'>".$item['descripcion_proceso_general']."</option>";
+		}
+	}    
+
+    #ACTUALIZAR PROCESO GENERAL
+	#------------------------------------
+	public function actaulizarProcesoController(){
+		require_once "./models/crud.php";
+		if(isset($_POST["id_proceso_editar"])){
+			$datosController = array( "id_proceso_editar"=>$_POST["id_proceso_editar"],
+							            "descripcion_proceso"=>strtoupper($_POST["descripcion_proceso"]),
+                                        "codigo_proceso"=>strtoupper($_POST["codigo_proceso"]),
+                                        "id_proceso_general_pp"=>$_POST["id_proceso_general_pp"],
+                                        "comentarios_proceso"=>strtoupper($_POST["comentarios_proceso"]),
+                                        "tiempo_promedio_proceso"=>$_POST["tiempo_promedio_proceso"]);
+			$respuesta = Datos::actualizarProcesoModel($datosController, "procesos_prod");
+            $url = "index.php?action=Procesos/listadoProcesos";
+			if($respuesta == "success"){
+                echo "<script> 
+                        actualizarOK('". $url . "');
+                    </script>";
+            } else {
+				echo "<script> 
+                        errorRegistro('". $respuesta[2] . "','" . $url . "');
+                    </script>";
+			}
+		}
+	}  
+
+    #VISTA DE DEPARTAMENTOS SELECT
+	#------------------------------------
+	public static function vistaProcesosSelectController(){
+		require_once "./models/crud.php";
+		$respuesta = Datos::vistaGeneralTablaModel("procesos_prod");
+        echo"<option value=''> Selecciona una proceso para añadirlo ... </option>";
+        foreach($respuesta as $row => $item){
+            echo"<option value='". $item['codigo_proceso']."' data-name='". $item['descripcion_proceso'] ."'>".$item['descripcion_proceso']."</option>";
+		}
+	}    
+
+    #EDITAR PROCESO GENERAL
+    public static function vistaTotalesServiciosController(){
+        require_once "./models/crud.php";
+		if(isset($_POST["fecha_inicio"])){
+            $datosController = array( "fecha_inicio" => $_POST["fecha_inicio"], "fecha_termino" => $_POST["fecha_termino"]);
+            $respuesta = Datos::vistaTotalesServiciosModel($datosController);
+            return $respuesta;
+        }
+    }   
+
+    public static function registrarClienteController(){
+        require_once "./models/crud.php";
+        if(isset($_POST["razon_social_cliente"])){
+            $datosController = array("razon_social_cliente" => $_POST["razon_social_cliente"],
+                                    "codigo_proyecto_cliente" => $_POST["codigo_proyecto_cliente"]);
+            $respuesta = Datos::registrarClienteModel($datosController, "clientes");
+            $link = "index.php?action=Procesos/registrarCliente";
+            if($respuesta == "success"){
+                echo "<script>
+                        registroOK('". $link ."');
+                    </script>";
+            }else{
+                echo "<script> 
+                        errorRegistro('". $respuesta[2] . "','" . $link . "');
+                    </script>";
+            }
+        }
+    }
+
+    public static function vistaClientesController(){
+        require_once "./models/crud.php";
+        $respuesta = Datos::vistaGeneralModel("clientes");
+        #El constructor foreach proporciona un modo sencillo de iterar sobre arrays. foreach funciona sólo sobre arrays y objetos, y emitirá un error al intentar usarlo con una variable de un tipo diferente de datos o una variable no inicializada.
+        return $respuesta;
+    }
+
 }
 ?>
