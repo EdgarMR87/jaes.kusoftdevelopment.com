@@ -1,3 +1,6 @@
+body{
+    font-size: 12px;
+}
 
 .error-acceso{
 	font-size: 19px;
@@ -94,7 +97,7 @@
     border-collapse: separate;
     border-spacing: 0px 10px;
     margin: auto;
-    font-size: 13px;
+    font-size: 11px;
     padding-bottom: 50px;
 }
 
@@ -142,6 +145,10 @@ section{
 
 .new-flotante img:hover{
     filter: blur(1px);
+}
+
+.centrar{
+    text-align: center;
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400&display=swap');
@@ -215,6 +222,7 @@ section{
 			padding:10px;
 			width:95%;
 			margin:5px;
+            font-size: 12px;
 		}
 
 		/*section form input[type="submit"]{
@@ -280,7 +288,7 @@ textarea{
 }
 
 .tabla-alta-serv{
-	width: 1200px;
+	width: 1250px;
 }
 
 .titulo{
@@ -291,7 +299,7 @@ textarea{
 }
 
 .form-alta-serv{
-	width: 1200px;
+	width: 1300px;
 	margin-bottom: 0px;
 }
 
@@ -573,6 +581,56 @@ div.modalDialog input.btn-eliminar{
     border-collapse: separate;
     border-spacing: 0px 10px;
     margin: auto;
+}
+
+.tabla-alta-serv#encabezado-finailzaros{
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tabla-alta-serv#encabezado-finailzaros td { 
+    padding: 5px 10px;
+    text-align: center;
+}
+
+section form#dos-columnas {
+    position: relative;
+    margin: auto;
+    width: 1100px;
+}
+
+.tabla-alta-serv#listado-procesos{
+    width: 100%;
+}
+
+.btn-agregar-serv#agregar-proceso{
+    margin-left: 20px;
+}
+
+
+@media print {
+    @page { margin: 0;
+     size: auto; }
+}
+
+.table-graficas{
+    margin: auto;
+    border-collapse: separate;
+    border-spacing: 5px 10px;
+}
+
+.table-graficas thead tr th{
+    background: #F42434;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.table-graficas tbody td{
+    text-align: center;
+    border-bottom: 1px solid black;
+    padding-bottom: 5px;
+    border-radius: 5px;
 }
 
 @media(max-width: 460px) {
