@@ -38,7 +38,7 @@ function previsualizarImg(e,i)
 
       reader.onload = function(e){
 		    var result = e.target.result;
-        $('#adjuntos').append(`<img src="${result}" width="50" height="50">`); //Asignamos el src dinámicamente a un img dinámico también
+        $('#adjuntos').append(`<img src="${result}" width="100" height="100">`); //Asignamos el src dinámicamente a un img dinámico también
       }
       reader.readAsDataURL(file);     
 }
