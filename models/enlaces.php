@@ -1,7 +1,6 @@
 <?php 
 
-class Paginas{
-	
+class Paginas{	
 	public static function enlacesPaginasModel($enlaces){
         session_start();
         if( $_SESSION["autentificado"] == "SI"){
@@ -15,7 +14,6 @@ class Paginas{
             || $enlaces == "Departamentos/editarDpto"){
 
 			$module =  "views/modules/".$enlaces.".php";
-
 		    }  else  if($enlaces == "dpto_ok"){
 
 			$module =  "views/modules/Departamentos/registro_dpto.php";
@@ -55,7 +53,6 @@ class PaginasAtr{
     public static function enlacesPaginasAtrModel($enlaces){
         session_start();
         if( $_SESSION["autentificado"] == "SI"){
-
             if($enlaces == "OrdenesServicio/altaOrdenS" || $enlaces == "OrdenesServicio/listadoOS" || 
                 $enlaces == "Unidades/listadoUnidades" || $enlaces == "Unidades/altaUnidad" || $enlaces == "Unidades/editarUnidad"
                 || $enlaces == "ServiciosAtr/altaServicioAtr" || $enlaces == "ServiciosAtr/listadoServiciosAtr"
@@ -68,7 +65,14 @@ class PaginasAtr{
                 || $enlaces == "CheckLists/editarCheckList" || $enlaces == "OrdenesServicio/finalizarTurnoUsuarios"
                 || $enlaces == "Tiempos/tiemposUnidad" || $enlaces == "OrdenesServicio/finalizarOS"
                 || $enlaces == "CheckLists/pendientes" || $enlaces == "CheckLists/listadoPendientes"
-                || $enlaces == "Reportes/altaReporte" || $enlaces == "Reportes/listadoReportes"){
+                || $enlaces == "Reportes/altaReporte" || $enlaces == "Reportes/listadoReportes"
+                || $enlaces == "Procesos/registrarProceso" || $enlaces == "Procesos/registrarProcesoGeneral"
+                || $enlaces == "Procesos/listadoProcesosGeneral" || $enlaces == "Procesos/listadoProcesos"
+                || $enlaces == "Procesos/listadoProyectos" || $enlaces == "Procesos/registrarProyecto"
+                || $enlaces == "Procesos/editarProcesoGral" || $enlaces == "Procesos/editarProceso" 
+                || $enlaces == "Graficas/OrdenesServicio" || $enlaces == "Procesos/registrarCliente" 
+                || $enlaces == "Procesos/listadoClientes"){
+                    
                             $module =  "views/modules/".$enlaces.".php";
             } else if($enlaces == "Unidades/altaUnidadOk"){				
                     $module =  "views/modules/Unidades/altaUnidad.php";                

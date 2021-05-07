@@ -73,7 +73,7 @@ class Datos extends Conexion{
 	public static function vistaGeneralModel($tabla){
 
 		$stmt = Conexion::conectar()->prepare("SELECT id_usuario, nombre_u, ape_pat_u, ape_mat_u, usuario, contrasena, id_dpto_u,
-                                id_puesto_u, estado_u, fecha_creacion_usuario, nombre_dpto, nombre_puesto FROM $tabla
+                                id_puesto_u, estado_u, fecha_creacion_usuario, nombre_dpto, nombre_puesto, salario_usuario, lugar_trabajo FROM $tabla
                                 LEFT JOIN departamento ON id_departamento = id_dpto_u
                                 LEFT JOIN puesto ON id_puesto = id_puesto_u");	
 		$stmt->execute();
@@ -104,7 +104,7 @@ class Datos extends Conexion{
 
 	#EDITAR USUARIO
 	#-------------------------------------
-	public function editarUsuarioModel($datosModel, $tabla){
+	public static function editarUsuarioModel($datosModel, $tabla){
 		$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla WHERE id_usuario = :id_usuario");
 		$stmt->bindParam(":id_usuario", $datosModel, PDO::PARAM_INT);	
 		$stmt->execute();
@@ -114,10 +114,11 @@ class Datos extends Conexion{
 
 	#ACTUALIZAR USUARIO
 	#-------------------------------------
-	public function actualizarUsuarioModel($datosModel, $tabla){
-		$stmt = Conexion::conectar()->prepare("UPDATE $tabla SET nombre_u=:nombre_u, ape_pat_u=:ape_pat_u, ape_mat_u=:ape_mat_u, usuario=:usuario,
-                                            contrasena=:contrasena, password=:password, id_dpto_u=:id_dpto_u, id_puesto_u=:id_puesto_u, estado_u=:estado_u
-                                            WHERE id_usuario=:id_usuario");
+	public static function actualizarUsuarioModel($datosModel, $tabla){
+		$stmt = Conexion::conectar()->prepare("UPDATE $tabla SET nombre_u=:nombre_u, ape_pat_u=:ape_pat_u, ape_mat_u=:ape_mat_u, 
+                usuario=:usuario, contrasena=:contrasena, password=:password, id_dpto_u=:id_dpto_u, id_puesto_u=:id_puesto_u, 
+                estado_u=:estado_u, salario_usuario=:salario_usuario, lugar_trabajo=:lugar_trabajo
+                WHERE id_usuario=:id_usuario");
         $contrasena =  password_hash($datosModel["contrasena_m"], PASSWORD_DEFAULT); //GENERAMOS HASH
 		$stmt->bindParam(":nombre_u", $datosModel["nombre_u_m"], PDO::PARAM_STR);
 		$stmt->bindParam(":ape_pat_u", $datosModel["ape_pat_u_m"], PDO::PARAM_STR);
@@ -128,16 +129,17 @@ class Datos extends Conexion{
         $stmt->bindParam(":id_dpto_u", $datosModel["departamento_m"], PDO::PARAM_INT);
         $stmt->bindParam(":id_puesto_u", $datosModel["puesto_m"], PDO::PARAM_INT);
 		$stmt->bindParam(":estado_u", $datosModel["estado_m"], PDO::PARAM_STR);
+        $stmt->bindParam(":salario_usuario", $datosModel["salario_usuario"], PDO::PARAM_STR);
+        $stmt->bindParam(":lugar_trabajo", $datosModel["lugar_trabajo"], PDO::PARAM_STR);
 		$stmt->bindParam(":id_usuario", $datosModel["id_usuario_m"], PDO::PARAM_INT);
-        
 		if($stmt->execute()){
 			return "success";
 		} else {
-			return $stmt->errorInfo();
+            $error = $stmt->errorInfo();
+            return $error;
 		}
 		$stmt->close();
 	}
-
 
 	#BORRAR USUARIO
 	#------------------------------------
@@ -947,7 +949,9 @@ class Datos extends Conexion{
 	#VISTA PUESTO
 	#-------------------------------------
 	public static function vistaTrabajadorAtrModel($tabla){
-		$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla WHERE id_dpto_u IN('7','13','15','19','20','21','22','23','25','26','27','28','29')
+		$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla WHERE id_dpto_u 
+            IN('7','13','15','19','20','21','22','23','25','26','27','28','29') 
+            AND lugar_trabajo = 'ATR' AND estado_u = 'activo'
             ORDER BY nombre_u ASC");	
 		$stmt->execute();
 		#fetchAll(): Obtiene todas las filas de un conjunto de resultados asociado al objeto PDOStatement. 
@@ -1328,6 +1332,165 @@ class Datos extends Conexion{
         }
         $stmt->close();
     }
-	    
+
+
+    public static function registroProcesoGeneralModel($datosModel, $tabla){
+		#prepare() Prepara una sentencia SQL para ser ejecutada por el método PDOStatement::execute(). La sentencia SQL puede contener cero o más marcadores de parámetros con nombre (:name) o signos de interrogación (?) por los cuales los valores reales serán sustituidos cuando la sentencia sea ejecutada. Ayuda a prevenir inyecciones SQL eliminando la necesidad de entrecomillar manualmente los parámetros.
+		$stmt = Conexion::conectar()->prepare("INSERT INTO $tabla (descripcion_proceso_general, comentarios_proceso_general)
+        										 VALUES (:descripcion_proceso_general, :comentarios_proceso_general)");	
+		#bindParam() Vincula una variable de PHP a un parámetro de sustitución con nombre o de signo de interrogación correspondiente de la sentencia SQL que fue usada para preparar la sentencia.
+		$stmt->bindParam(":descripcion_proceso_general", $datosModel["descripcion_proceso_general"], PDO::PARAM_STR);
+		$stmt->bindParam(":comentarios_proceso_general", $datosModel["comentarios_proceso_general"], PDO::PARAM_STR);
+		if($stmt->execute()){
+			return "success";
+		} else{
+			return $stmt->errorInfo();
+		}
+		$stmt->close();
+	}
+
+    public static function registroProcesoModel($datosModel, $tabla){
+		#prepare() Prepara una sentencia SQL para ser ejecutada por el método PDOStatement::execute(). La sentencia SQL puede contener cero o más marcadores de parámetros con nombre (:name) o signos de interrogación (?) por los cuales los valores reales serán sustituidos cuando la sentencia sea ejecutada. Ayuda a prevenir inyecciones SQL eliminando la necesidad de entrecomillar manualmente los parámetros.
+		
+        $validacion = Conexion::conectar()->prepare("SELECT descripcion_proceso FROM $tabla 
+                        WHERE descripcion_proceso=:descripcion_proceso AND id_proceso_general_pp = :id_proceso_general_pp");
+        $validacion->bindParam(":id_proceso_general_pp", $datosModel["id_proceso_general_pp"], PDO::PARAM_INT);
+        $validacion->bindParam(":descripcion_proceso", $datosModel["descripcion_proceso"], PDO::PARAM_STR);
+        $validacion->execute();
+        $num_rows = $validacion->fetchColumn();
+        if ($num_rows == ""){ 
+            $stmt = Conexion::conectar()->prepare("INSERT INTO $tabla (codigo_proceso, id_proceso_general_pp, descripcion_proceso,
+                    comentarios_proceso, tiempo_promedio_proceso) VALUES (:codigo_proceso, :id_proceso_general_pp, 
+                    :descripcion_proceso, :comentarios_proceso, :tiempo_promedio_proceso)");	
+		    #bindParam() Vincula una variable de PHP a un parámetro de sustitución con nombre o de signo de interrogación correspondiente de la sentencia SQL que fue usada para preparar la sentencia.
+		    $stmt->bindParam(":codigo_proceso", $datosModel["codigo_proceso"], PDO::PARAM_STR);
+		    $stmt->bindParam(":id_proceso_general_pp", $datosModel["id_proceso_general_pp"], PDO::PARAM_INT);
+            $stmt->bindParam(":descripcion_proceso", $datosModel["descripcion_proceso"], PDO::PARAM_STR);
+            $stmt->bindParam(":comentarios_proceso", $datosModel["comentarios_proceso"], PDO::PARAM_STR);
+            $stmt->bindParam(":tiempo_promedio_proceso", $datosModel["tiempo_promedio_proceso"], PDO::PARAM_INT);
+		    if($stmt->execute()){
+    			return "success";
+	    	} else{
+		    	return $stmt->errorInfo();
+		    }
+		    $stmt->close();
+        }else{
+            return "duplicado";
+        }
+        $validacion->close();
+	}
+
+
+    #VISTA PROCESOS POR CATEGORIA 
+    public static function vistaProcesosModel($tabla){
+		$stmt = Conexion::conectar()->prepare("SELECT *, descripcion_proceso_general 
+                                FROM $tabla
+                                LEFT JOIN procesos_general ON id_proceso_general = id_proceso_general_pp");	
+		$stmt->execute();
+		#fetchAll(): Obtiene todas las filas de un conjunto de resultados asociado al objeto PDOStatement. 
+		return $stmt->fetchAll();
+		$stmt->close();
+	}
+
+    #EDITAR PROCESO GRAL
+	#-------------------------------------
+	public static function editarProcesoGeneralModel($datosModel, $tabla){
+		$stmt = Conexion::conectar()->prepare("SELECT *	FROM $tabla WHERE id_proceso_general = :id_proceso_general");
+		$stmt->bindParam(":id_proceso_general", $datosModel, PDO::PARAM_INT);	
+		$stmt->execute();
+		return $stmt->fetch();
+		$stmt->close();
+	}
+    
+    #ACTUALIZAR PROCESO GENERAL
+	#-------------------------------------
+
+	public static function actualizarProcesoGralModel($datosModel, $tabla){
+		$stmt = Conexion::conectar()->prepare("UPDATE $tabla SET descripcion_proceso_general = :descripcion_proceso_general, 
+                comentarios_proceso_general = :comentarios_proceso_general
+												WHERE id_proceso_general = :id_proceso_general");		
+        $stmt->bindParam(":descripcion_proceso_general", $datosModel["descripcion_proceso"], PDO::PARAM_STR);
+		$stmt->bindParam(":comentarios_proceso_general", $datosModel["comentarios_proceso"], PDO::PARAM_STR);
+        $stmt->bindParam(":id_proceso_general", $datosModel["id_proceso_actualizar"], PDO::PARAM_INT);
+		if($stmt->execute()){
+			return "success";
+		}else{
+            $error = $stmt->errorInfo();
+            return $error;
+		}
+		$stmt->close();
+	}    
+    
+    #BORRAR DATO DE UNA TABLA INDICANDO LA COLUMNA COMO ID
+	#------------------------------------
+	public static function borrarDatoModel($datosModel, $tabla, $columna){
+		$stmt = Conexion::conectar()->prepare("DELETE FROM $tabla WHERE $columna = :$columna");
+		$stmt->bindParam(":$columna", $datosModel, PDO::PARAM_INT);
+		if($stmt->execute()){
+			return "success";
+		}else{
+			return "error";
+		}
+		$stmt->close();
+	}
+
+    #OBTENER DATOS COMPLETOS DE UNA TABLA INDICANDO EL NOMBRE DE COLUMNA Y TABLA Y ENVIANDO EL ID
+	#-------------------------------------
+	public static function editarGeneralModel($datosModel, $tabla, $columna){
+		$stmt = Conexion::conectar()->prepare("SELECT *	FROM $tabla WHERE $columna = :$columna");
+		$stmt->bindParam(":$columna", $datosModel, PDO::PARAM_INT);	
+		$stmt->execute();
+		return $stmt->fetch();
+		$stmt->close();
+	}
+
+    public static function actualizarProcesoModel($datosModel, $tabla){
+        $stmt = Conexion::conectar()->prepare("UPDATE $tabla SET descripcion_proceso = :descripcion_proceso, 
+                        codigo_proceso = :codigo_proceso, id_proceso_general_pp = :id_proceso_general_pp, 
+                        comentarios_proceso = :comentarios_proceso, tiempo_promedio_proceso = :tiempo_promedio_proceso
+						WHERE id_proceso_prod = :id_proceso_prod");		
+        $stmt->bindParam(":descripcion_proceso", $datosModel["descripcion_proceso"], PDO::PARAM_STR);
+		$stmt->bindParam(":codigo_proceso", $datosModel["codigo_proceso"], PDO::PARAM_STR);
+        $stmt->bindParam(":id_proceso_general_pp", $datosModel["id_proceso_general_pp"], PDO::PARAM_INT);
+        $stmt->bindParam(":comentarios_proceso", $datosModel["comentarios_proceso"], PDO::PARAM_STR);
+        $stmt->bindParam(":tiempo_promedio_proceso", $datosModel["tiempo_promedio_proceso"], PDO::PARAM_STR);
+        $stmt->bindParam(":id_proceso_prod", $datosModel["id_proceso_editar"], PDO::PARAM_INT);
+		if($stmt->execute()){
+			return "success";
+		}else{
+            $error = $stmt->errorInfo();
+            return $error;
+		}
+		$stmt->close();
+    }
+
+    #OBTENER TOTALES DE LOS SERVICIOS PARA GRAFICA 
+    #-------------------------------------
+	public static function vistaTotalesServiciosModel($datosModel){
+		$stmt = Conexion::conectar()->prepare("SELECT tipo_servicio, COUNT(num_orden) as total
+                FROM ordenServicio 
+                WHERE fecha_liberacion BETWEEN :fecha_inicio AND :fecha_termino 
+                GROUP BY tipo_servicio");
+		$stmt->bindParam(":fecha_inicio", $datosModel["fecha_inicio"], PDO::PARAM_STR);	
+        $stmt->bindParam(":fecha_termino", $datosModel["fecha_termino"], PDO::PARAM_STR);	
+		$stmt->execute();
+		return $stmt->fetchAll();
+		$stmt->close();
+	}
+
+    #REGISTRAR CLIENTES NUEVOS
+    public static function registrarClienteModel($dataModel, $tabla){
+        $stmt = Conexion::conectar()->prepare("INSERT INTO $tabla(razon_social_cliente, codigo_proyecto_cliente) 
+                VALUES (:razon_social_cliente, :codigo_proyecto_cliente)");
+        $stmt->bindParam(":razon_social_cliente", $dataModel["razon_social_cliente"], PDO::PARAM_STR);
+        $stmt->bindParam(":codigo_proyecto_cliente", $dataModel["codigo_proyecto_cliente"], PDO::PARAM_STR);
+        if($stmt->execute())
+            return "success";
+        else{
+            $error = $stmt->errorInfo();
+            return $error;
+        }
+    }
+    
 }
 ?>
